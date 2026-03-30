@@ -1,0 +1,10 @@
+node_modules/
+migrations/
+data/
+logs/
+
+package-lock.json
+
+.env
+.vscode
+.svelte-kit/

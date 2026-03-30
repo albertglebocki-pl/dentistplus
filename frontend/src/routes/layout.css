@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+:root {
+    --primary: #20297c;
+    --secondary: #eff1ff;
+    --accent: #217b78;
+}
+
+@theme inline {
+    --color-primary: var(--primary);
+    --color-secondary: var(--secondary);
+    --color-accent: var(--accent);
+}
+
+html {
+    scroll-behavior: smooth;
+}

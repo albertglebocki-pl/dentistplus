@@ -1,0 +1,156 @@
+networks:
+  drizzle-postgres:
+    driver: bridge
+    internal: true
+  backend-internal:
+    driver: bridge
+    internal: true
+  backend-postgres:
+    driver: bridge
+    internal: true
+  frontend-backend:
+    driver: bridge
+    internal: true
+  frontend-postgres:
+    driver: bridge
+    internal: true
+  frontend-caddy:
+    driver: bridge
+    internal: true
+  public:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    networks:
+      - drizzle-postgres
+      - backend-postgres
+      - frontend-postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mongo:
+    image: mongo:8-noble
+    restart: unless-stopped
+    networks:
+      - backend-internal
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DB}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mongosh --quiet --eval 'db.runCommand({ ping: 1})' --username ${MONGO_USER} --password ${MONGO_PASSWORD} --authenticationDatabase admin",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  storage:
+    image: dxflrs/garage:v1.0.1
+    restart: unless-stopped
+    networks:
+      - backend-internal
+    volumes:
+      - ./storage/garage.toml:/etc/garage.toml
+      - ./storage/data/meta:/var/lib/garage/meta
+      - ./storage/data/store:/var/lib/garage/data
+    environment:
+      - GARAGE_RPC_SECRET=${STORAGE_RPC_SECRET}
+      - GARAGE_ADMIN_TOKEN=${STORAGE_ADMIN_TOKEN}
+
+  drizzle:
+    build:
+      context: ./drizzle
+      dockerfile: Dockerfile
+    restart: "no"
+    networks:
+      - drizzle-postgres
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - backend-internal
+      - backend-postgres
+      - frontend-backend
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - MONGO_URL=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/${MONGO_DB}
+      - STORAGE_URL=http://storage:3902
+    depends_on:
+      drizzle:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      storage:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - frontend-backend
+      - frontend-postgres
+      - frontend-caddy
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - BACKEND_URL=http://backend:3000
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      drizzle:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      backend:
+        condition: service_started
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    networks:
+      - frontend-caddy
+      - public
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./caddy/logs:/var/log/caddy
+    depends_on:
+      - frontend
+
+volumes:
+  postgres_data:
+  mongo_data:
+  caddy_data:
+  caddy_config:
