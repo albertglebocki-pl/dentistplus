@@ -15,10 +15,10 @@ install_deps:
 sync:
 	cd frontend && npx svelte-kit sync
 
-start: install_deps setup generate sync
+start: setup install_deps generate sync
 	docker compose up -d --build --remove-orphans
 
-dev: install_deps setup generate sync
+dev: setup install_deps generate sync
 	docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build --remove-orphans
 
 stop:
