@@ -7,13 +7,18 @@ generate:
 	cp drizzle/schema.ts backend/src
 	cp drizzle/schema.ts frontend/src/lib/server
 
+install_deps:
+	npm install --prefix ./drizzle
+	npm install --prefix ./frontend
+	npm install --prefix ./backend
+
 sync:
 	cd frontend && npx svelte-kit sync
 
-start: setup generate sync
+start: setup install_deps generate sync
 	docker compose up -d --build --remove-orphans
 
-dev: setup generate sync
+dev: setup install_deps generate sync
 	docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build --remove-orphans
 
 stop:
