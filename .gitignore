@@ -8,3 +8,7 @@ package-lock.json
 .env
 .vscode
 .svelte-kit/
+
+.idea/
+
+log.txt

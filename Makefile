@@ -29,4 +29,9 @@ clean: stop
 	docker compose down -v
 	rm -f .env
 
+clean_node:
+	cd frontend && rm -rf node_modules/
+	cd backend && rm -rf node_modules/
+	cd drizzle && rm -rf node_modules/
+
 restart: stop start
