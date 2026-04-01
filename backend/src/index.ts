@@ -1,7 +1,11 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
+import connectMongo from "./db/mongo.js";
+import { Patient, MedicalProcedure, Visit } from "./db/mongoSchema.js";
 
 const app = new Hono();
+
+await connectMongo();
 
 app.get("/", (c) => {
   return c.text("Hello Hono!");

@@ -98,7 +98,7 @@ services:
       - frontend-backend
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-      - MONGO_URL=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/${MONGO_DB}
+      - MONGO_URL=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/${MONGO_DB}?authSource=admin
       - STORAGE_URL=http://storage:3902
     depends_on:
       drizzle:
