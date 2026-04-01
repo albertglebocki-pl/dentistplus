@@ -1,7 +1,14 @@
 import { Schema, model } from "mongoose";
 
+const TOOTH_ENUM = [
+    '11','12','13','14','15','16','17','18',
+    '21','22','23','24','25','26','27','28',
+    '31','32','33','34','35','36','37','38',
+    '41','42','43','44','45','46','47','48'
+];
+
 const toothStatusSchema = new Schema({
-    tooth: { type: String, required: true },
+    tooth: { type: String, enum: TOOTH_ENUM, required: true },
     status: { type: String, required: true },
 });
 
@@ -22,7 +29,7 @@ patientSchema.index({ userId: 1 });
 
 
 const treatmentSchema = new Schema({
-    tooth: { type: String, required: true },
+    tooth: { type: String, enum: TOOTH_ENUM, required: true },
     description: { type: String, required: true },
 });
 
@@ -30,6 +37,7 @@ const medicalProcedureSchema = new Schema({
     patientId: { type: Number, required: true},
     date: { type: Date, required: true },
     cost: { type: Number, required: true },
+    description: { type: String },
     treatments: [treatmentSchema],
 });
 
@@ -39,7 +47,7 @@ const visitSchema = new Schema({
     doctorId: { type: Number, required: true },
     patientId: { type: Number, required: true},
     date: { type: Date, required: true },
-    time: { type: Number, required: true },
+    time: { type: String, required: true },
     status: {
         type: String,
         enum: ["BOOKED", "COMPLETED"],

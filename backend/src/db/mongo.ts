@@ -1,8 +1,6 @@
 import mongoose, {type ConnectOptions} from "mongoose";
 
 const connectMongo = async () => {
-    console.log(process.env.MONGO_URL)
-
     try {
         if(process.env.MONGO_URL !== undefined) {
             await mongoose.connect(process.env.MONGO_URL as string, {} as ConnectOptions);
