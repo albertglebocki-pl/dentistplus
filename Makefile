@@ -16,7 +16,7 @@ sync:
 	cd frontend && npx svelte-kit sync
 
 start: setup install_deps generate sync
-	docker compose up -d --build --remove-orphans
+	docker compose up -d --build --remove-orphans --no-cache
 
 dev: setup install_deps generate sync
 	docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build --remove-orphans
@@ -30,8 +30,11 @@ clean: stop
 	rm -f .env
 
 clean_node:
-	cd frontend && rm -rf node_modules/
-	cd backend && rm -rf node_modules/
-	cd drizzle && rm -rf node_modules/
+    rm -rf frontend/node_modules/
+    rm -f frontend/package-lock.json
+    rm -rf backend/node_modules/
+    rm -f backend/package-lock.json
+    rm -rf drizzle/node_modules/
+    rm -f drizzle/package-lock.json
 
 restart: stop start
