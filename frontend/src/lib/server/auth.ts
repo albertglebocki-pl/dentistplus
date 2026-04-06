@@ -14,6 +14,10 @@ export type JwtPayload = {
   sub: number;
   email: string;
   role: "USER" | "DOCTOR" | "ADMIN";
+  firstName?: string;
+  lastName?: string;
+  address?: string;
+  phoneNumber?: string;
   iat?: number;
   exp?: number;
 };

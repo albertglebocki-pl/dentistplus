@@ -6,6 +6,7 @@ import {
   pgEnum,
   integer,
   date,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export const userRole = pgEnum("user_role", ["USER", "DOCTOR", "ADMIN"]);
@@ -15,6 +16,7 @@ export const users = pgTable("users", {
   email: text("email").notNull(),
   passwordHash: text("password_hash").notNull(),
   role: userRole("role").default("USER").notNull(),
+  active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
