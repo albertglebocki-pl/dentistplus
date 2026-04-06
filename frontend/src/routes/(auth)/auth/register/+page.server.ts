@@ -28,44 +28,38 @@ export const actions: Actions = {
     const address = String(data.get("address") ?? "").trim();
     const phone = String(data.get("phoneNumber") ?? "").trim();
 
-    if (!email || !password || !confirm || !fullName || !address || !phone) {
+    if (!email || !password || !confirm || !fullName || !address || !phone)
       return fail(400, { error: "All fields are required.", email, step: 2 });
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return fail(400, { error: "Invalid email address.", email, step: 2 });
-    }
-    if (password.length < 8) {
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      return fail(400, { error: "Invalid email address.", email, step: 1 });
+
+    if (password.length < 8)
       return fail(400, {
         error: "Password must be at least 8 characters.",
         email,
-        step: 2,
+        step: 1,
       });
-    }
-    if (password !== confirm) {
-      return fail(400, { error: "Passwords do not match.", email, step: 2 });
-    }
 
-    const existing = await getUserByEmail(email);
-    if (existing) {
+    if (password !== confirm)
+      return fail(400, { error: "Passwords do not match.", email, step: 1 });
+
+    if (await getUserByEmail(email))
       return fail(409, {
         error: "An account with that email already exists.",
         email,
         step: 1,
       });
-    }
 
     const role = (await isFirstUser()) ? "ADMIN" : "USER";
-
     const passwordHash = await hashPassword(password);
     const user = await createUser(email, passwordHash, role);
 
     const [firstName, ...rest] = fullName.split(" ");
-    const lastName = rest.join(" ") || null;
-
     await db.insert(personalData).values({
       userId: user.id,
       firstName,
-      lastName,
+      lastName: rest.join(" ") || null,
       address,
       phoneNumber: phone,
     });
