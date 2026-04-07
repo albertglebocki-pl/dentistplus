@@ -30,6 +30,27 @@
             location.reload();
         }
     };
+
+    const handleBooking = async (e) => {
+        const formData = e.detail;
+
+        const payload = {
+            userId: data.user.sub,
+            ...formData
+        }
+
+        const res = await fetch("/api/book-visit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify(payload)
+        })
+
+        if(!res.ok) {
+            console.log(await res.json());
+        }
+
+        console.log(res);
+    };
 </script>
 
 {#if data.user.role === "ADMIN"}
@@ -179,5 +200,5 @@
     </div>
 
     <Calendar/>
-    <AppointmentBooking doctorChoose={true} doctorList={data.doctors}/>
+    <AppointmentBooking doctorChoose={true} doctorList={data.doctors} on:submit={handleBooking}/>
 {/if}

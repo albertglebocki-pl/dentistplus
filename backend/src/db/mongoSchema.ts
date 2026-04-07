@@ -48,6 +48,7 @@ const visitSchema = new Schema({
     patientId: { type: Number, required: true},
     date: { type: Date, required: true },
     time: { type: String, required: true },
+    description: { type: String, required: false },
     status: {
         type: String,
         enum: ["BOOKED", "COMPLETED"],

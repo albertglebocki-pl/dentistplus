@@ -1,4 +1,24 @@
-<script>
+<script lang="ts">
+    import {createEventDispatcher} from "svelte";
+
+    const dispatch = createEventDispatcher();
+    let doctorId = $state<number | null>(null);
+    let datetime = $state("");
+    let description = $state("");
+
+    function submit() {
+        dispatch("submit", {
+            doctorId,
+            datetime,
+            description
+        })
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        submit();
+    }
+
     let {
         doctorChoose = true,
         doctorList = []
@@ -11,11 +31,11 @@
 </script>
 
 <div class="bg-white p-5">
-    <form method="POST" class="flex flex-col gap-4">
+    <form onsubmit={handleSubmit} method="POST" class="flex flex-col gap-4">
         {#if doctorChoose}
             <label class={labelClass}>
                 <span class={labelTextClass}>Choose doctor</span>
-                <select name="doctors" id="doctors" class={inputClass}>
+                <select name="doctors" id="doctors" class={inputClass} bind:value={doctorId}>
                     {#each doctorList as doctor}
                         <option value={doctor.id}>{doctor.firstName} {doctor.lastName}</option>
                     {/each}
@@ -31,6 +51,7 @@
                     required
                     class={inputClass}
                     step="3600"
+                    bind:value={datetime}
             />
         </label>
 
@@ -40,6 +61,7 @@
                     type="text"
                     name="description"
                     class={inputClass}
+                    bind:value={description}
             />
         </label>
 
