@@ -179,5 +179,5 @@
     </div>
 
     <Calendar/>
-    <AppointmentBooking doctorChoose={true}/>
+    <AppointmentBooking doctorChoose={true} doctorList={data.doctors}/>
 {/if}

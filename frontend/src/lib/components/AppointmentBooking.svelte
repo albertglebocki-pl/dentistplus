@@ -1,5 +1,8 @@
 <script>
-    let { doctorChoose = true} = $props();
+    let {
+        doctorChoose = true,
+        doctorList = []
+    } = $props();
 
     const inputClass =
         "bg-secondary border border-transparent rounded-lg px-3 py-2.5 text-sm text-primary outline-none focus:border-primary/40 transition-colors";
@@ -13,9 +16,9 @@
             <label class={labelClass}>
                 <span class={labelTextClass}>Choose doctor</span>
                 <select name="doctors" id="doctors" class={inputClass}>
-                    <option value="d1">Doctor One</option>
-                    <option value="d2">Doctor Two</option>
-                    <option value="d3">Doctor Three</option>
+                    {#each doctorList as doctor}
+                        <option value={doctor.id}>{doctor.firstName} {doctor.lastName}</option>
+                    {/each}
                 </select>
             </label>
         {/if}
