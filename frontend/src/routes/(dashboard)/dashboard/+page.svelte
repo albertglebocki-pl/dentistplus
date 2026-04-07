@@ -3,6 +3,7 @@
     import { enhance } from "$app/forms";
 
     import Calendar from "$lib/components/Calendar.svelte";
+    import AppointmentBooking from "$lib/components/AppointmentBooking.svelte";
 
     const { data }: { data: PageData } = $props();
 
@@ -178,4 +179,5 @@
     </div>
 
     <Calendar/>
+    <AppointmentBooking doctorChoose={true}/>
 {/if}
