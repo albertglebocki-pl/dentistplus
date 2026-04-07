@@ -2,6 +2,8 @@
     import type { PageData } from "./$types";
     import { enhance } from "$app/forms";
 
+    import Calendar from "$lib/components/Calendar.svelte";
+
     const { data }: { data: PageData } = $props();
 
     let showAddDoctor = $state(false);
@@ -174,4 +176,6 @@
             >
         </form>
     </div>
+
+    <Calendar/>
 {/if}

@@ -30,11 +30,11 @@ clean: stop
 	rm -f .env
 
 clean_node:
-    rm -rf frontend/node_modules/
-    rm -f frontend/package-lock.json
-    rm -rf backend/node_modules/
-    rm -f backend/package-lock.json
-    rm -rf drizzle/node_modules/
-    rm -f drizzle/package-lock.json
+	rm -rf frontend/node_modules/
+	rm -f frontend/package-lock.json
+	rm -rf backend/node_modules/
+	rm -f backend/package-lock.json
+	rm -rf drizzle/node_modules/
+	rm -f drizzle/package-lock.json
 
 restart: stop start
