@@ -41,7 +41,7 @@ export async function isUserExist(email: string): Promise<boolean> {
 }
 
 
-async function DEBUG_initData() {
+export async function DEBUG_initData() {
     const seedUsers = [
         {
             email: "doctor1@test.com",
@@ -102,5 +102,3 @@ async function DEBUG_initData() {
 
     console.log("DEBUG data initialized");
 }
-
-await DEBUG_initData();
