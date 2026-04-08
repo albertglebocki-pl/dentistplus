@@ -101,4 +101,5 @@ export async function DEBUG_initData() {
     }
 
     console.log("DEBUG data initialized");
+    console.log(await db.select().from(users));
 }

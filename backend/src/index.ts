@@ -34,18 +34,15 @@ app.post("/book-visit", async (c) => {
             return c.json({error: "Missing required fields"}, 400);
         }
 
-        const dt = new Date(datetime);
-        dt.setMinutes(0);
+        const dateTime = new Date(datetime);
 
-        const date = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
-        const time = String(dt.getHours());
+        dateTime.setMinutes(0, 0, 0);
 
         const visit = await Visit.create({
-            doctorId: doctorId,
+            doctorId,
             patientId: userId,
-            date: date,
-            time: time,
-            description: description,
+            dateTime,
+            description,
             status: "BOOKED",
         });
 
@@ -62,16 +59,58 @@ app.post("/book-visit", async (c) => {
 // Optional parameters:
 // id - doctor id, if its left empty, aggregated visits for all doctors are returned
 app.get("/get-visits/:year/:week", async (c) => {
-    console.log("endpoint test")
     const year: number = Number(c.req.param('year'));
     const week: number = Number(c.req.param('week'));
-    const id: number = Number(c.req.query("id"));
+    const doctorId: number | undefined = Number(c.req.query("doctorId"));
 
     const range = getWeekDates(year, week);
 
-    console.log("test111", year, week, id, range);
+    const start: Date = range.monday;
+    const end: Date = range.friday;
+    const endExclusive = new Date(end);
+    endExclusive.setDate(endExclusive.getDate() + 1);
 
-    return c.json({success:true});
+    let calendarData: Record<number, number[]> = {};
+    let visits;
+
+    if(doctorId) {
+        visits = await Visit
+            .find({
+                doctorId,
+                dateTime: {
+                    $gte: start,
+                    $lt: endExclusive,
+                },
+            })
+            .sort({ dateTime: 1 });
+    }
+    else {
+        visits = await Visit
+            .find({
+                dateTime: {
+                    $gte: start,
+                    $lt: endExclusive,
+                },
+            })
+            .sort({ dateTime: 1 });
+    }
+
+    visits.forEach(visit => {
+        let day = visit.dateTime.getDay() - 1; // Monday = 0, so weekends are broken, but we don't use them anyway
+        let hour = visit.dateTime.getHours();
+
+        if( ! calendarData[day]) {
+            calendarData[day] = []
+        }
+
+        calendarData[day].push(hour);
+    })
+
+    Object.values(calendarData).forEach(arr => {
+        arr.sort((a, b) => a - b);
+    });
+
+    return c.json({success:true, calendarData});
 });
 
 serve(

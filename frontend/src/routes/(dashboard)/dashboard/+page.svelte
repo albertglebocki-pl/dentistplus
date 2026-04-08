@@ -55,7 +55,7 @@
 
 
     onMount(async () => {
-        const res = await fetch("/api/get-visits/2026/15?id=1");
+        const res = await fetch("/api/get-visits/2026/15?doctorId=1");
         const data = await res.json();
 
         console.log(data);
