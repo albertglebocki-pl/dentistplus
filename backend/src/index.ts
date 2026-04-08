@@ -2,6 +2,8 @@ import {serve} from "@hono/node-server";
 import {Hono} from "hono";
 import connectMongo from "./db/mongo.js";
 import {Patient, MedicalProcedure, Visit} from "./db/mongoSchema.js";
+import {getWeekDates} from "./utils.js";
+
 
 const app = new Hono();
 
@@ -55,6 +57,21 @@ app.post("/book-visit", async (c) => {
 
         return c.json({error: "Internal server error"}, 500);
     }
+});
+
+// Optional parameters:
+// id - doctor id, if its left empty, aggregated visits for all doctors are returned
+app.get("/get-visits/:year/:week", async (c) => {
+    console.log("endpoint test")
+    const year: number = Number(c.req.param('year'));
+    const week: number = Number(c.req.param('week'));
+    const id: number = Number(c.req.query("id"));
+
+    const range = getWeekDates(year, week);
+
+    console.log("test111", year, week, id, range);
+
+    return c.json({success:true});
 });
 
 serve(

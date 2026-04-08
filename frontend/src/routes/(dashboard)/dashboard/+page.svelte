@@ -4,6 +4,7 @@
 
     import Calendar from "$lib/components/Calendar.svelte";
     import AppointmentBooking from "$lib/components/AppointmentBooking.svelte";
+    import {onMount} from "svelte";
 
     const { data }: { data: PageData } = $props();
 
@@ -51,6 +52,15 @@
 
         console.log(res);
     };
+
+
+    onMount(async () => {
+        const res = await fetch("/api/get-visits/2026/15?id=1");
+        const data = await res.json();
+
+        console.log(data);
+    });
+
 </script>
 
 {#if data.user.role === "ADMIN"}
