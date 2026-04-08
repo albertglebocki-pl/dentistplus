@@ -1,4 +1,8 @@
-<script>
+<script lang="ts">
+    let {
+        calendarData
+    } = $props();
+
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 </script>
 
@@ -21,12 +25,18 @@
     </div>
 
     <div class="calendar flex-1 grid grid-cols-11 grid-rows-5 gap-2">
-        {#each Array(5 * 11) as _, i}
-            <div class="rounded text-center flex flex-col justify-between border bg-transparent p-0.5">
-                <div class="bg-green-400 h-2 w-full rounded"></div>
-                <p>{8 + (i % 11)}</p>
-                <div class="dummy | h-2 w-full"></div>
-            </div>
+        {#each Array(5) as _, day}
+            {#each Array.from({ length: 11 }, (_, i) => 8 + i) as hour}
+                {@const taken = (calendarData?.[day] ?? []).includes(hour)}
+
+                <div class="rounded text-center flex flex-col justify-between border p-0.5">
+                    <div class={`h-2 w-full rounded ${taken ? 'bg-red-500' : 'bg-green-400'}`}></div>
+
+                    <p>{hour}</p>
+
+                    <div class="h-2 w-full"></div>
+                </div>
+            {/each}
         {/each}
     </div>
 

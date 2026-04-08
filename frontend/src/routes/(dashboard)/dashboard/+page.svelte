@@ -4,7 +4,6 @@
 
     import Calendar from "$lib/components/Calendar.svelte";
     import AppointmentBooking from "$lib/components/AppointmentBooking.svelte";
-    import {onMount} from "svelte";
 
     const { data }: { data: PageData } = $props();
 
@@ -46,21 +45,19 @@
             body: JSON.stringify(payload)
         })
 
-        if(!res.ok) {
+        if (res.ok) {
+            const updated = await fetch("/api/get-visits/2026/15?doctorId=1");
+            const json = await updated.json();
+
+            calendarData = json.calendarData;
+        } else {
             console.log(await res.json());
         }
 
         console.log(res);
     };
 
-
-    onMount(async () => {
-        const res = await fetch("/api/get-visits/2026/15?doctorId=1");
-        const data = await res.json();
-
-        console.log(data);
-    });
-
+    let calendarData = $state(data.calendarData);
 </script>
 
 {#if data.user.role === "ADMIN"}
@@ -209,6 +206,6 @@
         </form>
     </div>
 
-    <Calendar/>
+    <Calendar calendarData={calendarData}/>
     <AppointmentBooking doctorChoose={true} doctorList={data.doctors} on:submit={handleBooking}/>
 {/if}

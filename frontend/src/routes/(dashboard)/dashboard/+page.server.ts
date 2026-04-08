@@ -10,7 +10,7 @@ import {users, personalData} from "$lib/server/schema";
 import {getDoctors, getPatients} from "$lib/server/dbUtils";
 import {eq} from "drizzle-orm";
 
-export const load: PageServerLoad = async ({locals}) => {
+export const load: PageServerLoad = async ({locals, fetch}) => {
     if (!locals.user) redirect(303, "/auth/login");
 
     const doctors = await getDoctors()
@@ -18,10 +18,13 @@ export const load: PageServerLoad = async ({locals}) => {
     if (locals.user.role === "ADMIN") {
         const patients = await getPatients()
 
-        return {user: locals.user, doctors, patients};
+        return {user: locals.user, doctors, patients, calendarData: null};
     }
 
-    return {user: locals.user, doctors: doctors, patients: []};
+    const res = await fetch("http://backend:3000/get-visits/2026/15?doctorId=1");
+    const json = await res.json();
+
+    return {user: locals.user, doctors: doctors, patients: [], calendarData: json.calendarData};
 };
 
 export const actions: Actions = {
