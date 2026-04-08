@@ -8,7 +8,11 @@
 
     const { data }: { data: PageData } = $props();
 
+    let currentDate = $state(new Date());
+    let currentMonth = $state(currentDate.getMonth())
     let showAddDoctor = $state(false);
+    let calendarData = $state(data.calendarData);
+    let firstWeekDay = $state(getWeekFirstDay(new Date()));
     let activeTab: "doctors" | "patients" = $state("doctors");
 
     const handleAddDoctor = () => {
@@ -32,6 +36,15 @@
         }
     };
 
+    const refreshCalendarData = async () => {
+        const { year, week } = getISOWeek(currentDate);
+
+        const res = await fetch(`/api/get-visits/${year}/${week}?doctorId=1`);
+        const json = await res.json();
+
+        calendarData = json.calendarData;
+    };
+
     const handleBooking = async (e) => {
         const formData = e.detail;
 
@@ -47,10 +60,7 @@
         })
 
         if (res.ok) {
-            const updated = await fetch("/api/get-visits/2026/15?doctorId=1");
-            const json = await updated.json();
-
-            calendarData = json.calendarData;
+            await refreshCalendarData();
         } else {
             console.log(await res.json());
         }
@@ -58,7 +68,33 @@
         console.log(res);
     };
 
-    let calendarData = $state(data.calendarData);
+    const onPreviousWeek = async () => {
+        currentDate = new Date(currentDate);
+        currentDate.setDate(currentDate.getDate() - 7);
+
+        firstWeekDay = getWeekFirstDay(currentDate);
+
+        await refreshCalendarData();
+    };
+
+    const onNextWeek = async () => {
+        currentDate = new Date(currentDate);
+        currentDate.setDate(currentDate.getDate() + 7);
+
+        firstWeekDay = getWeekFirstDay(currentDate);
+
+        await refreshCalendarData();
+    };
+
+    function getISOWeek(date: Date) {
+        const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        const weekNo = Math.ceil((((d as any) - (yearStart as any)) / 86400000 + 1) / 7);
+
+        return { year: d.getUTCFullYear(), week: weekNo };
+    }
 </script>
 
 {#if data.user.role === "ADMIN"}
@@ -207,6 +243,10 @@
         </form>
     </div>
 
-    <Calendar calendarData={calendarData} firstWeekDay={getWeekFirstDay(new Date())}/>
+    <Calendar calendarData={calendarData}
+              weekStart={currentDate}
+              onPreviousWeek={onPreviousWeek}
+              onNextWeek={onNextWeek}
+    />
     <AppointmentBooking doctorChoose={true} doctorList={data.doctors} on:submit={handleBooking}/>
 {/if}
