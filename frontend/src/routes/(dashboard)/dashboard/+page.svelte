@@ -4,6 +4,7 @@
 
     import Calendar from "$lib/components/Calendar.svelte";
     import AppointmentBooking from "$lib/components/AppointmentBooking.svelte";
+    import {getWeekFirstDay} from "$lib/utils/date.js";
 
     const { data }: { data: PageData } = $props();
 
@@ -206,6 +207,6 @@
         </form>
     </div>
 
-    <Calendar calendarData={calendarData}/>
+    <Calendar calendarData={calendarData} firstWeekDay={getWeekFirstDay(new Date())}/>
     <AppointmentBooking doctorChoose={true} doctorList={data.doctors} on:submit={handleBooking}/>
 {/if}

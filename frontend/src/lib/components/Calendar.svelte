@@ -1,16 +1,19 @@
 <script lang="ts">
     let {
-        calendarData
+        calendarData,
+        firstWeekDay = 1,
+        month = new Date().getMonth()
     } = $props();
 
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+    const months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 </script>
 
 <div class="flex gap-2">
     <div class="week-switch flex flex-col items-center justify-between p-2 font-bold">
         <div>↑</div>
         <div class="[writing-mode:vertical-rl] rotate-180">
-            1-5 March
+            {firstWeekDay}-{firstWeekDay + 4} {months[month]}
         </div>
         <div>↓</div>
     </div>
@@ -19,7 +22,7 @@
         {#each days as day, i}
             <div class="flex flex-col justify-center items-center">
                 <p class="font-bold">{day}</p>
-                <p>{String(i + 1).padStart(2, '0')}.03</p>
+                <p>{String(firstWeekDay + i).padStart(2, '0')}.{String(month + 1).padStart(2, '0')}</p>
             </div>
         {/each}
     </div>
