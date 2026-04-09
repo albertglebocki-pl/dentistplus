@@ -4,7 +4,7 @@
 
     import Calendar from "$lib/components/Calendar.svelte";
     import AppointmentBooking from "$lib/components/AppointmentBooking.svelte";
-    import {getWeekFirstDay} from "$lib/utils/date.js";
+    import {getWeekFirstDay, getISOWeek} from "$lib/utils/date.js";
 
     const { data }: { data: PageData } = $props();
 
@@ -38,9 +38,9 @@
     };
 
     const refreshCalendarData = async () => {
-        const { year, week } = getISOWeek(currentDate);
+        const { year, week } = getISOWeek(new Date());
 
-        const res = await fetch(`/api/get-visits/${year}/${week}?doctorId=1`);
+        const res = await fetch(`/api/get-visits/${year}/${week}?doctorId=1&userId=${data.user.sub}`);
         const json = await res.json();
 
         calendarData = json.calendarData;
@@ -90,16 +90,6 @@
 
         await refreshCalendarData();
     };
-
-    function getISOWeek(date: Date) {
-        const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-
-        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-        const weekNo = Math.ceil((((d as any) - (yearStart as any)) / 86400000 + 1) / 7);
-
-        return { year: d.getUTCFullYear(), week: weekNo };
-    }
 </script>
 
 {#if data.user.role === "ADMIN"}

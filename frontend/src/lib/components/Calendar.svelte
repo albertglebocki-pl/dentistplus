@@ -7,7 +7,6 @@
     } = $props();
 
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-
     const months = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
@@ -66,10 +65,11 @@
         {#each weekDays as dayDate, day}
             {#each Array.from({ length: 11 }, (_, i) => 8 + i) as hour}
                 {@const dayIndex = dayDate.getDay() - 1}
-                {@const taken = (calendarData?.[dayIndex] ?? []).includes(hour)}
+                {@const taken = (calendarData?.[dayIndex].taken ?? []).includes(hour)}
+                {@const mine = (calendarData?.[dayIndex].mine ?? []).includes(hour)}
 
-                <div class="rounded text-center flex flex-col justify-between border p-0.5">
-                    <div class={`h-2 w-full rounded ${taken ? 'bg-red-500' : 'bg-green-400'}`}></div>
+                <div class={`rounded text-center flex flex-col justify-between border p-0.5 ${mine ? 'bg-yellow-200' : ''}`}>
+                    <div class={`h-2 w-full rounded ${taken || mine ? 'bg-red-500' : 'bg-green-400'}`}></div>
 
                     <p>{hour}</p>
 

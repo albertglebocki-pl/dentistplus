@@ -14,3 +14,14 @@ export function getWeekFirstDay(date: Date): number {
 
     return d.getDate();
 }
+
+
+export function getISOWeek(date: Date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const weekNo = Math.ceil((((d as any) - (yearStart as any)) / 86400000 + 1) / 7);
+
+    return { year: d.getUTCFullYear(), week: weekNo };
+}

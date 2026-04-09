@@ -59,58 +59,43 @@ app.post("/book-visit", async (c) => {
 // Optional parameters:
 // id - doctor id, if its left empty, aggregated visits for all doctors are returned
 app.get("/get-visits/:year/:week", async (c) => {
-    const year: number = Number(c.req.param('year'));
-    const week: number = Number(c.req.param('week'));
-    const doctorId: number | undefined = Number(c.req.query("doctorId"));
+    const year = Number(c.req.param('year'));
+    const week = Number(c.req.param('week'));
+    const doctorId = c.req.query("doctorId") ? Number(c.req.query("doctorId")) : undefined;
+    const currentUserId = Number(c.req.query("userId"));
+
+    console.log(currentUserId);
 
     const range = getWeekDates(year, week);
-
-    const start: Date = range.monday;
-    const end: Date = range.friday;
-    const endExclusive = new Date(end);
+    const start = range.monday;
+    const endExclusive = new Date(range.friday);
     endExclusive.setDate(endExclusive.getDate() + 1);
 
-    let calendarData: Record<number, number[]> = {};
-    let visits;
+    let query: any = {
+        dateTime: { $gte: start, $lt: endExclusive }
+    };
+    if (doctorId) query.doctorId = doctorId;
 
-    if(doctorId) {
-        visits = await Visit
-            .find({
-                doctorId,
-                dateTime: {
-                    $gte: start,
-                    $lt: endExclusive,
-                },
-            })
-            .sort({ dateTime: 1 });
-    }
-    else {
-        visits = await Visit
-            .find({
-                dateTime: {
-                    $gte: start,
-                    $lt: endExclusive,
-                },
-            })
-            .sort({ dateTime: 1 });
-    }
+    const visits = await Visit.find(query).sort({ dateTime: 1 });
+
+    let calendarData: Record<number, { mine: number[], taken: number[] }> = {};
 
     visits.forEach(visit => {
-        let day = visit.dateTime.getDay() - 1; // Monday = 0, so weekends are broken, but we don't use them anyway
+        let day = (visit.dateTime.getDay() + 6) % 7;
         let hour = visit.dateTime.getHours();
 
-        if( ! calendarData[day]) {
-            calendarData[day] = []
+        if (!calendarData[day]) {
+            calendarData[day] = { mine: [], taken: [] };
         }
 
-        calendarData[day].push(hour);
-    })
-
-    Object.values(calendarData).forEach(arr => {
-        arr.sort((a, b) => a - b);
+        if (visit.patientId === currentUserId) {
+            calendarData[day].mine.push(hour);
+        } else {
+            calendarData[day].taken.push(hour);
+        }
     });
 
-    return c.json({success:true, calendarData});
+    return c.json({ success: true, calendarData });
 });
 
 serve(

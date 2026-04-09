@@ -9,6 +9,8 @@ import {db} from "$lib/server/db";
 import {users, personalData} from "$lib/server/schema";
 import {getDoctors, getPatients} from "$lib/server/dbUtils";
 import {eq} from "drizzle-orm";
+import { getISOWeek } from "$lib/utils/date";
+
 
 export const load: PageServerLoad = async ({locals, fetch}) => {
     if (!locals.user) redirect(303, "/auth/login");
@@ -21,7 +23,8 @@ export const load: PageServerLoad = async ({locals, fetch}) => {
         return {user: locals.user, doctors, patients, calendarData: null};
     }
 
-    const res = await fetch("http://backend:3000/get-visits/2026/15?doctorId=1");
+    const { year, week } = getISOWeek(new Date());
+    const res = await fetch(`http://backend:3000/get-visits/${year}/${week}?doctorId=1&userId=${locals.user.sub}`);
     const json = await res.json();
 
     return {user: locals.user, doctors: doctors, patients: [], calendarData: json.calendarData};
