@@ -11,6 +11,7 @@
     let currentDate = $state(new Date());
     let currentMonth = $state(currentDate.getMonth())
     let showAddDoctor = $state(false);
+    let bookError = $state("");
     let calendarData = $state(data.calendarData);
     let firstWeekDay = $state(getWeekFirstDay(new Date()));
     let activeTab: "doctors" | "patients" = $state("doctors");
@@ -45,27 +46,31 @@
         calendarData = json.calendarData;
     };
 
-    const handleBooking = async (e) => {
-        const formData = e.detail;
+    const handleBooking = async (formData: any) => {
+        bookError = "";
 
         const payload = {
             userId: data.user.sub,
             ...formData
+        };
+
+        try {
+            const res = await fetch("/api/book-visit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            const resData = await res.json();
+
+            if (res.ok) {
+                await refreshCalendarData();
+            } else {
+                bookError = resData.error || "An unknown error occurred";
+            }
+        } catch (err) {
+            bookError = "Could not connect to the server.";
         }
-
-        const res = await fetch("/api/book-visit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json"},
-            body: JSON.stringify(payload)
-        })
-
-        if (res.ok) {
-            await refreshCalendarData();
-        } else {
-            console.log(await res.json());
-        }
-
-        console.log(res);
     };
 
     const onPreviousWeek = async () => {
@@ -248,5 +253,10 @@
               onPreviousWeek={onPreviousWeek}
               onNextWeek={onNextWeek}
     />
-    <AppointmentBooking doctorChoose={true} doctorList={data.doctors} on:submit={handleBooking}/>
+    <AppointmentBooking
+            doctorChoose={true}
+            doctorList={data.doctors}
+            onsubmit={handleBooking}
+            errorMessage={bookError}
+    />
 {/if}
