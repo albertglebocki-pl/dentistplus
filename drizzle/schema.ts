@@ -5,7 +5,6 @@ import {
   timestamp,
   pgEnum,
   integer,
-  date,
   boolean,
 } from "drizzle-orm/pg-core";
 
@@ -27,10 +26,4 @@ export const personalData = pgTable("personal_data", {
   lastName: text("last_name"),
   address: text("address"),
   phoneNumber: text("phone_number"),
-});
-
-export const visits = pgTable("visits", {
-  id: serial("id").primaryKey(),
-  visitDate: date("visit_date").notNull(),
-  patientId: integer("patient_id").references(() => users.id),
 });

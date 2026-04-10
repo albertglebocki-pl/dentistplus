@@ -46,8 +46,8 @@ const medicalProcedureSchema = new Schema({
 const visitSchema = new Schema({
     doctorId: { type: Number, required: true },
     patientId: { type: Number, required: true},
-    date: { type: Date, required: true },
-    time: { type: String, required: true },
+    dateTime: { type: Date, required: true },
+    description: { type: String, required: false },
     status: {
         type: String,
         enum: ["BOOKED", "COMPLETED"],
@@ -60,7 +60,7 @@ const visitSchema = new Schema({
 });
 
 visitSchema.index(
-    { doctorId: 1, date: 1, time: 1 },
+    { doctorId: 1, dateTime: 1 },
     { unique: true }
 );
 

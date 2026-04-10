@@ -4,9 +4,13 @@ import {
   verifyToken,
   COOKIE_NAME_EXPORT as COOKIE_NAME,
 } from "$lib/server/auth";
+import {DEBUG_initData} from "$lib/server/dbUtils";
+
 
 const PROTECTED_ROUTES = ["/dashboard"];
 const AUTH_ROUTES = ["/auth/login", "/auth/register"];
+
+let initialized = false;
 
 export const handle: Handle = async ({ event, resolve }) => {
   const token = event.cookies.get(COOKIE_NAME);
@@ -23,6 +27,11 @@ export const handle: Handle = async ({ event, resolve }) => {
     PROTECTED_ROUTES.some((r) => pathname.startsWith(r))
   ) {
     redirect(303, "/auth/login");
+  }
+
+  if (!initialized) {
+    initialized = true;
+    await DEBUG_initData();
   }
 
   return resolve(event);
