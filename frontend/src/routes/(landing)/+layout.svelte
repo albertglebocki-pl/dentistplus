@@ -43,7 +43,7 @@
 
         <a
             href="/auth/login"
-            class="text-sm font-medium text-primary bg-secondary px-4 py-2 border-primary border-1 rounded-xl hover:opacity-90 transition"
+            class="text-sm font-medium text-primary bg-secondary px-4 py-2 border-primary border rounded-xl hover:opacity-90 transition"
         >
             Sign in
         </a>
