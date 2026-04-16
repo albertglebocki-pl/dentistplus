@@ -6,6 +6,8 @@
 
     let weekStart = $state(new Date());
 
+    const { data } = $props();
+
     let calendarData = $state({
         0: { taken: [9], mine: [] },
         1: { taken: [10], mine: [11] },

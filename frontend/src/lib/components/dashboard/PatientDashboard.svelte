@@ -5,6 +5,8 @@
     import TreatmentTimeline from "../patient/TreatmentTimeline.svelte";
     import PatientSummary from "../patient/PatientSummary.svelte";
 
+    const { data } = $props();
+
     let selectedTooth = $state(null);
 </script>
 

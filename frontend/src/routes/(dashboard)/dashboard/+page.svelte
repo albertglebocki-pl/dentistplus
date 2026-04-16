@@ -11,11 +11,11 @@
 <main>
     <div class="max-w-5xl mx-auto">
         {#if data.user.role === "ADMIN"}
-            <AdminDashboard />
+            <AdminDashboard {data} />
         {:else if data.user.role === "DOCTOR"}
-            <DoctorDashboard />
+            <DoctorDashboard {data} />
         {:else}
-            <PatientDashboard />
+            <PatientDashboard {data} />
         {/if}
     </div>
 </main>

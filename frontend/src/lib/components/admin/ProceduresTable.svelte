@@ -1,8 +1,10 @@
-<script>
-    let procedures = [
-        { name: "Filling", price: 120 },
-        { name: "Implant", price: 2500 },
-    ];
+<script lang="ts">
+    type Procedure = {
+        name: string;
+        price: number;
+    };
+
+    const { procedures }: { procedures: Procedure[] } = $props();
 </script>
 
 <div class="bg-white border rounded-xl p-4">
