@@ -21,7 +21,9 @@ export const users = pgTable("users", {
 
 export const personalData = pgTable("personal_data", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
+  userId: integer("user_id")
+    .references(() => users.id)
+    .notNull(),
   firstName: text("first_name"),
   lastName: text("last_name"),
   address: text("address"),
