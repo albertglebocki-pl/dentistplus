@@ -3,9 +3,8 @@ setup:
 
 generate:
 	cd drizzle && npx dotenv -e ../.env drizzle-kit generate
-	rm -f backend/src/postgres/schema.ts frontend/src/lib/server/postgres/schema.ts
+	rm -f backend/src/postgres/schema.ts
 	cp drizzle/schema.ts backend/src/postgres
-	cp drizzle/schema.ts frontend/src/lib/server/postgres
 
 install_deps:
 	npm install --prefix ./drizzle

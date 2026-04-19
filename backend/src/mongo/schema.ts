@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { randomUUID } from "crypto";
 
 const TOOTH_ENUM = [
   "11",
@@ -35,59 +36,105 @@ const TOOTH_ENUM = [
   "48",
 ];
 
-const toothStatusSchema = new Schema({
-  tooth: { type: String, enum: TOOTH_ENUM, required: true },
-  status: { type: String, required: true },
-});
-
-const imageSchema = new Schema({
-  image: { type: String, required: true },
-  date: { type: Date, required: true },
-  description: { type: String, required: true },
-});
+const toothField = {
+  type: String,
+  enum: TOOTH_ENUM,
+  required: true,
+};
 
 const patientSchema = new Schema({
-  userId: { type: Number, required: true, unique: true },
-  toothStatuses: [toothStatusSchema],
-  images: [imageSchema],
+  patientId: { type: Number, required: true, unique: true },
+  toothStatusList: [
+    {
+      tooth: toothField,
+      status: { type: String, required: true },
+    },
+  ],
 });
 
-patientSchema.index({ userId: 1 });
+const procedureCatalogSchema = new Schema(
+  {
+    name: String,
+    descritpion: String,
+    defaultCost: { type: Number, min: 0 },
+    active: { type: Boolean, default: true },
+  },
+  { timestamps: true },
+);
 
 const treatmentSchema = new Schema({
-  tooth: { type: String, enum: TOOTH_ENUM, required: true },
-  description: { type: String, required: true },
+  tooth: toothField,
+  catalogItemId: { type: Schema.Types.ObjectId, ref: "ProcedureCatalog" },
+  descritpion: String,
+  cost: { type: Number, min: 0 },
 });
 
-const medicalProcedureSchema = new Schema({
-  patientId: { type: Number, required: true },
-  date: { type: Date, required: true },
-  cost: { type: Number, required: true },
-  description: { type: String },
-  treatments: [treatmentSchema],
-});
-
-const visitSchema = new Schema({
-  doctorId: { type: Number, required: true },
-  patientId: { type: Number, required: true },
-  dateTime: { type: Date, required: true },
-  description: { type: String, required: false },
-  status: {
-    type: String,
-    enum: ["BOOKED", "COMPLETED"],
-    default: "BOOKED",
+const medicalProcedureSchema = new Schema(
+  {
+    patientId: Number,
+    doctorId: Number,
+    date: Date,
+    cost: Number,
+    description: String,
+    treatments: [treatmentSchema],
   },
-  medicalProcedureId: {
-    type: Schema.Types.ObjectId,
-    ref: "MedicalProcedure",
-  },
-});
+  { timestamps: true },
+);
 
-visitSchema.index({ doctorId: 1, dateTime: 1 }, { unique: true });
+const visitSchema = new Schema(
+  {
+    doctorId: Number,
+    patientId: Number,
+    dateTime: Date,
+    durationMinutes: { type: Number, default: 60 },
+    description: String,
+    status: {
+      type: String,
+      enum: ["BOOKED", "COMPLETED", "CANCELLED"],
+      default: "BOOKED",
+    },
+    medicalProcedureId: {
+      type: Schema.Types.ObjectId,
+      ref: "MedicalProcedure",
+    },
+    cancelledAd: Date,
+  },
+  { timestamps: true },
+);
+
+const paymentSchema = new Schema(
+  {
+    patientId: Number,
+    medicalProcedureId: {
+      type: Schema.Types.ObjectId,
+      ref: "MedicalProcedure",
+    },
+    amount: Number,
+    status: {
+      type: String,
+      enum: ["PRENDING", "COMPLETED", "FAILED"],
+      default: "PENDING",
+    },
+    token: {
+      type: String,
+      unique: true,
+      default: () => randomUUID(),
+    },
+    successUrl: String,
+    errorUrl: String,
+    paidAt: Date,
+  },
+  { timestamps: true },
+);
 
 export const Patient = model("Patient", patientSchema);
+export const ProcedureCatalog = model(
+  "ProcedureCatalog",
+  procedureCatalogSchema,
+);
 export const MedicalProcedure = model(
   "MedicalProcedure",
   medicalProcedureSchema,
 );
 export const Visit = model("Visit", visitSchema);
+export const Payment = model("Payment", paymentSchema);

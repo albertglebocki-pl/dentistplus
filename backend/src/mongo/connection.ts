@@ -1,18 +1,11 @@
-import mongoose, { type ConnectOptions } from "mongoose";
+import mongoose from "mongoose";
 
-const connection = async () => {
-  try {
-    if (process.env.MONGO_URL !== undefined) {
-      await mongoose.connect(
-        process.env.MONGO_URL as string,
-        {} as ConnectOptions,
-      );
+if (!process.env.MONGO_URL) {
+  throw new Error("MONGO_URL is not set");
+}
 
-      console.log("Connection to MongoDB established successfully.");
-    }
-  } catch (error) {
-    console.error("Connection to MongoDB could not have been established!");
-  }
+const connectMongo = async () => {
+  await mongoose.connect(process.env.MONGO_URL as string);
 };
 
-export default connection;
+export default connectMongo;

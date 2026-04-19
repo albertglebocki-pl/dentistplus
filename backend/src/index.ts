@@ -1,18 +1,22 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 
-import connectToMongo from "./mongo/connection.js";
-import { Patient, MedicalProcedure, Visit } from "./mongo/schema.js";
+import connectMongo from "./mongo/connection.js";
 
 import ping from "./services/ping.js";
-import book from "./services/visits/book.js";
+import login from "./services/auth/routes/login.js";
+import register from "./services/auth/routes/register.js";
+import me from "./services/auth/routes/me.js";
 
 const app = new Hono();
 
-await connectToMongo();
+await connectMongo();
 
 app.route("/", ping);
-app.route("/", book);
+
+app.route("/auth", login);
+app.route("/auth", register);
+app.route("/auth", me);
 
 serve(
   {

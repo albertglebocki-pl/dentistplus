@@ -2,8 +2,6 @@
     import "../layout.css";
     import favicon from "$lib/assets/favicon.svg";
 
-    const currentYear = new Date().getFullYear();
-
     let { children } = $props();
 </script>
 
