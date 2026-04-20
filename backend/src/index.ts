@@ -38,6 +38,11 @@ import teethStatus from "./services/teeth/routes/status.js";
 import teethUpdate from "./services/teeth/routes/update.js";
 import teethProcedures from "./services/teeth/routes/procedures.js";
 
+import imageUpload from "./services/images/routes/upload.js";
+import imageList from "./services/images/routes/list.js";
+import imageDetails from "./services/images/routes/details.js";
+import imageDelete from "./services/images/routes/delete.js";
+
 const app = new Hono();
 
 await connectMongo();
@@ -74,9 +79,15 @@ app.route("/catalog", catalogDeactivate);
 app.route("/patients", patientList);
 app.route("/patients", patientMe);
 app.route("/patients", patientDetails);
+
 app.route("/patients", teethStatus);
 app.route("/patients", teethUpdate);
 app.route("/patients", teethProcedures);
+
+app.route("/patients", imageUpload);
+app.route("/patients", imageList);
+app.route("/patients", imageDetails);
+app.route("/patients", imageDelete);
 
 serve(
   {

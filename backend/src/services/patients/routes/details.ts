@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { authMiddleware } from "../../auth/middleware.js";
 import database from "../../../postgres/connection.js";
-import { users, personalData } from "../../../postgres/schema.js";
+import { users } from "../../../postgres/schema.js";
 import { eq } from "drizzle-orm";
 import { profileFields } from "../service.js";
 
@@ -20,7 +20,6 @@ service.get("/:id", async (c) => {
   const [profile] = await database
     .select(profileFields)
     .from(users)
-    .leftJoin(personalData, eq(users.id, personalData.userId))
     .where(eq(users.id, targetId));
 
   if (!profile) {

@@ -15,7 +15,7 @@ service.post("/", requireRole(["ADMIN"]), async (c) => {
 
   const item = await ProcedureCatalog.create({
     name,
-    descritpion: description,
+    description: description,
     defaultCost,
     active: true,
   });

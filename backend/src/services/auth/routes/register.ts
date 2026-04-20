@@ -19,7 +19,7 @@ service.post("/register", async (context) => {
     .from(users)
     .where(eq(users.email, email));
 
-  if (userExists) {
+  if (userExists.length > 0) {
     return context.json({ error: "User already exists" }, 409);
   }
 
