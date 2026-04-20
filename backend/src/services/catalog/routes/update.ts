@@ -18,7 +18,7 @@ service.patch("/:id", requireRole(["ADMIN"]), async (c) => {
   }
 
   if (body.description !== undefined) {
-    item.descritpion = body.description;
+    item.description = body.description;
   }
 
   if (body.defaultCost !== undefined) {

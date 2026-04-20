@@ -1,5 +1,5 @@
 import database from "../../postgres/connection.js";
-import { users, personalData } from "../../postgres/schema.js";
+import { users } from "../../postgres/schema.js";
 import { eq } from "drizzle-orm";
 
 export const profileFields = {
@@ -8,10 +8,10 @@ export const profileFields = {
   role: users.role,
   active: users.active,
   createdAt: users.createdAt,
-  firstName: personalData.firstName,
-  lastName: personalData.lastName,
-  address: personalData.address,
-  phoneNumber: personalData.phoneNumber,
+  firstName: users.firstName,
+  lastName: users.lastName,
+  address: users.address,
+  phoneNumber: users.phoneNumber,
 };
 
 export const upsertPersonalData = async (
@@ -23,17 +23,5 @@ export const upsertPersonalData = async (
     phoneNumber?: string;
   },
 ) => {
-  const [existing] = await database
-    .select()
-    .from(personalData)
-    .where(eq(personalData.userId, userId));
-
-  if (!existing) {
-    await database.insert(personalData).values({ userId, ...data });
-  } else {
-    await database
-      .update(personalData)
-      .set(data)
-      .where(eq(personalData.userId, userId));
-  }
+  await database.update(users).set(data).where(eq(users.id, userId));
 };

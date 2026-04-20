@@ -55,7 +55,7 @@ const patientSchema = new Schema({
 const procedureCatalogSchema = new Schema(
   {
     name: String,
-    descritpion: String,
+    description: String,
     defaultCost: { type: Number, min: 0 },
     active: { type: Boolean, default: true },
   },
@@ -65,7 +65,7 @@ const procedureCatalogSchema = new Schema(
 const treatmentSchema = new Schema({
   tooth: toothField,
   catalogItemId: { type: Schema.Types.ObjectId, ref: "ProcedureCatalog" },
-  descritpion: String,
+  description: String,
   cost: { type: Number, min: 0 },
 });
 
@@ -127,6 +127,17 @@ const paymentSchema = new Schema(
   { timestamps: true },
 );
 
+const patientImageSchema = new Schema(
+  {
+    patientId: { type: Number, required: true },
+    s3Key: { type: String, required: true },
+    filename: { type: String, required: true },
+    mimeType: { type: String, required: true },
+    uploadedBy: { type: Number, required: true },
+  },
+  { timestamps: true },
+);
+
 export const Patient = model("Patient", patientSchema);
 export const ProcedureCatalog = model(
   "ProcedureCatalog",
@@ -138,3 +149,4 @@ export const MedicalProcedure = model(
 );
 export const Visit = model("Visit", visitSchema);
 export const Payment = model("Payment", paymentSchema);
+export const PatientImage = model("PatientImage", patientImageSchema);
