@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm";
 const service = new Hono();
 
 service.post("/register", async (context) => {
-  const { email, password, firstName, lastName } = await context.req.json();
+  const { email, password, firstName, lastName, address, phoneNumber } = await context.req.json();
 
   if (!email || !password) {
     return context.json({ error: "Email and password required" }, 400);
@@ -32,6 +32,8 @@ service.post("/register", async (context) => {
       passwordHash,
       firstName,
       lastName,
+      address,
+      phoneNumber
     })
     .returning();
 
