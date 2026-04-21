@@ -1,88 +1,17 @@
 <script lang="ts">
-    let step = $state(1);
-    let email = $state("");
-    let password = $state("");
-    let confirm = $state("");
-
-    let error = $state("");
+    import {enhance} from "$app/forms";
 
     const inputClass =
         "bg-secondary border border-transparent rounded-lg px-3 py-2.5 text-sm text-primary outline-none focus:border-primary/40 transition-colors";
     const labelClass = "flex flex-col gap-1.5";
     const labelTextClass = "text-primary/60 text-sm";
 
-    const handleSubmit = async (e: SubmitEvent): Promise<void> => {
-        error = "";
+    let {form} = $props();
 
-        const formEl = e.currentTarget as HTMLFormElement;
-        const formData = new FormData(formEl);
-
-        const data = processData(formData);
-        if (!data) return;
-
-        const res = await fetch("/api/auth/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-
-        if (!res.ok) {
-            error = result.error || "Something went wrong";
-            return;
-        }
-
-        console.log(result);
-    };
-
-    const processData = (formData: FormData) => {
-        const data = Object.fromEntries(formData);
-        console.log(data);
-
-        let nameParts = String(data.fullName).trim().split(" ").filter(el => el != '')
-        const firstName = nameParts[0];
-        const lastName = nameParts[1];
-
-        const preProcessedData = {
-            email: data.email,
-            password: data.password,
-            confirm: data.confirm,
-            firstName: firstName,
-            lastName: lastName,
-            address: data.address,
-            phoneNumber: data.phoneNumber,
-        }
-
-        if (validate(preProcessedData)) {
-            return {
-                email: data.email,
-                password: data.password,
-                firstName: firstName,
-                lastName: lastName,
-                address: data.address,
-                phoneNumber: data.phoneNumber,
-            };
-        }
-
-        return null;
-    }
-
-    const validate = (data: any): boolean => {
-        if(!data.firstName || !data.lastName) {
-            error = "Enter valid first and last name";
-            return false;
-        }
-
-        if(data.password != data.confirm) {
-            error = "Passwords are different"
-            return false;
-        }
-
-        return true;
-    }
+    let step = $state(1);
+    let email = $state("");
+    let password = $state("");
+    let confirm = $state("");
 </script>
 
 <main class="min-h-screen bg-secondary flex items-center justify-center px-4">
@@ -94,8 +23,8 @@
         </h1>
         <hr class="border-primary/20 mb-6"/>
 
-        {#if error}
-            <p class="text-red-500 text-sm text-center mb-4">{error}</p>
+        {#if form?.error}
+            <p class="text-red-500 text-sm text-center mb-4">{form?.error}</p>
         {/if}
 
         {#if step === 1}
@@ -151,12 +80,7 @@
                 >
             </p>
         {:else}
-            <form
-                    onsubmit={(e) => {
-                    e.preventDefault();
-                    handleSubmit(e);
-                }}
-                    class="flex flex-col gap-4"
+            <form method="POST" use:enhance class="flex flex-col gap-4"
             >
                 <input type="hidden" name="email" value={email}/>
                 <input type="hidden" name="password" value={password}/>
