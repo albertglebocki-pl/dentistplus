@@ -5,3 +5,4 @@
 </script>
 
 <main>DASHBOARD</main>
+<p>{data.user.role}</p>
