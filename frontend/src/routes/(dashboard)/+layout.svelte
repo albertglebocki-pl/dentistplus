@@ -33,6 +33,8 @@
                 >
             </a>
         </div>
+
+        <a href="/auth/logout">LOGOUT</a>
     </div>
 </nav>
 
