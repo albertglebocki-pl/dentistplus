@@ -12,6 +12,9 @@
     let email = $state("");
     let password = $state("");
     let confirm = $state("");
+    let fullName = $state("");
+    let address = $state("");
+    let phoneNumber = $state("");
 </script>
 
 <main class="min-h-screen bg-secondary flex items-center justify-center px-4">
@@ -86,21 +89,20 @@
                 <input type="hidden" name="password" value={password}/>
                 <input type="hidden" name="confirm" value={confirm}/>
 
-                {#each [
-                    {label: "Full Name", name: "fullName", type: "text"},
-                    {label: "Address", name: "address", type: "text"},
-                    {label: "Phone Number", name: "phoneNumber", type: "tel"}
-                ] as field}
-                    <label class={labelClass}>
-                        <span class={labelTextClass}>{field.label}</span>
-                        <input
-                                type={field.type}
-                                name={field.name}
-                                required
-                                class={inputClass}
-                        />
-                    </label>
-                {/each}
+                <label class={labelClass}>
+                    <span class={labelTextClass}>Full Name</span>
+                    <input type="text" name="fullName" bind:value={fullName} required class={inputClass} />
+                </label>
+
+                <label class={labelClass}>
+                    <span class={labelTextClass}>Address</span>
+                    <input type="text" name="address" bind:value={address} required class={inputClass} />
+                </label>
+
+                <label class={labelClass}>
+                    <span class={labelTextClass}>Phone Number</span>
+                    <input type="tel" name="phoneNumber" bind:value={phoneNumber} required class={inputClass} />
+                </label>
 
                 <button
                         type="submit"
