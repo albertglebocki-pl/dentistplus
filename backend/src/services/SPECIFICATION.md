@@ -175,7 +175,9 @@ Rejestracja nowego pacjenta.
   "email": "jan@example.com",
   "password": "haslo123",
   "firstName": "Jan",
-  "lastName": "Kowalski"
+  "lastName": "Kowalski",
+  "address": "Adres 123a",
+  "phoneNumber": "111222333" 
 }
 ```
 

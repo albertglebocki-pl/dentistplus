@@ -8,6 +8,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const userRole = pgEnum("user_role", ["USER", "DOCTOR", "ADMIN"]);
+export type UserRole = (typeof userRole.enumValues)[number];
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),

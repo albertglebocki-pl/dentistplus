@@ -5,6 +5,7 @@ import ping from "./services/ping.js";
 
 import login from "./services/auth/routes/login.js";
 import register from "./services/auth/routes/register.js";
+import me from "./services/auth/routes/me.js";
 
 import visitList from "./services/visits/routes/list.js";
 import visitSlots from "./services/visits/routes/slots.js";
@@ -51,6 +52,7 @@ app.route("/", ping);
 
 app.route("/auth", login);
 app.route("/auth", register);
+app.route("/auth", me);
 
 app.route("/visits", visitList);
 app.route("/visits", visitSlots);
