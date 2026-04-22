@@ -37,6 +37,8 @@ import patientList from "./services/patients/routes/list.js";
 import patientMe from "./services/patients/routes/me.js";
 import patientDetails from "./services/patients/routes/details.js";
 
+import doctorList from "./services/doctors/routes/list.js";
+
 import teethStatus from "./services/teeth/routes/status.js";
 import teethUpdate from "./services/teeth/routes/update.js";
 import teethProcedures from "./services/teeth/routes/procedures.js";
@@ -96,6 +98,8 @@ app.route("/patients", imageUpload);
 app.route("/patients", imageList);
 app.route("/patients", imageDetails);
 app.route("/patients", imageDelete);
+
+app.route("/doctors", doctorList);
 
 serve(
   {
