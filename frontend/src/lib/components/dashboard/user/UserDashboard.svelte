@@ -1,5 +1,5 @@
 <script lang="ts">
-    let {data} = $props();
+    let {data, form} = $props();
     import Calendar from "$lib/components/dashboard/utils/Calendar.svelte";
     import AppointmentBooking from "$lib/components/dashboard/utils/AppointmentBooking.svelte";
 </script>
@@ -16,5 +16,5 @@
         {data.user.phoneNumber}
     </p>
 
-    <AppointmentBooking doctorChoose doctorList={data.data.doctors}/>
+    <AppointmentBooking doctorChoose doctorList={data.data.doctors} error={form?.message}/>
 </div>

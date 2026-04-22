@@ -1,4 +1,4 @@
-import {redirect} from '@sveltejs/kit';
+import {fail, redirect} from '@sveltejs/kit';
 
 import * as UserService from '$lib/server/services/user.service';
 import * as AdminService from '$lib/server/services/admin.service';
@@ -12,6 +12,12 @@ export const actions = {
         }
 
         const formData = await request.formData();
-        return await UserService.bookAppointment(token, formData);
+        const result = await UserService.bookAppointment(token, formData);
+
+        if (!result.success) {
+            return fail(400, {message: result.error});
+        }
+
+        return {success: true};
     }
 }

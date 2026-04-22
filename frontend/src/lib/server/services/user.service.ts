@@ -1,4 +1,5 @@
 import api from "$lib/server/utils/api"
+import {fail} from "@sveltejs/kit";
 
 export async function onLoad(token: string) {
     const visitsRaw = await fetch(api("/visits"), {
@@ -21,8 +22,29 @@ export async function onLoad(token: string) {
 }
 
 export async function bookAppointment(token: string, formData: FormData) {
-    console.log("APPOINTMENT BOOK")
-    console.log(formData)
+    const doctorId = formData.get('doctorId');
+    const datetime = formData.get('datetime');
+    const description = formData.get('description');
 
-    return {test: "booked"};
+    const res = await fetch(api("/visits"), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            doctorId: Number(doctorId),
+            dateTime: datetime,
+            description: description,
+            durationMinutes: 60,
+        })
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+        return { success: false, error: result.error || "Internal Server Error" };
+    }
+
+    return { success: true, data: result };
 }

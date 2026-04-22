@@ -4,6 +4,7 @@
     let {
         doctorChoose = true,
         doctorList = [],
+        error = "",
         // onsubmit,
         // errorMessage = $bindable(""),
     } = $props();
@@ -64,7 +65,7 @@
         {#if doctorChoose}
             <label class="flex flex-col gap-1.5">
                 <span class="text-primary/60 text-sm">Choose doctor</span>
-                <select name="doctorId" class="..." required>
+                <select name="doctorId" class={inputClass} required>
                     <option value="">Select a doctor</option>
                     {#each doctorList as doctor}
                         <option value={doctor.id}>{doctor.firstName} {doctor.lastName}</option>
@@ -75,19 +76,19 @@
 
         <label class={labelClass}>
             <span class={labelTextClass}>Date and hour</span>
-            <input type="datetime-local" required class={inputClass} step="3600" bind:value={datetime}/>
+            <input name="datetime" type="datetime-local" required class={inputClass} step="3600"/>
         </label>
 
-        <!--        <label class={labelClass}>-->
-        <!--            <span class={labelTextClass}>Description (optional)</span>-->
-        <!--            <input type="text" class={inputClass} bind:value={description}/>-->
-        <!--        </label>-->
+        <label class={labelClass}>
+            <span class={labelTextClass}>Description (optional)</span>
+            <input name="description" type="text" class={inputClass}/>
+        </label>
 
-        <!--{#if errorMessage}-->
-        <!--    <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100">-->
-        <!--        {errorMessage}-->
-        <!--    </div>-->
-        <!--{/if}-->
+        {#if error}
+            <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100">
+                {error}
+            </div>
+        {/if}
 
         <button type="submit"
                 class="bg-primary text-white font-semibold text-sm py-3 rounded-lg mt-2 hover:bg-primary/90 transition-colors">
