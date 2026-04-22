@@ -11,7 +11,7 @@ service.get("/:patientId/teeth/:tooth/procedures", async (c) => {
   const patientId = Number(c.req.param("patientId"));
   const tooth = c.req.param("tooth");
 
-  if (user.role === "PATIENT" && user.userId !== patientId) {
+  if (user.role === "USER" && user.userId !== patientId) {
     return c.json({ error: "Forbidden" }, 403);
   }
 

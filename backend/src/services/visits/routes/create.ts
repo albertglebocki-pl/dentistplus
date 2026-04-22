@@ -14,7 +14,7 @@ service.post("/", async (c) => {
   let doctorId: number;
   let patientId: number;
 
-  if (user.role === "PATIENT") {
+  if (user.role === "USER") {
     doctorId = Number(body.doctorId);
     patientId = user.userId;
   } else if (user.role === "DOCTOR") {

@@ -18,7 +18,7 @@ service.post("/:id/cancel", async (c) => {
     return c.json({ error: "Only BOOKED visits can be cancelled" }, 400);
   }
 
-  if (user.role === "PATIENT" && visit.patientId !== user.userId) {
+  if (user.role === "USER" && visit.patientId !== user.userId) {
     return c.json({ error: "Forbidden" }, 403);
   }
 

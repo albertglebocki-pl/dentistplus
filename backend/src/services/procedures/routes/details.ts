@@ -16,7 +16,7 @@ service.get("/:id", async (c) => {
     return c.json({ error: "Procedure not found" }, 404);
   }
 
-  if (user.role === "PATIENT" && procedure.patientId !== user.userId) {
+  if (user.role === "USER" && procedure.patientId !== user.userId) {
     return c.json({ error: "Forbidden" }, 403);
   }
 

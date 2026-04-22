@@ -11,7 +11,7 @@ service.get("/:patientId/images/:imageId", async (c) => {
   const user = c.get("user");
   const patientId = Number(c.req.param("patientId"));
 
-  if (user.role === "PATIENT" && user.userId !== patientId) {
+  if (user.role === "USER" && user.userId !== patientId) {
     return c.json({ error: "Forbidden" }, 403);
   }
 

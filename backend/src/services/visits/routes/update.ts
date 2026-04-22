@@ -23,7 +23,7 @@ service.patch("/:id", async (c) => {
     return c.json({ error: "Visit has no doctor assigned" }, 500);
   }
 
-  if (user.role === "PATIENT" && visit.patientId !== user.userId) {
+  if (user.role === "USER" && visit.patientId !== user.userId) {
     return c.json({ error: "Forbidden" }, 403);
   }
 
