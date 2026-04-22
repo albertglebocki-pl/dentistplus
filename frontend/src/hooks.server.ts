@@ -2,7 +2,7 @@ import { redirect } from "@sveltejs/kit";
 import type { Handle } from "@sveltejs/kit";
 
 const AUTH_ROUTES = ["/auth/login", "/auth/register"];
-const PROTECTED_ROUTES = ["/dashboard"];
+const PROTECTED_ROUTES = ["/payments", "/dashboard"];
 
 export const handle: Handle = async ({ event, resolve }) => {
   const token = event.cookies.get("token");

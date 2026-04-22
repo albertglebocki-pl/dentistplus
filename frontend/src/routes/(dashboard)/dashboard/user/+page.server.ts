@@ -3,9 +3,7 @@ import { redirect } from "@sveltejs/kit";
 export async function load({ cookies, fetch }) {
   const token = cookies.get("token");
 
-  if (!token) {
-    throw redirect(302, "/auth/login");
-  }
+  if (!token) throw redirect(302, "/auth/login");
 
   const res = await fetch("http://backend:3000/auth/me", {
     method: "POST",
@@ -19,9 +17,11 @@ export async function load({ cookies, fetch }) {
     throw redirect(302, "/auth/login");
   }
 
-  const data = await res.json();
+  const user = await res.json();
 
-  return {
-    user: data,
-  };
+  if (user.role !== "USER") {
+    throw redirect(302, "/dashboard");
+  }
+
+  return { user };
 }

@@ -19,9 +19,14 @@ export async function load({ cookies, fetch }) {
     throw redirect(302, "/auth/login");
   }
 
-  const data = await res.json();
+  const user = await res.json();
+
+  if (user.role !== "ADMIN") {
+    throw redirect(302, "/dashboard");
+  }
 
   return {
-    user: data,
+    user,
+    token,
   };
 }

@@ -7,7 +7,11 @@ const config = {
   kit: {
     adapter: adapter(),
     csrf: {
-      trustedOrigins: ["http://localhost", "http://127.0.0.1"],
+      trustedOrigins: [
+        "http://localhost",
+        "http://127.0.0.1",
+        "https://backend",
+      ],
     },
   },
   vitePlugin: {

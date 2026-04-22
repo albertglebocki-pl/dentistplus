@@ -7,6 +7,9 @@ import login from "./services/auth/routes/login.js";
 import register from "./services/auth/routes/register.js";
 import me from "./services/auth/routes/me.js";
 
+import adminDoctors from "./services/admin/routes/doctors.js";
+import adminUsers from "./services/admin/routes/users.js";
+
 import visitList from "./services/visits/routes/list.js";
 import visitSlots from "./services/visits/routes/slots.js";
 import visitDetails from "./services/visits/routes/details.js";
@@ -53,6 +56,9 @@ app.route("/", ping);
 app.route("/auth", login);
 app.route("/auth", register);
 app.route("/auth", me);
+
+app.route("/admin", adminDoctors);
+app.route("/admin", adminUsers);
 
 app.route("/visits", visitList);
 app.route("/visits", visitSlots);
