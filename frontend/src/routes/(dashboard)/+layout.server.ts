@@ -3,6 +3,7 @@ import {redirect} from '@sveltejs/kit';
 import * as UserService from '$lib/server/services/user.service';
 import * as AdminService from '$lib/server/services/admin.service';
 import * as DoctorService from '$lib/server/services/doctor.service';
+import api from "$lib/server/utils/api";
 
 export async function load({cookies, fetch}) {
     const token = cookies.get('token');
@@ -11,7 +12,7 @@ export async function load({cookies, fetch}) {
         throw redirect(302, '/auth/login');
     }
 
-    const res = await fetch('http://backend:3000/auth/me', {
+    const res = await fetch(api("/auth/me"), {
         method: "POST",
         headers: {
             Authorization: `Bearer ${token}`

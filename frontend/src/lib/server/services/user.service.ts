@@ -1,5 +1,7 @@
+import api from "$lib/server/utils/api"
+
 export async function onLoad(token: string) {
-    const visitsRaw = await fetch("http://backend:3000/visits", {
+    const visitsRaw = await fetch(api("/visits"), {
         method: "GET",
         headers: {
             Authorization: `Bearer ${token}`
@@ -7,7 +9,7 @@ export async function onLoad(token: string) {
     })
     const visits = await visitsRaw.json();
 
-    const doctorsRaw = await fetch("http://backend:3000/doctors", {
+    const doctorsRaw = await fetch(api("/doctors"), {
         method: "GET",
         headers: {
             Authorization: `Bearer ${token}`

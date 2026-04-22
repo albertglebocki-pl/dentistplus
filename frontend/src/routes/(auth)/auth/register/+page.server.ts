@@ -1,5 +1,6 @@
 import {fail, redirect} from '@sveltejs/kit';
 import type {Actions} from './$types';
+import api from "$lib/server/utils/api";
 
 export const actions: Actions = {
     default: async ({request, fetch, cookies}) => {
@@ -21,7 +22,7 @@ export const actions: Actions = {
             return fail(400, {error: "First name and last name are required"});
         }
 
-        const res = await fetch("http://backend:3000/auth/register", {
+        const res = await fetch(api("/auth/register"), {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
