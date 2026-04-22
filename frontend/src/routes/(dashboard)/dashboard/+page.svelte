@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type { PageData } from "./$types";
+    import type {PageData} from "./$types";
 
-    const { data }: { data: PageData } = $props();
+    const {data}: { data: PageData } = $props();
     const role = data.user.role;
 
     import AdminDashboard from "$lib/components/dashboard/admin/AdminDashboard.svelte";
@@ -10,9 +10,9 @@
 </script>
 
 {#if role === "ADMIN"}
-    <AdminDashboard user={data.user}/>
+    <AdminDashboard data={data}/>
 {:else if role === "USER"}
-    <UserDashboard user={data.user}/>
+    <UserDashboard data={data}/>
 {:else}
-    <DoctorDashboard user={data.user}/>
+    <DoctorDashboard data={data}/>
 {/if}
