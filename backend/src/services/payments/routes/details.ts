@@ -16,7 +16,7 @@ service.get("/:id", async (c) => {
     return c.json({ error: "Payment not found" }, 404);
   }
 
-  if (user.role === "PATIENT" && payment.patientId !== user.userId) {
+  if (user.role === "USER" && payment.patientId !== user.userId) {
     return c.json({ error: "Forbidden" }, 403);
   }
 

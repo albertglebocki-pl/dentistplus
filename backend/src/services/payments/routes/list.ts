@@ -10,7 +10,7 @@ service.use(authMiddleware);
 service.get("/", async (c) => {
   const user = c.get("user");
 
-  if (user.role === "PATIENT") {
+  if (user.role === "USER") {
     const payments = await Payment.find({ patientId: user.userId })
       .sort({ createdAt: -1 })
       .populate("medicalProcedureId");

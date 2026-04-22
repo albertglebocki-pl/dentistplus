@@ -9,7 +9,7 @@ if (!JWT_SECRET) {
 
 export type AuthUser = {
   userId: number;
-  role: "PATIENT" | "DOCTOR" | "ADMIN";
+  role: "USER" | "DOCTOR" | "ADMIN";
   exp: number;
 };
 

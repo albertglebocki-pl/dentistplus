@@ -13,7 +13,7 @@ service.get("/:id", async (c) => {
   const user = c.get("user");
   const targetId = Number(c.req.param("id"));
 
-  if (user.role === "PATIENT" && user.userId !== targetId) {
+  if (user.role === "USER" && user.userId !== targetId) {
     return c.json({ error: "Forbidden" }, 403);
   }
 

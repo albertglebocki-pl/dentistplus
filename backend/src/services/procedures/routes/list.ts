@@ -11,7 +11,7 @@ service.get("/", async (c) => {
   const patientIdQuery = c.req.query("patientId");
   let filter: Record<string, unknown> = {};
 
-  if (user.role === "PATIENT") {
+  if (user.role === "USER") {
     filter = { patientId: user.userId };
   } else if (user.role === "DOCTOR") {
     filter = { doctorId: user.userId };
