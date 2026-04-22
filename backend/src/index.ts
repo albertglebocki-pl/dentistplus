@@ -3,6 +3,8 @@ import { serve } from "@hono/node-server";
 import connectMongo from "./mongo/connection.js";
 import ping from "./services/ping.js";
 
+import postgresSeed from "./postgres/dev_seed.js";
+
 import login from "./services/auth/routes/login.js";
 import register from "./services/auth/routes/register.js";
 import me from "./services/auth/routes/me.js";
@@ -47,6 +49,10 @@ import imageDelete from "./services/images/routes/delete.js";
 const app = new Hono();
 
 await connectMongo();
+
+if(process.env.MODE == "DEV") {
+    await postgresSeed();
+}
 
 app.route("/", ping);
 
