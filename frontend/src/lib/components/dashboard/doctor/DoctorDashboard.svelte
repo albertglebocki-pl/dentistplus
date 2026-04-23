@@ -33,6 +33,10 @@
     const todayVisits = $derived(visits.filter(visit =>
         isSameDay(visit.dateTime)
     ));
+
+    const selectedVisitId = $derived(page.url.searchParams.get('id'));
+    const selectedVisit = $derived(visits.find(v => v._id === selectedVisitId));
+    const patient = selectedVisit.patient;
 </script>
 
 <div class="flex flex-col gap-5 mt-3 h-full">
@@ -60,5 +64,20 @@
                 </div>
             </Card>
         </div>
+    {:else if currentView === 'visit'}
+        <div class="flex gap-5">
+            <Card style={"w-1/3"}>
+                <CardTitle text="Patient information"/>
+                <p>{patient.firstName} {patient.lastName}</p>
+                <p>Email: {patient.email}</p>
+                <p>Address: {patient.address}</p>
+            </Card>
+            <Card style={"w-2/3"}>
+                <CardTitle text="Treatment history"/>
+            </Card>
+        </div>
+        <Card style={"w-full"}>
+            <CardTitle text="Other things"/>
+        </Card>
     {/if}
 </div>

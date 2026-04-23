@@ -12,10 +12,13 @@
     }
 </script>
 
-<div class="p-1.5 rounded-lg border bg-secondary">
+<a
+        href="?view=visit&id={visit._id}"
+        class="p-1.5 rounded-lg border bg-secondary"
+>
     <div class="flex justify-between pb-1">
         <p class="text-sm">{formatDate(visit.dateTime)}</p>
         <p class="text-sm">{visit.patient.firstName || "Name"} {visit.patient.lastName || "Lastname"}</p>
     </div>
     <div class="">{visit.description || "Appointment description"}</div>
-</div>
+</a>
