@@ -26,7 +26,7 @@
     {#if currentView === 'main'}
         <div class="flex gap-5">
             <Card style={"w-2/3"}>
-                <div class="flex justify-between pb-5">
+                <div class="flex justify-between">
                     <CardTitle text="Calendar"/>
                     <button
                             on:click={onBooking}

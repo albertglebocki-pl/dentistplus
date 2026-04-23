@@ -24,7 +24,10 @@ export async function load({cookies, fetch}) {
     const role = userData.role;
 
     if (role === "ADMIN") {
-        return {user: userData, data: await AdminService.onLoad()}
+        return {
+            user: userData,
+            data: await AdminService.onLoad()
+        }
     }
     if (role === "USER") {
         return {
@@ -33,6 +36,9 @@ export async function load({cookies, fetch}) {
         };
     }
     if (role === "DOCTOR") {
-        return {user: userData, data: await DoctorService.onLoad()}
+        return {
+            user: userData,
+            data: await DoctorService.onLoad(token)
+        }
     }
 }
