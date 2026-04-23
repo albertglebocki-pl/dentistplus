@@ -8,15 +8,11 @@ import api from "$lib/server/utils/api";
 export async function load({cookies, fetch}) {
     const token = cookies.get('token');
 
-    if (!token) {
-        throw redirect(302, '/auth/login');
-    }
+    if (!token) throw redirect(302, '/auth/login');
 
     const res = await fetch(api("/auth/me"), {
         method: "POST",
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
+        headers: {Authorization: `Bearer ${token}`}
     });
 
     if (!res.ok) {
@@ -33,7 +29,7 @@ export async function load({cookies, fetch}) {
     if (role === "USER") {
         return {
             user: userData,
-            data: await UserService.onLoad(token, userData.userId)
+            data: await UserService.onLoad(token)
         };
     }
     if (role === "DOCTOR") {

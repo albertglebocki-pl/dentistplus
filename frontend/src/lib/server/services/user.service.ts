@@ -1,7 +1,6 @@
 import api from "$lib/server/utils/api"
-import {fail} from "@sveltejs/kit";
 
-export async function onLoad(token: string, userId: number) {
+export async function onLoad(token: string) {
     const visitsRaw = await fetch(api("/visits"), {
         method: "GET",
         headers: {Authorization: `Bearer ${token}`},
@@ -14,30 +13,12 @@ export async function onLoad(token: string, userId: number) {
     });
     const doctors = await doctorsRaw.json();
 
-    const calendarData = Array.from({length: 5}, () => ({
-        taken: [] as number[],
-        mine: [] as number[]
-    }));
-
-    visits.forEach((v: any) => {
-        const d = new Date(v.dateTime);
-        const dayIndex = (d.getDay() + 6) % 7; // Mon = 0
-        const hour = d.getHours();
-
-        if (dayIndex < 5) {
-            if (v.patientId === userId) {
-                calendarData[dayIndex].mine.push(hour);
-            } else {
-                calendarData[dayIndex].taken.push(hour);
-            }
-        }
+    const fullSlotsRes = await fetch(api("/visits/full-slots"), {
+        headers: { Authorization: `Bearer ${token}` },
     });
+    const fullSlots = await fullSlotsRes.json();
 
-    return {
-        visits,
-        doctors,
-        calendarData
-    };
+    return { doctors, visits, fullSlots };
 }
 
 export async function bookAppointment(token: string, formData: FormData) {
