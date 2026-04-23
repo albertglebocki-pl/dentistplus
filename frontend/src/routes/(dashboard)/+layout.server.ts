@@ -31,7 +31,10 @@ export async function load({cookies, fetch}) {
         return {user: userData, data: await AdminService.onLoad()}
     }
     if (role === "USER") {
-        return {user: userData, data: await UserService.onLoad(token)}
+        return {
+            user: userData,
+            data: await UserService.onLoad(token, userData.userId)
+        };
     }
     if (role === "DOCTOR") {
         return {user: userData, data: await DoctorService.onLoad()}
