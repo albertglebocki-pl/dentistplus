@@ -26,6 +26,18 @@ export async function bookAppointment(token: string, formData: FormData) {
     const datetime = formData.get('datetime');
     const description = formData.get('description');
 
+    const date = new Date(datetime);
+
+    if(date < new Date()) {
+        return {success:false, error: "Cannot book appointment in the past"}
+    }
+
+    const hour = date.getHours();
+
+    if(hour < 8 || hour > 18) {
+        return {success: false, error: "Hour have to be in range 8-18"}
+    }
+
     const res = await fetch(api("/visits"), {
         method: "POST",
         headers: {
