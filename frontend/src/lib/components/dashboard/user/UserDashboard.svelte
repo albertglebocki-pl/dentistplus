@@ -1,9 +1,11 @@
 <script lang="ts">
     import { page } from '$app/state';
     import { goto } from '$app/navigation';
+
     import Calendar from "$lib/components/dashboard/utils/Calendar.svelte";
     import AppointmentBooking from "$lib/components/dashboard/utils/AppointmentBooking.svelte";
     import CardTitle from "$lib/components/utils/CardTitle.svelte";
+    import Card from "$lib/components/utils/Card.svelte";
 
     let {data, form} = $props();
 
@@ -23,7 +25,7 @@
 <div class="flex flex-col gap-5 mt-3">
     {#if currentView === 'main'}
         <div class="flex gap-5">
-            <div class="calendar | bg-white p-3 w-2/3 rounded-lg">
+            <Card style={"w-2/3"}>
                 <div class="flex justify-between pb-5">
                     <CardTitle text="Calendar"/>
                     <button
@@ -38,20 +40,21 @@
                         fullSlots={[]}
                         userId={data.user.userId}
                 />
-            </div>
 
-            <div class="payments | bg-white p-3 w-1/3 rounded-lg">
+            </Card>
+
+            <Card style={"w-1/3"}>
                 <CardTitle text="Payments"/>
-            </div>
+            </Card>
         </div>
 
-        <div class="bg-white p-3 w-full rounded-lg">
+        <Card style={"full"}>
             <CardTitle text="Tooth"/>
-        </div>
+        </Card>
     {/if}
 
     {#if currentView === 'booking'}
-        <div class="booking | bg-white p-3 w-full rounded-lg">
+        <Card style={"full"}>
             <CardTitle text="Book appointment" />
             <div class="flex justify-between">
                 <div class="w-1/3">
@@ -70,6 +73,6 @@
                     />
                 </div>
             </div>
-        </div>
+        </Card>
     {/if}
 </div>
