@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { page } from '$app/state';
-    import { goto } from '$app/navigation';
+    import {page} from '$app/state';
+    import {goto} from '$app/navigation';
 
     import Calendar from "$lib/components/dashboard/utils/Calendar.svelte";
     import AppointmentBooking from "$lib/components/dashboard/utils/AppointmentBooking.svelte";
@@ -13,12 +13,22 @@
 
     const onBooking = (e) => {
         e.preventDefault();
-        goto('?view=booking', { noScroll: true });
+        goto('?view=booking', {noScroll: true});
     }
 
     const goBack = (e) => {
         e.preventDefault();
-        goto('?view=main', { noScroll: true });
+        goto('?view=main', {noScroll: true});
+    }
+
+    function handleDoctorChange(id: string) {
+        const newUrl = new URL(page.url);
+        if (id) {
+            newUrl.searchParams.set('doctorId', id);
+        } else {
+            newUrl.searchParams.delete('doctorId');
+        }
+        goto(newUrl.href, {keepFocus: true, noScroll: true, replaceState: true});
     }
 </script>
 
@@ -55,20 +65,22 @@
 
     {#if currentView === 'booking'}
         <Card style={"full"}>
-            <CardTitle text="Book appointment" />
+            <CardTitle text="Book appointment"/>
             <div class="flex justify-between">
                 <div class="w-1/3">
                     <AppointmentBooking
                             doctorChoose
                             doctorList={data.data.doctors}
                             error={form?.message}
+                            success={form?.success}
+                            onDoctorChange={handleDoctorChange}
                     />
                 </div>
 
                 <div class="w-2/3">
                     <Calendar
                             visits={data.data.visits}
-                            fullSlots={data.data.fullSlots}
+                            fullSlots={data.doctorAvailability}
                             userId={data.user.userId}
                     />
                 </div>

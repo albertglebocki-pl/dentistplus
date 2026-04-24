@@ -1,5 +1,11 @@
 <script lang="ts">
-    let { visits = [], fullSlots = [], userId } = $props();
+    let {
+        visits = [],
+        fullSlots = [],
+        userId,
+    } = $props();
+
+    console.log(fullSlots);
 
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
     const months = [
@@ -30,17 +36,21 @@
     const currentMonthLabel = $derived(months[weekDays[0].getMonth()]);
 
     const calendarData = $derived.by(() => {
-        const grid = Array.from({length: 5}, () => ({taken: [], mine: []}));
+        const grid = Array.from({length: 5}, () => ({
+            taken: [],
+            mine: []
+        }));
 
-        const start = currentWeekStart;
+        const start = new Date(currentWeekStart);
         const end = new Date(start);
         end.setDate(start.getDate() + 5);
-
         fullSlots.forEach((slot: any) => {
             const d = new Date(slot.dateTime);
             if (d >= start && d < end) {
-                const day = (d.getDay() + 6) % 7;
-                if (day < 5) grid[day].taken.push(d.getUTCHours());
+                const day = (d.getDay() + 6) % 7; // Mon=0
+                if (day < 5) {
+                    grid[day].taken.push(d.getUTCHours());
+                }
             }
         });
 
@@ -48,7 +58,9 @@
             const d = new Date(v.dateTime);
             if (d >= start && d < end) {
                 const day = (d.getDay() + 6) % 7;
-                if (day < 5) grid[day].mine.push(d.getUTCHours());
+                if (day < 5) {
+                    grid[day].mine.push(d.getUTCHours());
+                }
             }
         });
 
@@ -88,11 +100,18 @@
     <div class="calendar flex-1 grid grid-cols-11 grid-rows-5 gap-2">
         {#each weekDays as dayDate, dayIndex}
             {#each Array.from({length: 11}, (_, h) => 8 + h) as hour}
-                {@const taken = (calendarData[dayIndex]?.taken ?? []).includes(hour)}
-                {@const mine = (calendarData[dayIndex]?.mine ?? []).includes(hour)}
+                {@const isMine = (calendarData[dayIndex]?.mine ?? []).includes(hour)}
+                {@const isTaken = (calendarData[dayIndex]?.taken ?? []).includes(hour)}
 
-                <div class={`rounded text-center flex flex-col justify-between border p-0.5 ${mine ? 'bg-yellow-200' : ''}`}>
-                    <div class={`h-2 w-full rounded ${taken || mine ? 'bg-red-500' : 'bg-green-400'}`}></div>
+                <div class="rounded text-center flex flex-col justify-between border p-0.5
+                    {isMine ? 'bg-yellow-100 border-yellow-400' :
+                     isTaken ? 'bg-red-50 border-red-200 opacity-80' : 'bg-white border-gray-300'}">
+
+                    <div class="h-1.5 w-full rounded-full
+                        {isMine ? 'bg-yellow-500' :
+                         isTaken ? 'bg-red-500' : 'bg-green-400'}">
+                    </div>
+
                     <p>{hour}</p>
                     <div class="h-2 w-full"></div>
                 </div>

@@ -5,7 +5,7 @@ import * as AdminService from '$lib/server/services/admin.service';
 import * as DoctorService from '$lib/server/services/doctor.service';
 import api from "$lib/server/utils/api";
 
-export async function load({cookies, fetch}) {
+export async function load({cookies, fetch, url}) {
     const token = cookies.get('token');
 
     if (!token) throw redirect(302, '/auth/login');
@@ -27,9 +27,18 @@ export async function load({cookies, fetch}) {
         return {user: userData, data: await AdminService.onLoad()}
     }
     if (role === "USER") {
+        const selectedDoctorId = url.searchParams.get('doctorId');
+        const dashboardData = await UserService.onLoad(token);
+        let doctorAvailability = [];
+
+        if (selectedDoctorId) {
+            doctorAvailability = await UserService.getDoctorAvailability(token, selectedDoctorId);
+        }
+
         return {
             user: userData,
-            data: await UserService.onLoad(token)
+            data: dashboardData,
+            doctorAvailability: doctorAvailability
         };
     }
     if (role === "DOCTOR") {

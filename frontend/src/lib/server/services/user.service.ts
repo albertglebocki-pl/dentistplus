@@ -36,7 +36,7 @@ export async function bookAppointment(token: string, formData: FormData) {
     if(day == 0 || day == 6) {
         return {success:false, error: "Cannot book appointment in the weekend"}
     }
-    
+
     const hour = date.getHours();
     if(hour < 8 || hour > 18) {
         return {success: false, error: "Hour have to be in range 8-18"}
@@ -63,4 +63,13 @@ export async function bookAppointment(token: string, formData: FormData) {
     }
 
     return {success: true, data: result};
+}
+
+export async function getDoctorAvailability(token: string, doctorId: string) {
+    const res = await fetch(api(`/visits/doctor/${doctorId}/all-booked`), {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return await res.json();
 }
