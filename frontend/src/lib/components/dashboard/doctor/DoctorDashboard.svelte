@@ -8,7 +8,8 @@
     import UpcomingVisitCard from "$lib/components/dashboard/doctor/UpcomingVisitCard.svelte";
 
     let {data} = $props();
-    const visits = data.data.visits;
+    const visits = $derived(data.data.visits);
+    const treatments = $derived(data.treatments);
 
     const currentView = $derived(page.url.searchParams.get('view') || 'main');
 
@@ -62,16 +63,23 @@
                 </div>
             </Card>
         </div>
+
     {:else if currentView === 'visit'}
         <div class="flex gap-5">
             <Card style={"w-1/3"}>
                 <CardTitle text="Patient information"/>
                 <p>{patient.firstName} {patient.lastName}</p>
                 <p>Email: {patient.email}</p>
+                <p>Phone: {patient.phoneNumber}</p>
                 <p>Address: {patient.address}</p>
             </Card>
             <Card style={"w-2/3"}>
                 <CardTitle text="Treatment history"/>
+                {#if treatments.length > 0}
+                    <p>TODO</p>
+                {:else}
+                    <p>No treatment history</p>
+                {/if}
             </Card>
         </div>
 

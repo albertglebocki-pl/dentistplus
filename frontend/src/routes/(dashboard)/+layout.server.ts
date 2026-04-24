@@ -5,7 +5,7 @@ import * as AdminService from '$lib/server/services/admin.service';
 import * as DoctorService from '$lib/server/services/doctor.service';
 import api from "$lib/server/utils/api";
 
-export async function load({cookies, fetch}) {
+export async function load({cookies, fetch, url}) {
     const token = cookies.get('token');
 
     if (!token) throw redirect(302, '/auth/login');
@@ -36,9 +36,23 @@ export async function load({cookies, fetch}) {
         };
     }
     if (role === "DOCTOR") {
+        let treatments = undefined;
+
+        const dashboardData = await DoctorService.onLoad(token);
+        const visitIdFromUrl = url.searchParams.get("id");
+
+        if (visitIdFromUrl) {
+            const currentVisit = dashboardData.visits.find(v => v._id === visitIdFromUrl);
+
+            if (currentVisit && currentVisit.patientId) {
+                treatments = await DoctorService.getPatientTreatments(token, currentVisit.patientId);
+            }
+        }
+
         return {
             user: userData,
-            data: await DoctorService.onLoad(token)
+            data: dashboardData,
+            treatments: treatments
         }
     }
 }

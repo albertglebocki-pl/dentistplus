@@ -9,3 +9,12 @@ export async function onLoad(token: string) {
 
     return {visits: visits};
 }
+
+export async function getPatientTreatments(token: string, patientId: string) {
+    const treatmentsRaw = await fetch(api(`/procedures?patientId=${patientId}`), {
+        method: "GET",
+        headers: {Authorization: `Bearer ${token}`},
+    })
+
+    return await treatmentsRaw.json();
+}
