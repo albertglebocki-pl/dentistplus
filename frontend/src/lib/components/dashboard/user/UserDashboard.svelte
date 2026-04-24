@@ -26,11 +26,11 @@
     {#if currentView === 'main'}
         <div class="flex gap-5">
             <Card style={"w-2/3"}>
-                <div class="flex justify-between">
+                <div class="flex justify-between items-start">
                     <CardTitle text="Calendar"/>
                     <button
                             on:click={onBooking}
-                            class="bg-primary text-white text-sm rounded-lg hover:bg-primary/90 transition-colors px-2">
+                            class="bg-primary text-white text-sm rounded-lg hover:bg-primary/90 transition-colors px-2 py-2">
                         Book appointment
                     </button>
                 </div>
