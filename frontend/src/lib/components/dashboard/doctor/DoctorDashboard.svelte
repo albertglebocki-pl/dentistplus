@@ -30,13 +30,11 @@
             d1.getDate() === d2.getDate();
     }
 
-    const todayVisits = $derived(visits.filter(visit =>
-        isSameDay(visit.dateTime)
-    ));
+    const todayVisits = $derived(visits.filter(visit => isSameDay(visit.dateTime)));
 
     const selectedVisitId = $derived(page.url.searchParams.get('id'));
     const selectedVisit = $derived(visits.find(v => v._id === selectedVisitId));
-    const patient = selectedVisit.patient;
+    const patient = $derived(selectedVisit?.patient || null);
 </script>
 
 <div class="flex flex-col gap-5 mt-3 h-full">
@@ -56,7 +54,7 @@
                 <CardTitle text="Today appointments"/>
 
                 <div class="flex-1 h-0 overflow-y-auto flex flex-col gap-3 pr-2">
-                    {#each todayVisits as visit}
+                    {#each todayVisits.toReversed() as visit}
                         <UpcomingVisitCard {visit}/>
                     {:else}
                         <p class="text-sm opacity-50">No appointments for today.</p>
@@ -76,8 +74,17 @@
                 <CardTitle text="Treatment history"/>
             </Card>
         </div>
+
         <Card style={"w-full"}>
-            <CardTitle text="Other things"/>
+            <CardTitle text="Teeth status TODO"/>
+        </Card>
+
+        <Card style={"w-full"}>
+            <CardTitle text="Current Visit"/>
+        </Card>
+
+        <Card style={"w-full"}>
+            <CardTitle text="Book next appointment"/>
         </Card>
     {/if}
 </div>
