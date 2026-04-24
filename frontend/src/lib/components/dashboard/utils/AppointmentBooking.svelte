@@ -31,12 +31,10 @@
             <input name="datetime" type="datetime-local" required class={inputClass} step="3600"/>
         </label>
 
-
-<!--        TODO Description is currently not used, disabled for now-->
-<!--        <label class={labelClass}>-->
-<!--            <span class={labelTextClass}>Description (optional)</span>-->
-<!--            <input name="description" type="text" class={inputClass}/>-->
-<!--        </label>-->
+        <label class={labelClass}>
+            <span class={labelTextClass}>Description (optional)</span>
+            <input name="description" type="text" class={inputClass}/>
+        </label>
 
         {#if error}
             <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100">

@@ -32,8 +32,12 @@ export async function bookAppointment(token: string, formData: FormData) {
         return {success:false, error: "Cannot book appointment in the past"}
     }
 
+    const day = date.getDay()
+    if(day == 0 || day == 6) {
+        return {success:false, error: "Cannot book appointment in the weekend"}
+    }
+    
     const hour = date.getHours();
-
     if(hour < 8 || hour > 18) {
         return {success: false, error: "Hour have to be in range 8-18"}
     }
