@@ -38,4 +38,6 @@
     </div>
 </nav>
 
-{@render children()}
+<div class="max-w-5xl mx-auto">
+    {@render children()}
+</div>
