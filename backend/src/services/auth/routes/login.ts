@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm";
 const service = new Hono();
 
 service.post("/login", async (context) => {
-  const { email, password } = await context.req.json();
+  const { email, password, rememberMe } = await context.req.json();
 
   if (!email || !password) {
     return context.json({ error: "Email and password required" }, 400);
@@ -29,7 +29,7 @@ service.post("/login", async (context) => {
     return context.json({ error: "Invalid credentials" }, 401);
   }
 
-  const token = await createToken(user);
+  const token = await createToken(user, rememberMe);
 
   return context.json({
     token,

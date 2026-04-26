@@ -30,9 +30,18 @@ export async function load({cookies, fetch, url}) {
         }
     }
     if (role === "USER") {
+        const selectedDoctorId = url.searchParams.get('doctorId');
+        const dashboardData = await UserService.onLoad(token);
+        let doctorAvailability = [];
+
+        if (selectedDoctorId) {
+            doctorAvailability = await UserService.getDoctorAvailability(token, selectedDoctorId);
+        }
+
         return {
             user: userData,
-            data: await UserService.onLoad(token)
+            data: dashboardData,
+            doctorAvailability: doctorAvailability
         };
     }
     if (role === "DOCTOR") {

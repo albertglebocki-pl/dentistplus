@@ -5,6 +5,8 @@
         doctorChoose = true,
         doctorList = [],
         error = "",
+        success = "",
+        onDoctorChange = (id: string) => {}
     } = $props();
 
     const inputClass = "bg-secondary border border-transparent rounded-lg px-3 py-2.5 text-sm text-primary outline-none focus:border-primary/40 transition-colors";
@@ -17,7 +19,12 @@
         {#if doctorChoose}
             <label class="flex flex-col gap-1.5">
                 <span class="text-primary/60 text-sm">Choose doctor</span>
-                <select name="doctorId" class={inputClass} required>
+                <select
+                        name="doctorId"
+                        class={inputClass}
+                        onchange={(e) => onDoctorChange(e.currentTarget.value)}
+                        required
+                >
                     <option value="">Select a doctor</option>
                     {#each doctorList as doctor}
                         <option value={doctor.id}>{doctor.firstName} {doctor.lastName}</option>
@@ -31,7 +38,6 @@
             <input name="datetime" type="datetime-local" required class={inputClass} step="3600"/>
         </label>
 
-
         <label class={labelClass}>
             <span class={labelTextClass}>Description (optional)</span>
             <input name="description" type="text" class={inputClass}/>
@@ -40,6 +46,12 @@
         {#if error}
             <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100">
                 {error}
+            </div>
+        {/if}
+
+        {#if success}
+            <div class="bg-green-50 text-green-600 p-3 rounded-lg text-sm font-medium border border-green-100">
+                Appointment booked successfully!
             </div>
         {/if}
 

@@ -29,6 +29,19 @@ service.get("/doctor/:doctorId/slots", async (c) => {
     return c.json({bookedSlots: booked});
 });
 
+service.get("/doctor/:doctorId/all-booked", authMiddleware, async (c) => {
+    const doctorId = Number(c.req.param("doctorId"));
+    const now = new Date();
+
+    const bookedVisits = await Visit.find({
+        doctorId,
+        status: "BOOKED",
+        dateTime: { $gte: now }
+    }).select("dateTime");
+
+    return c.json(bookedVisits);
+});
+
 service.get("/full-slots", async (c) => {
     try {
         const doctorsCountResult = await database
