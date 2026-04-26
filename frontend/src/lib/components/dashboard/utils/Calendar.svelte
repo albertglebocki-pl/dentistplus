@@ -1,16 +1,20 @@
 <script lang="ts">
-    let {
-        visits = [],
-        fullSlots = [],
-        userId,
-    } = $props();
+    let { visits = [], fullSlots = [], userId } = $props();
 
-    console.log(fullSlots);
-
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
     const months = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
     ];
 
     function getMonday(date: Date) {
@@ -22,7 +26,7 @@
     }
 
     function getWeekDays(start: Date) {
-        return Array.from({length: 5}, (_, i) => {
+        return Array.from({ length: 5 }, (_, i) => {
             const d = new Date(start);
             d.setDate(start.getDate() + i);
             return d;
@@ -36,9 +40,9 @@
     const currentMonthLabel = $derived(months[weekDays[0].getMonth()]);
 
     const calendarData = $derived.by(() => {
-        const grid = Array.from({length: 5}, () => ({
+        const grid = Array.from({ length: 5 }, () => ({
             taken: [],
-            mine: []
+            mine: [],
         }));
 
         const start = new Date(currentWeekStart);
@@ -75,23 +79,28 @@
 </script>
 
 <div class="flex gap-2">
-    <div class="week-switch flex flex-col items-center justify-between p-2 font-bold">
-        <button on:click={() => changeWeek(-7)}>↑</button>
+    <div
+        class="week-switch flex flex-col items-center justify-between p-2 font-bold"
+    >
+        <button onclick={() => changeWeek(-7)}>↑</button>
 
         <div class="[writing-mode:vertical-rl] rotate-180">
-            {weekDays[0].getDate()} - {weekDays[4].getDate()} {currentMonthLabel}
+            {weekDays[0].getDate()} - {weekDays[4].getDate()}
+            {currentMonthLabel}
         </div>
 
-        <button on:click={() => changeWeek(7)}>↓</button>
+        <button onclick={() => changeWeek(7)}>↓</button>
     </div>
 
-    <div class="current-week grid grid-rows-5 gap-2 w-18 shrink-0 bg-primary text-secondary rounded p-2">
+    <div
+        class="current-week grid grid-rows-5 gap-2 w-18 shrink-0 bg-primary text-secondary rounded p-2"
+    >
         {#each weekDays as dayDate, i}
             <div class="flex flex-col justify-center items-center">
                 <p class="font-bold">{days[i]}</p>
                 <p>
-                    {String(dayDate.getDate()).padStart(2, '0')}.
-                    {String(dayDate.getMonth() + 1).padStart(2, '0')}
+                    {String(dayDate.getDate()).padStart(2, "0")}.
+                    {String(dayDate.getMonth() + 1).padStart(2, "0")}
                 </p>
             </div>
         {/each}
@@ -99,18 +108,30 @@
 
     <div class="calendar flex-1 grid grid-cols-11 grid-rows-5 gap-2">
         {#each weekDays as dayDate, dayIndex}
-            {#each Array.from({length: 11}, (_, h) => 8 + h) as hour}
-                {@const isMine = (calendarData[dayIndex]?.mine ?? []).includes(hour)}
-                {@const isTaken = (calendarData[dayIndex]?.taken ?? []).includes(hour)}
+            {#each Array.from({ length: 11 }, (_, h) => 8 + h) as hour}
+                {@const isMine = (calendarData[dayIndex]?.mine ?? []).includes(
+                    hour,
+                )}
+                {@const isTaken = (
+                    calendarData[dayIndex]?.taken ?? []
+                ).includes(hour)}
 
-                <div class="rounded text-center flex flex-col justify-between border p-0.5
-                    {isMine ? 'bg-yellow-100 border-yellow-400' :
-                     isTaken ? 'bg-red-50 border-red-200 opacity-80' : 'bg-white border-gray-300'}">
-
-                    <div class="h-1.5 w-full rounded-full
-                        {isMine ? 'bg-yellow-500' :
-                         isTaken ? 'bg-red-500' : 'bg-green-400'}">
-                    </div>
+                <div
+                    class="rounded text-center flex flex-col justify-between border p-0.5
+                    {isMine
+                        ? 'bg-yellow-100 border-yellow-400'
+                        : isTaken
+                          ? 'bg-red-50 border-red-200 opacity-80'
+                          : 'bg-white border-gray-300'}"
+                >
+                    <div
+                        class="h-1.5 w-full rounded-full
+                        {isMine
+                            ? 'bg-yellow-500'
+                            : isTaken
+                              ? 'bg-red-500'
+                              : 'bg-green-400'}"
+                    ></div>
 
                     <p>{hour}</p>
                     <div class="h-2 w-full"></div>
