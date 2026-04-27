@@ -52,7 +52,6 @@
                 <Calendar
                     visits={data.data.visits}
                     fullSlots={[]}
-                    userId={data.user.userId}
                 />
             </Card>
 
@@ -84,7 +83,6 @@
                     <Calendar
                         visits={data.data.visits}
                         fullSlots={data.doctorAvailability}
-                        userId={data.user.userId}
                     />
                 </div>
             </div>

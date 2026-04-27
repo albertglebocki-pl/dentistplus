@@ -18,3 +18,12 @@ export async function getPatientTreatments(token: string, patientId: string) {
 
     return await treatmentsRaw.json();
 }
+
+export async function getPatientVisits(token: string, patientId: string) {
+    const visitsRaw = await fetch(api(`/visits/patient/${patientId}/all-booked`), {
+        method: "GET",
+        headers: {Authorization: `Bearer ${token}`},
+    })
+
+    return await visitsRaw.json();
+}

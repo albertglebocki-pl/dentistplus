@@ -46,6 +46,7 @@ export async function load({cookies, fetch, url}) {
     }
     if (role === "DOCTOR") {
         let treatments = undefined;
+        let patientVisits = undefined;
 
         const dashboardData = await DoctorService.onLoad(token);
         const visitIdFromUrl = url.searchParams.get("id");
@@ -55,13 +56,15 @@ export async function load({cookies, fetch, url}) {
 
             if (currentVisit && currentVisit.patientId) {
                 treatments = await DoctorService.getPatientTreatments(token, currentVisit.patientId);
+                patientVisits = await DoctorService.getPatientVisits(token, currentVisit.patientId);
             }
         }
 
         return {
             user: userData,
             data: dashboardData,
-            treatments: treatments
+            treatments: treatments,
+            patientVisits: patientVisits
         }
     }
 }

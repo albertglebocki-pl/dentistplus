@@ -1,5 +1,5 @@
 import {Hono} from "hono";
-import {authMiddleware} from "../../auth/middleware.js";
+import {authMiddleware, requireRole} from "../../auth/middleware.js";
 import {Visit} from "../../../mongo/schema.js";
 import database from "../../../postgres/connection.js";
 import {users} from "../../../postgres/schema.js";
@@ -28,6 +28,17 @@ service.get("/doctor/:doctorId/slots", async (c) => {
 
     return c.json({bookedSlots: booked});
 });
+
+service.get("patient/:patientId/all-booked", requireRole(["DOCTOR"]), async (c) => {
+    const patientId = Number(c.req.param("patientId"));
+
+    const bookedVisits = await Visit.find({
+        patientId,
+        status: "BOOKED",
+    }).select("dateTime");
+
+    return c.json(bookedVisits);
+})
 
 service.get("/doctor/:doctorId/all-booked", authMiddleware, async (c) => {
     const doctorId = Number(c.req.param("doctorId"));

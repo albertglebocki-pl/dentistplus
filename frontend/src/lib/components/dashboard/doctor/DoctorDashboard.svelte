@@ -7,9 +7,10 @@
     import {goto} from "$app/navigation";
     import UpcomingVisitCard from "$lib/components/dashboard/doctor/UpcomingVisitCard.svelte";
 
-    let {data} = $props();
+    let {data, form} = $props();
     const visits = $derived(data.data.visits);
     const treatments = $derived(data.treatments);
+    const patientVisits = $derived(data.patientVisits);
 
     const currentView = $derived(page.url.searchParams.get('view') || 'main');
 
@@ -47,7 +48,6 @@
                 <Calendar
                         visits={visits}
                         fullSlots={[]}
-                        userId={data.user.userId}
                 />
             </Card>
 
@@ -93,6 +93,26 @@
 
         <Card style={"w-full"}>
             <CardTitle text="Book next appointment"/>
+
+            <div class="flex justify-between">
+                <div class="w-1/3">
+                    <AppointmentBooking
+                            doctorChoose={false}/>
+                    <!--                            doctorList={data.data.doctors} -->
+                    <!--                    />-->
+                    <!--                            error={form?.message}-->
+                    <!--                            success={form?.success}-->
+                    <!--                            onDoctorChange={handleDoctorChange}-->
+                    <!--                    />-->
+                </div>
+
+                <div class="w-2/3">
+                    <Calendar
+                            visits={patientVisits}
+                            fullSlots={data.data.visits}
+                    />
+                </div>
+            </div>
         </Card>
     {/if}
 </div>
