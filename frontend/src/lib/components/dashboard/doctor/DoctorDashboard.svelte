@@ -97,13 +97,11 @@
             <div class="flex justify-between">
                 <div class="w-1/3">
                     <AppointmentBooking
-                            doctorChoose={false}/>
-                    <!--                            doctorList={data.data.doctors} -->
-                    <!--                    />-->
-                    <!--                            error={form?.message}-->
-                    <!--                            success={form?.success}-->
-                    <!--                            onDoctorChange={handleDoctorChange}-->
-                    <!--                    />-->
+                            doctorChoose={false}
+                            error={form?.message}
+                            success={form?.success}
+                            patientId={patient.id}
+                    />
                 </div>
 
                 <div class="w-2/3">

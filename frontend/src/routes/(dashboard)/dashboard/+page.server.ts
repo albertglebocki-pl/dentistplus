@@ -19,5 +19,21 @@ export const actions = {
         }
 
         return {success: true};
+    },
+
+    bookDoctor: async ({request, cookies, url}) => {
+        const token = cookies.get('token');
+        if (!token) {
+            redirect(302, '/auth/login');
+        }
+
+        const formData = await request.formData();
+        const result = await DoctorService.bookAppointment(token, formData);
+
+        if (!result.success) {
+            return fail(400, {message: result.error});
+        }
+
+        return {success: true};
     }
 }

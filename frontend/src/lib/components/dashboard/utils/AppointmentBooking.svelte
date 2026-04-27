@@ -6,6 +6,7 @@
         doctorList = [],
         error = "",
         success = "",
+        patientId = "",
         onDoctorChange = (id: string) => {}
     } = $props();
 
@@ -15,7 +16,11 @@
 </script>
 
 <div class="bg-white p-5">
-    <form method="POST" action="?/book" use:enhance class="flex flex-col gap-4">
+    <form
+            method="POST"
+            action={doctorChoose ? "?/book" : "?/bookDoctor"}
+            use:enhance
+            class="flex flex-col gap-4">
         {#if doctorChoose}
             <label class="flex flex-col gap-1.5">
                 <span class="text-primary/60 text-sm">Choose doctor</span>
@@ -30,6 +35,10 @@
                         <option value={doctor.id}>{doctor.firstName} {doctor.lastName}</option>
                     {/each}
                 </select>
+            </label>
+        {:else}
+            <label class="hidden" for="patientId">
+                <input type="number" name="patientId" id="patientId" value={patientId} />
             </label>
         {/if}
 
