@@ -1,4 +1,5 @@
 <script lang="ts">
+    import {enhance} from "$app/forms";
     import Calendar from "$lib/components/dashboard/utils/Calendar.svelte";
     import AppointmentBooking from "$lib/components/dashboard/utils/AppointmentBooking.svelte";
     import CardTitle from "$lib/components/utils/CardTitle.svelte";
@@ -11,18 +12,7 @@
     const visits = $derived(data.data.visits);
     const treatments = $derived(data.treatments);
     const patientVisits = $derived(data.patientVisits);
-
     const currentView = $derived(page.url.searchParams.get('view') || 'main');
-
-    const onBooking = (e) => {
-        e.preventDefault();
-        goto('?view=booking', {noScroll: true});
-    }
-
-    const goBack = (e) => {
-        e.preventDefault();
-        goto('?view=main', {noScroll: true});
-    }
 
     const isSameDay = (date: string) => {
         const d1 = new Date(date);
@@ -35,36 +25,32 @@
     const todayVisits = $derived(visits.filter(visit => isSameDay(visit.dateTime)));
 
     const selectedVisitId = $derived(page.url.searchParams.get('id'));
-    const selectedVisit = $derived(visits.find(v => v._id === selectedVisitId));
-    const patient = $derived(selectedVisit?.patient || null);
+    const selectedVisit = $derived.by(() => {
+        return visits.find(v => v._id === selectedVisitId);
+    });
+    const patient = $derived.by(() => selectedVisit?.patient);
 
     const inputClass = "bg-secondary border border-transparent rounded-lg px-3 py-2.5 text-sm text-primary outline-none focus:border-primary/40 transition-colors";
     const labelClass = "flex flex-col gap-1.5";
     const labelTextClass = "text-primary/60 text-sm";
 
-    type VisitDraft = {
-        patientId: number;
-        visitId: string;
-        date: Date;
-        description: string;
-        treatments: TreatmentDraft[];
-    };
-
     type TreatmentDraft = {
         tooth: string;
         catalogItemId: string;
-        name: string;
         description: string;
         cost: number;
     };
 
     let procedures = $state<TreatmentDraft[]>([]);
 
-    const TOOTH_ENUM = ["11","12","13","14","15","16","17","18","21","22","23","24","25","26","27","28","31","32","33","34","35","36","37","38","41","42","43","44","45","46","47","48"];
+    const TOOTH_ENUM = ["11", "12", "13", "14", "15", "16", "17", "18", "21", "22", "23", "24", "25", "26", "27", "28", "31", "32", "33", "34", "35", "36", "37", "38", "41", "42", "43", "44", "45", "46", "47", "48"];
 
     let visitDescription = $state("");
     let selectedTooth = $state("");
-    let selectedProcedure = $state<any>(null);
+    let selectedProcedureId = $state<string | null>(null);
+    const selectedProcedure = $derived.by(() =>
+        procedureCatalog.find(p => p._id === selectedProcedureId)
+    );
 
     let editingIndex = $state<number | null>(null);
 
@@ -72,16 +58,15 @@
         procedures.reduce((sum, p) => sum + p.cost, 0)
     );
 
-    const visitDraft = $derived({
-        patientId: patient?.patientId,
-        visitId: selectedVisit?._id,
+    const visitDraft = $derived.by(() => ({
+        patientId: patient?.patientId ?? selectedVisit?.patientId ?? null,
+        visitId: selectedVisit?._id ?? null,
         date: new Date(),
         description: visitDescription,
         treatments: procedures
-    });
+    }));
 
     const procedureCatalog = data.data.catalog;
-    console.log(procedureCatalog);
 
     const formatDate = (date: Date) => {
         return date.toLocaleDateString('pl-PL', {
@@ -93,7 +78,7 @@
 
     const resetForm = () => {
         selectedTooth = "";
-        selectedProcedure = null;
+        selectedProcedureId = null;
     };
 
     const handleToothAdd = () => {
@@ -101,8 +86,7 @@
 
         const item: TreatmentDraft = {
             tooth: selectedTooth,
-            catalogItemId: "",
-            name: selectedProcedure.name,
+            catalogItemId: selectedProcedure._id,
             description: selectedProcedure.description,
             cost: selectedProcedure.defaultCost
         };
@@ -126,12 +110,13 @@
         const item = procedures[index];
 
         selectedTooth = item.tooth;
-
-        selectedProcedure = procedureCatalog.find(
-            p => p.name === item.name
-        ) ?? null;
+        selectedProcedureId = item.catalogItemId;
 
         editingIndex = index;
+    };
+
+    const getProcedureName = (procedure) => {
+        return procedureCatalog.find(p => p._id === procedure.catalogItemId)?.name;
     };
 </script>
 
@@ -205,10 +190,10 @@
 
                         <label class={labelClass}>
                             <span class={labelTextClass}>Procedure</span>
-                            <select bind:value={selectedProcedure} class={inputClass}>
+                            <select bind:value={selectedProcedureId} class={inputClass}>
                                 <option value={null}>-- Select --</option>
                                 {#each procedureCatalog as procedure}
-                                    <option value={procedure}>
+                                    <option value={procedure._id}>
                                         {procedure.name}
                                     </option>
                                 {/each}
@@ -235,7 +220,7 @@
                         </button>
                     </div>
 
-                    <form method="POST" class="w-full">
+                    <form method="POST" class="w-full" action="?/doctorUpdateVisit" use:enhance>
                         <input type="hidden" name="payload" value={JSON.stringify(visitDraft)}/>
                         <button
                                 class="bg-primary text-white font-semibold text-sm py-3 rounded-lg mt-2 hover:bg-primary/90 transition-colors w-full"
@@ -265,7 +250,7 @@
                                 <div class="flex justify-between items-center p-2 border-t">
 
                                     <p class="w-1/4">Tooth {procedure.tooth}</p>
-                                    <p class="flex-1">{procedure.name}</p>
+                                    <p class="flex-1">{getProcedureName(procedure)}</p>
                                     <p class="w-1/4 flex justify-end">{procedure.cost} zł</p>
 
                                     <div class="flex gap-2 ml-3">

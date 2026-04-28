@@ -76,3 +76,57 @@ export async function bookAppointment(token: string, formData: FormData) {
 
     return {success: true, data: result};
 }
+
+export async function updateVisit(token: any, formData: FormData) {
+    const payloadRaw = formData.get('payload');
+
+    if (!payloadRaw || typeof payloadRaw !== 'string') {
+        return { success: false, error: "Missing payload" };
+    }
+
+    const payload = JSON.parse(payloadRaw);
+
+    const {
+        patientId,
+        visitId,
+        date,
+        description,
+        treatments
+    } = payload;
+
+    if (
+        !patientId ||
+        !visitId ||
+        !date ||
+        !description ||
+        !Array.isArray(treatments)
+    ) {
+        return { success: false, error: "Fill all fields!" };
+    }
+
+    if(treatments.length === 0) {
+        return {success: false, error: "No patient treatments found."};
+    }
+
+    const res = await fetch(api("/procedures"), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            patientId: patientId,
+            visitId: visitId,
+            data: date,
+            description: description,
+            treatments: treatments,
+        })
+    })
+
+    const result = await res.json();
+    if(!res.ok) {
+        return {success: false, error: result.error || "Internal Server Error"};
+    }
+
+    return {success: true, data: result};
+}

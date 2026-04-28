@@ -130,5 +130,23 @@ export const actions = {
         }
 
         return {success: true};
+    },
+
+  doctorUpdateVisit: async({request, cookies, url}) => {
+    const token = cookies.get('token');
+    if (!token) {
+      redirect(302, '/auth/login');
     }
+
+    const formData = await request.formData();
+    const result = await DoctorService.updateVisit(token, formData);
+
+    console.log("result", result);
+
+    if (!result.success) {
+      return fail(400, {message: result.error});
+    }
+
+    return {success: true};
+  }
 }
