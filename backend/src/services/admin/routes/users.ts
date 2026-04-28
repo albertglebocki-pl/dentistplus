@@ -17,6 +17,10 @@ service.get("/users", requireRole(["ADMIN"]), async (context) => {
       email: user.email,
       active: user.active,
       role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      address: user.address,
+      phoneNumber: user.phoneNumber,
     })),
   });
 });
