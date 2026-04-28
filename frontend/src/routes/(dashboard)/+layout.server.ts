@@ -23,16 +23,13 @@ export async function load({cookies, fetch, url}) {
     const userData = await res.json();
     const role = userData.role;
 
-    if (role === "ADMIN") {
-        return {
-            user: userData,
-            data: await AdminService.onLoad()
-        }
-    }
-    if (role === "USER") {
-        const selectedDoctorId = url.searchParams.get('doctorId');
-        const dashboardData = await UserService.onLoad(token);
-        let doctorAvailability = [];
+  if (role === "ADMIN") {
+    return { user: userData, data: await AdminService.onLoad(token) };
+  }
+  if (role === "USER") {
+    const selectedDoctorId = url.searchParams.get("doctorId");
+    const dashboardData = await UserService.onLoad(token);
+    let doctorAvailability = [];
 
         if (selectedDoctorId) {
             doctorAvailability = await UserService.getDoctorAvailability(token, selectedDoctorId);
