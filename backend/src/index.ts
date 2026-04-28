@@ -4,6 +4,7 @@ import connectMongo from "./mongo/connection.js";
 import ping from "./services/ping.js";
 
 import postgresSeed from "./postgres/dev_seed.js";
+import mongoSeed from "./mongo/dev_seed.js";
 
 import login from "./services/auth/routes/login.js";
 import register from "./services/auth/routes/register.js";
@@ -57,6 +58,7 @@ await connectMongo();
 
 if (process.env.MODE == "DEV") {
   await postgresSeed();
+  await mongoSeed();
 }
 
 app.route("/", ping);

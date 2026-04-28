@@ -6,6 +6,7 @@
     import AppointmentBooking from "$lib/components/dashboard/utils/AppointmentBooking.svelte";
     import CardTitle from "$lib/components/utils/CardTitle.svelte";
     import Card from "$lib/components/utils/Card.svelte";
+    import DentalChart from "../utils/DentalChart.svelte";
 
     let { data, form } = $props();
 
@@ -62,6 +63,8 @@
 
         <Card style={"full"}>
             <CardTitle text="Tooth" />
+
+            <DentalChart />
         </Card>
     {/if}
 

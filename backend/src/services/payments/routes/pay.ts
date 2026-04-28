@@ -1,10 +1,10 @@
 import { Hono } from "hono";
-import { findPaymentByToken } from "../service.js";
+import { findPaymentById } from "../service.js";
 
 const service = new Hono();
 
-service.post("/pay/:token", async (c) => {
-  const payment = await findPaymentByToken(c.req.param("token"));
+service.post("/pay/:id", async (c) => {
+  const payment = await findPaymentById(c.req.param("id"));
 
   if (!payment) {
     return c.json({ error: "Payment not found" }, 404);

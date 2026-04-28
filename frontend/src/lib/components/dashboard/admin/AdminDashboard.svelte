@@ -253,8 +253,6 @@
                     <thead>
                         <tr class="border-b">
                             <th class="py-2 px-3">ID</th>
-                            <th class="py-2 px-3">Patient</th>
-                            <th class="py-2 px-3">Procedure</th>
                             <th class="py-2 px-3">Amount</th>
                             <th class="py-2 px-3">Status</th>
                             <th class="py-2 px-3">Date</th>
@@ -265,11 +263,6 @@
                         {#each data.data.payments as payment}
                             <tr class="border-b hover:bg-secondary">
                                 <td class="py-2 px-3">{payment._id}</td>
-                                <td class="py-2 px-3">{payment.patientId}</td>
-                                <td class="py-2 px-3"
-                                    >{payment.medicalProcedureId?.name ||
-                                        "—"}</td
-                                >
                                 <td class="py-2 px-3">{payment.amount} zł</td>
 
                                 <td class="py-2 px-3">
@@ -368,7 +361,7 @@
     <div
         class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
     >
-        <div class="bg-white w-[500px] p-6 rounded-lg relative">
+        <div class="bg-white w-500px p-6 rounded-lg relative">
             <button
                 class="absolute top-6 right-6"
                 onclick={() => (showProcedureModal = false)}
