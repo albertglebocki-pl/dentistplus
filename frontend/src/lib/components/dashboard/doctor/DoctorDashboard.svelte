@@ -80,10 +80,8 @@
         treatments: procedures
     });
 
-    const procedureCatalog = [
-        { name: "Procedure 1", description: "Procedure 1 description", defaultCost: 100, active: true },
-        { name: "Procedure 2", description: "Procedure 2 description", defaultCost: 249, active: true }
-    ];
+    const procedureCatalog = data.data.catalog;
+    console.log(procedureCatalog);
 
     const formatDate = (date: Date) => {
         return date.toLocaleDateString('pl-PL', {
@@ -233,7 +231,7 @@
                                 class="bg-primary text-white font-semibold text-sm py-3 rounded-lg mt-2 hover:bg-primary/90 transition-colors"
                                 on:click={handleToothAdd}
                         >
-                            {editingIndex !== null ? "Update tooth" : "Add next tooth"}
+                            {editingIndex !== null ? "Update tooth" : "Add tooth"}
                         </button>
                     </div>
 
@@ -270,7 +268,6 @@
                                     <p class="flex-1">{procedure.name}</p>
                                     <p class="w-1/4 flex justify-end">{procedure.cost} zł</p>
 
-                                    <!-- 🔥 PRZYWRÓCONE STYLE BUTTONÓW -->
                                     <div class="flex gap-2 ml-3">
                                         <button
                                                 type="button"

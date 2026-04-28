@@ -7,7 +7,13 @@ export async function onLoad(token: string) {
     });
     const visits = await visitsRaw.json();
 
-    return {visits: visits};
+    const catalogRaw = await fetch(api("/catalog"), {
+        method: "GET",
+        headers: {Authorization: `Bearer ${token}`},
+    })
+    const catalog = await catalogRaw.json();
+
+    return {visits: visits, catalog: catalog};
 }
 
 export async function getPatientTreatments(token: string, patientId: string) {
