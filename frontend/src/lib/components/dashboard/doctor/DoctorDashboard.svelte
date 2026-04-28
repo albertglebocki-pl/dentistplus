@@ -118,6 +118,19 @@
     const getProcedureName = (procedure) => {
         return procedureCatalog.find(p => p._id === procedure.catalogItemId)?.name;
     };
+
+    const calculateTotalCost = (treatments) => {
+        return treatments.reduce((sum, treatment) => {
+            return sum + (treatment.cost || 0);
+        }, 0);
+    }
+
+    let expandedTreatmentId = $state<string | null>(null);
+
+    const toggleDetails = (id: string) => {
+        expandedTreatmentId =
+            expandedTreatmentId === id ? null : id;
+    };
 </script>
 
 <div class="flex flex-col gap-5 mt-3 h-full">
@@ -155,7 +168,44 @@
             <Card style={"w-2/3"}>
                 <CardTitle text="Treatment history"/>
                 {#if treatments.length > 0}
-                    <p>TODO</p>
+                    <div class="flex flex-col gap-3">
+                        {#each treatments as treatment}
+                            <div class="bg-secondary border border-primary rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <p class="w-1/6">
+                                        {formatDate(new Date(treatment.date))}
+                                    </p>
+                                    <p class="w-1/3 font-semibold">
+                                        {treatment.description}
+                                    </p>
+                                    <p class="w-1/4 text-right">
+                                        Total cost: {calculateTotalCost(treatment.treatments)} zł
+                                    </p>
+                                    <div class="w-1/6 flex justify-end">
+                                        <button
+                                                type="button"
+                                                class="bg-primary text-white font-semibold text-sm py-1 px-2 rounded-lg hover:bg-primary/90 transition-colors"
+                                                on:click={() => toggleDetails(treatment._id)}
+                                        >
+                                            {expandedTreatmentId === treatment._id ? "Hide" : "Details"}
+                                        </button>
+                                    </div>
+
+                                </div>
+                                {#if expandedTreatmentId === treatment._id}
+                                    <div class="mt-3">
+                                        {#each treatment.treatments as t}
+                                            <div class="flex justify-between items-center p-2 border-t">
+                                                <p>Tooth: {t.tooth}</p>
+                                                <p>{t.catalogItemId.name}</p>
+                                                <p>{t.cost} zł</p>
+                                            </div>
+                                        {/each}
+                                    </div>
+                                {/if}
+                            </div>
+                        {/each}
+                    </div>
                 {:else}
                     <p>No treatment history</p>
                 {/if}
@@ -237,7 +287,7 @@
 
                         <div class="flex justify-between mb-3">
                             <p class="w-1/4">{formatDate(new Date())}</p>
-                            <p class="font-bold text-xl">
+                            <p class="font-semibold text-xl">
                                 {visitDescription || "Enter visit description..."}
                             </p>
                             <p class="w-1/4 flex justify-end">
