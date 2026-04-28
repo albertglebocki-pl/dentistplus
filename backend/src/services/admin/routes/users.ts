@@ -8,6 +8,19 @@ const service = new Hono();
 
 service.use(authMiddleware);
 
+service.get("/users", requireRole(["ADMIN"]), async (context) => {
+  const result = await connection.select().from(users);
+
+  return context.json({
+    users: result.map((user) => ({
+      id: user.id,
+      email: user.email,
+      active: user.active,
+      role: user.role,
+    })),
+  });
+});
+
 service.patch("/users/:id/block", requireRole(["ADMIN"]), async (context) => {
   const id = Number(context.req.param("id"));
 

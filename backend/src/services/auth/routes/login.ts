@@ -23,6 +23,10 @@ service.post("/login", async (context) => {
     return context.json({ error: "Invalid credentials" }, 401);
   }
 
+  if (!user.active) {
+    return context.json({ error: "Account is blocked" }, 403);
+  }
+
   const validPassword = await bcrypt.compare(password, user.passwordHash);
 
   if (!validPassword) {
