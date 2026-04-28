@@ -41,12 +41,11 @@
     {#if currentView === "main"}
         <div class="flex gap-5">
             <Card style={"w-2/3"}>
-                <div class="flex justify-between pb-5">
-                    <CardTitle text="Calendar" />
+                <div class="flex justify-between items-start pb-5">
+                    <CardTitle text="Calendar"/>
                     <button
-                        onclick={onBooking}
-                        class="bg-primary text-white text-sm rounded-lg hover:bg-primary/90 transition-colors px-2"
-                    >
+                            on:click={onBooking}
+                            class="bg-primary text-white text-sm rounded-lg hover:bg-primary/90 transition-colors px-2 py-2">
                         Book appointment
                     </button>
                 </div>
@@ -54,7 +53,6 @@
                 <Calendar
                     visits={data.data.visits}
                     fullSlots={[]}
-                    userId={data.user.userId}
                 />
             </Card>
 
@@ -88,7 +86,6 @@
                     <Calendar
                         visits={data.data.visits}
                         fullSlots={data.doctorAvailability}
-                        userId={data.user.userId}
                     />
                 </div>
             </div>

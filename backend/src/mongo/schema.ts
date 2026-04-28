@@ -74,7 +74,6 @@ const medicalProcedureSchema = new Schema(
     patientId: Number,
     doctorId: Number,
     date: Date,
-    cost: Number,
     description: String,
     treatments: [treatmentSchema],
   },

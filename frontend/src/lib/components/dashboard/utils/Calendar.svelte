@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { visits = [], fullSlots = [], userId } = $props();
+    let {visits = [], fullSlots = []} = $props();
 
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
     const months = [
@@ -26,7 +26,7 @@
     }
 
     function getWeekDays(start: Date) {
-        return Array.from({ length: 5 }, (_, i) => {
+        return Array.from({length: 5}, (_, i) => {
             const d = new Date(start);
             d.setDate(start.getDate() + i);
             return d;
@@ -40,7 +40,7 @@
     const currentMonthLabel = $derived(months[weekDays[0].getMonth()]);
 
     const calendarData = $derived.by(() => {
-        const grid = Array.from({ length: 5 }, () => ({
+        const grid = Array.from({length: 5}, () => ({
             taken: [],
             mine: [],
         }));
@@ -80,7 +80,7 @@
 
 <div class="flex gap-2">
     <div
-        class="week-switch flex flex-col items-center justify-between p-2 font-bold"
+            class="week-switch flex flex-col items-center justify-between p-2 font-bold"
     >
         <button onclick={() => changeWeek(-7)}>↑</button>
 
@@ -93,7 +93,7 @@
     </div>
 
     <div
-        class="current-week grid grid-rows-5 gap-2 w-18 shrink-0 bg-primary text-secondary rounded p-2"
+            class="current-week grid grid-rows-5 gap-2 w-18 shrink-0 bg-primary text-secondary rounded p-2"
     >
         {#each weekDays as dayDate, i}
             <div class="flex flex-col justify-center items-center">
@@ -108,7 +108,7 @@
 
     <div class="calendar flex-1 grid grid-cols-11 grid-rows-5 gap-2">
         {#each weekDays as dayDate, dayIndex}
-            {#each Array.from({ length: 11 }, (_, h) => 8 + h) as hour}
+            {#each Array.from({length: 11}, (_, h) => 8 + h) as hour}
                 {@const isMine = (calendarData[dayIndex]?.mine ?? []).includes(
                     hour,
                 )}
@@ -117,7 +117,7 @@
                 ).includes(hour)}
 
                 <div
-                    class="rounded text-center flex flex-col justify-between border p-0.5
+                        class="rounded text-center flex flex-col justify-between border p-0.5
                     {isMine
                         ? 'bg-yellow-100 border-yellow-400'
                         : isTaken
@@ -125,7 +125,7 @@
                           : 'bg-white border-gray-300'}"
                 >
                     <div
-                        class="h-1.5 w-full rounded-full
+                            class="h-1.5 w-full rounded-full
                         {isMine
                             ? 'bg-yellow-500'
                             : isTaken

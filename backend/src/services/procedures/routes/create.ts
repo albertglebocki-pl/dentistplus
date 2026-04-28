@@ -23,12 +23,11 @@ service.post("/", requireRole(["DOCTOR"]), async (c) => {
     return c.json({ error: validationError }, 400);
   }
 
-  const procdeure = await MedicalProcedure.create({
+  const procedure = await MedicalProcedure.create({
     patientId,
     doctorId: user.userId,
     date: date ? new Date(date) : new Date(),
     description,
-    cost: sumCost(treatments),
     treatments,
   });
 
@@ -42,12 +41,12 @@ service.post("/", requireRole(["DOCTOR"]), async (c) => {
       visit.patientId === patientId
     ) {
       visit.status = "COMPLETED";
-      visit.medicalProcedureId = procdeure._id as Types.ObjectId;
+      visit.medicalProcedureId = procedure._id as Types.ObjectId;
       await visit.save();
     }
   }
 
-  return c.json(procdeure, 201);
+  return c.json(procedure, 201);
 });
 
 export default service;
