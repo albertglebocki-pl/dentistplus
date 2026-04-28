@@ -1,6 +1,6 @@
 import { Payment, MedicalProcedure } from "../../mongo/schema.js";
 
-export const findPaymentByToken = (token: string) => Payment.findOne({ token });
+export const findPaymentById = (id: string) => Payment.findById(id);
 
 export const findDoctorProcedureIds = async (doctorId: number) => {
   const procs = await MedicalProcedure.find({ doctorId }).select("_id");
