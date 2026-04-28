@@ -7,6 +7,7 @@
     let openUserId: number | null = $state(null);
     let showDoctorModal = $state(false);
     let showProcedureModal = $state(false);
+    let showInactiveProcedures = $state(false);
 
     function toggleDetails(id: number) {
         openUserId = openUserId === id ? null : id;
@@ -14,6 +15,10 @@
 
     const activeProcedures = $derived(
         data.data.procedures.filter((p: any) => p.active),
+    );
+
+    const inactiveProcedures = $derived(
+        data.data.procedures.filter((p: any) => !p.active),
     );
 </script>
 
@@ -192,6 +197,39 @@
                                         </button>
                                     </form>
                                 </td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            {/if}
+
+            {#if inactiveProcedures.length > 0}
+                <button
+                    type="button"
+                    onclick={() =>
+                        (showInactiveProcedures = !showInactiveProcedures)}
+                    class="mt-4 w-full text-center text-xs px-3 py-2 rounded bg-secondary text-primary hover:opacity-90"
+                >
+                    {showInactiveProcedures
+                        ? "Hide deleted procedures"
+                        : "Show deleted procedures"}
+                </button>
+            {/if}
+
+            {#if showInactiveProcedures && inactiveProcedures.length > 0}
+                <div class="my-6 flex items-center gap-4">
+                    <div class="flex-1 h-px bg-secondary"></div>
+                    <div class="flex-1 h-px bg-secondary"></div>
+                </div>
+
+                <table class="w-full text-sm text-left border-collapse">
+                    <tbody>
+                        {#each inactiveProcedures as p}
+                            <tr class="border-b bg-secondary">
+                                <td class="py-2 px-3">{p.name}</td>
+                                <td class="py-2 px-3">{p.description || "—"}</td
+                                >
+                                <td class="py-2 px-3">{p.defaultCost} zł</td>
                             </tr>
                         {/each}
                     </tbody>
