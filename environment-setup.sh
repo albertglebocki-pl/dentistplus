@@ -16,3 +16,24 @@ JWT_SECRET=$(openssl rand -hex 32)
 MODE=DEV
 EOF
 fi
+
+STORAGE_ADMIN_TOKEN=$(grep '^STORAGE_ADMIN_TOKEN=' .env | cut -d'=' -f2)
+
+mkdir -p storage
+
+cat > storage/garage.toml <<EOF
+metadata_dir = "/var/lib/garage/meta"
+data_dir = "/var/lib/garage/data"
+db_engine = "lmdb"
+replication_factor = 1
+rpc_bind_addr = "[::]:3901"
+rpc_public_addr = "storage:3901"
+
+[s3_api]
+s3_region = "garage"
+api_bind_addr = "[::]:3902"
+
+[admin]
+api_bind_addr = "[::]:3903"
+admin_token = "${STORAGE_ADMIN_TOKEN}"
+EOF

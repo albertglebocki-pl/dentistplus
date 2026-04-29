@@ -27,6 +27,7 @@ clean: stop
 	cd drizzle && rm -rf migrations
 	docker compose down -v
 	rm -f .env
+	rm -f storage/garage.toml
 
 clean_node:
 	rm -rf frontend/node_modules/
