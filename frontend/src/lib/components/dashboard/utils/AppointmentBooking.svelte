@@ -7,7 +7,8 @@
         error = "",
         success = "",
         patientId = "",
-        onDoctorChange = (id: string) => {}
+        onDoctorChange = (id: string) => {},
+        submitHandler = undefined
     } = $props();
 
     const inputClass = "bg-secondary border border-transparent rounded-lg px-3 py-2.5 text-sm text-primary outline-none focus:border-primary/40 transition-colors";
@@ -19,7 +20,7 @@
     <form
             method="POST"
             action={doctorChoose ? "?/book" : "?/bookDoctor"}
-            use:enhance
+            use:enhance={submitHandler}
             class="flex flex-col gap-4">
         {#if doctorChoose}
             <label class="flex flex-col gap-1.5">
