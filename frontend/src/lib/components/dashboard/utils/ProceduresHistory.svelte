@@ -1,5 +1,5 @@
 <script lang="ts">
-    let {procedures} = $props();
+    let { procedures } = $props();
 
     let expandedTreatmentId = $state<string | null>(null);
 
@@ -7,19 +7,18 @@
         return treatments.reduce((sum, treatment) => {
             return sum + (treatment.cost || 0);
         }, 0);
-    }
+    };
 
     const formatDate = (date: Date) => {
-        return date.toLocaleDateString('pl-PL', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
+        return date.toLocaleDateString("pl-PL", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
         });
-    }
+    };
 
     const toggleDetails = (id: string) => {
-        expandedTreatmentId =
-            expandedTreatmentId === id ? null : id;
+        expandedTreatmentId = expandedTreatmentId === id ? null : id;
     };
 </script>
 
@@ -39,19 +38,22 @@
                     </p>
                     <div class="w-1/10 flex justify-end">
                         <button
-                                type="button"
-                                class="bg-primary text-white font-semibold text-sm py-1 px-2 rounded-lg hover:bg-primary/90 transition-colors"
-                                on:click={() => toggleDetails(treatment._id)}
+                            type="button"
+                            class="bg-primary text-white font-semibold text-sm py-1 px-2 rounded-lg hover:bg-primary/90 transition-colors"
+                            onclick={() => toggleDetails(treatment._id)}
                         >
-                            {expandedTreatmentId === treatment._id ? "Hide" : "Details"}
+                            {expandedTreatmentId === treatment._id
+                                ? "Hide"
+                                : "Details"}
                         </button>
                     </div>
-
                 </div>
                 {#if expandedTreatmentId === treatment._id}
                     <div class="mt-3">
                         {#each treatment.treatments as t}
-                            <div class="flex justify-between items-center p-2 border-t">
+                            <div
+                                class="flex justify-between items-center p-2 border-t"
+                            >
                                 <p>Tooth: {t.tooth}</p>
                                 <p>{t.catalogItemId.name}</p>
                                 <p>{t.cost} zł</p>
@@ -65,4 +67,3 @@
 {:else}
     <p>No treatment history</p>
 {/if}
-
