@@ -56,6 +56,69 @@
             loading = false;
         }
     }
+
+    async function downloadImage(img: any) {
+        console.log("DOWNLOAD IMG", img);
+        console.log("DOWNLOAD ID", img.id);
+
+        try {
+            const res = await fetch(
+                `/api/patients/${patientId}/images/${img.id}/download`,
+                {
+                    headers: { Authorization: `Bearer ${data.token}` },
+                },
+            );
+
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(text || "Download failed");
+            }
+
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = img.filename || "image";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            window.URL.revokeObjectURL(url);
+        } catch (e: any) {
+            status = `❌ Download error: ${e.message}`;
+        }
+    }
+
+    async function deleteImage(img: any) {
+        try {
+            const res = await fetch(
+                `/api/patients/${patientId}/images/${img.id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${data.token}`,
+                    },
+                },
+            );
+
+            const text = await res.text();
+
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch {
+                throw new Error(text || "Invalid server response");
+            }
+
+            if (!res.ok) throw new Error(result.error ?? "Delete failed");
+
+            status = `🗑️ Deleted: ${img.filename}`;
+            await loadImages();
+        } catch (e: any) {
+            status = `❌ Delete error: ${e.message}`;
+        }
+    }
 </script>
 
 <main
@@ -106,6 +169,20 @@
                         {new Date(img.createdAt).toLocaleString()}
                     </p>
                 </div>
+
+                <button
+                    style="margin-top: 6px; width: 100%; background: #ff4d4f; color: white;"
+                    onclick={() => deleteImage(img)}
+                >
+                    Delete
+                </button>
+
+                <button
+                    style="margin-top: 6px; width: 100%;"
+                    onclick={() => downloadImage(img)}
+                >
+                    Download
+                </button>
             {/each}
         </div>
     {/if}
