@@ -11,4 +11,4 @@ api_bind_addr = "[::]:3902"
 
 [admin]
 api_bind_addr = "[::]:3903"
-admin_token = "f8448eb57cefa5b7f2852f7ea538dbfc597ce85004ffd87eafa330870a55d5e5"
+admin_token = "5d1ceeb5d94e65e32ad1f47596cc1d84a73acb722325b15bf973aa0f2c1e363d"

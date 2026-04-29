@@ -40,4 +40,49 @@ service.post("/me", authMiddleware, async (context) => {
   }
 });
 
+service.patch("/me", authMiddleware, async (context) => {
+  const authPayload = context.get("user");
+
+  try {
+    const body = await context.req.json();
+
+    const allowedFields = {
+      firstName: body.firstName,
+      lastName: body.lastName,
+      address: body.address,
+      phoneNumber: body.phoneNumber,
+      email: body.email,
+    };
+
+    const updateData = Object.fromEntries(
+      Object.entries(allowedFields).filter(([_, v]) => v !== undefined),
+    );
+
+    if (Object.keys(updateData).length === 0) {
+      return context.json({ error: "No valid fields provided" }, 400);
+    }
+
+    const [updated] = await database
+      .update(users)
+      .set(updateData)
+      .where(eq(users.id, authPayload.userId))
+      .returning({
+        id: users.id,
+        email: users.email,
+        role: users.role,
+        active: users.active,
+        createdAt: users.createdAt,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        address: users.address,
+        phoneNumber: users.phoneNumber,
+      });
+
+    return context.json(updated);
+  } catch (error) {
+    console.error(error);
+    return context.json({ error: "Internal Server Error" }, 500);
+  }
+});
+
 export default service;
