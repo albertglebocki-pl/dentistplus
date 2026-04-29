@@ -282,5 +282,27 @@
                 </div>
             </div>
         </Card>
+
+        <Card style={"w-full mb-5"}>
+            <CardTitle text="Book next appointment"/>
+
+            <div class="flex justify-between">
+                <div class="w-1/3">
+                    <AppointmentBooking
+                            doctorChoose={false}
+                            error={form?.message}
+                            success={form?.success}
+                            patientId={patient.id}
+                    />
+                </div>
+
+                <div class="w-2/3">
+                    <Calendar
+                            visits={patientVisits}
+                            fullSlots={data.data.visits}
+                    />
+                </div>
+            </div>
+        </Card>
     {/if}
 </div>
