@@ -8,6 +8,7 @@
     import {goto} from "$app/navigation";
     import UpcomingVisitCard from "$lib/components/dashboard/doctor/UpcomingVisitCard.svelte";
     import ProceduresHistory from "$lib/components/dashboard/utils/ProceduresHistory.svelte";
+    import type {SubmitFunction} from "@sveltejs/kit";
 
     let {data, form} = $props();
     const visits = $derived(data.data.visits);
@@ -119,6 +120,20 @@
     const getProcedureName = (procedure) => {
         return procedureCatalog.find(p => p._id === procedure.catalogItemId)?.name;
     };
+
+    let updateVisitStatus = $state<{ message?: string, success?: boolean } | null>(null);
+    let bookingStatus = $state<{ message?: string, success?: boolean } | null>(null);
+
+    const handleBookingSubmit: SubmitFunction = () => {
+        bookingStatus = null;
+
+        return async ({result, update}) => {
+            if (result.type === 'success' || result.type === 'failure') {
+                bookingStatus = result.data as { message?: string, success?: boolean };
+            }
+            await update();
+        };
+    };
 </script>
 
 <div class="flex flex-col gap-5 mt-3 h-full">
@@ -228,8 +243,36 @@
                         </button>
                     </div>
 
-                    <form method="POST" class="w-full" action="?/doctorUpdateVisit" use:enhance>
+                    <form
+                            method="POST"
+                            class="w-full"
+                            action="?/doctorUpdateVisit"
+                            use:enhance={() => {
+                                updateVisitStatus = null;
+
+                                return async({result, update}) => {
+                                    if(result.type === 'success' || result.type === 'failure') {
+                                        updateVisitStatus = result.data;
+                                    }
+
+                                    update({reset: false});
+                                }
+                            }}
+                    >
                         <input type="hidden" name="payload" value={JSON.stringify(visitDraft)}/>
+
+                        {#if updateVisitStatus?.message}
+                            <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm mt-2 border border-red-100">
+                                {updateVisitStatus.message}
+                            </div>
+                        {/if}
+
+                        {#if updateVisitStatus?.success}
+                            <div class="bg-green-50 text-green-600 p-3 rounded-lg text-sm mt-2 border border-green-100">
+                                Saved!
+                            </div>
+                        {/if}
+
                         <button
                                 class="bg-primary text-white font-semibold text-sm py-3 rounded-lg mt-2 hover:bg-primary/90 transition-colors w-full"
                         >
@@ -299,9 +342,10 @@
                 <div class="w-1/3">
                     <AppointmentBooking
                             doctorChoose={false}
-                            error={form?.message}
-                            success={form?.success}
                             patientId={patient.id}
+                            error={bookingStatus?.message}
+                            success={bookingStatus?.success}
+                            submitHandler={handleBookingSubmit}
                     />
                 </div>
 
