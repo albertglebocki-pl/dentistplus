@@ -147,10 +147,19 @@
         <div class="flex gap-5">
             <Card style={"w-1/3"}>
                 <CardTitle text="Patient information"/>
-                <p>{patient.firstName} {patient.lastName}</p>
-                <p>Email: {patient.email}</p>
-                <p>Phone: {patient.phoneNumber}</p>
-                <p>Address: {patient.address}</p>
+                <p class="text-xl pb-2">{patient.firstName} {patient.lastName}</p>
+                <p>
+                    <span class="font-semibold">Email:</span>
+                    {patient.email}
+                </p>
+                <p>
+                    <span class="font-semibold">Phone:</span>
+                    {patient.phoneNumber}
+                </p>
+                <p>
+                    <span class="font-semibold">Address:</span>
+                    {patient.address}
+                </p>
             </Card>
 
             <Card style={"w-2/3 min-h-0"}>
