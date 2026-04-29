@@ -103,7 +103,7 @@
         treatments: procedures,
     }));
 
-    const procedureCatalog = data.data.catalog;
+    const procedureCatalog = $derived(data.data.catalog);
 
     const formatDate = (date: Date) => {
         return date.toLocaleDateString("pl-PL", {
