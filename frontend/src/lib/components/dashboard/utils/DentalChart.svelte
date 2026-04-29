@@ -206,7 +206,7 @@
 <div class="flex justify-center items-center py-5 gap-16">
     <div class="flex flex-col items-center gap-2">
         <div class="flex items-end min-h-32">
-            <div class="flex flex-row-reverse items-end">
+            <div class="flex items-end">
                 {#each UR as tooth, i}
                     {@render toothButton(tooth, false, i, UR.length)}
                 {/each}
@@ -221,12 +221,12 @@
         <div class="h-6"></div>
 
         <div class="flex items-start min-h-32">
-            <div class="flex flex-row-reverse items-start">
+            <div class="flex items-end">
                 {#each LR as tooth, i}
                     {@render toothButton(tooth, true, i, LR.length)}
                 {/each}
             </div>
-            <div class="flex items-start">
+            <div class="flex items-end">
                 {#each LL as tooth, i}
                     {@render toothButton(tooth, true, i, LL.length)}
                 {/each}
