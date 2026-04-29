@@ -8,6 +8,7 @@
     import {goto} from "$app/navigation";
     import UpcomingVisitCard from "$lib/components/dashboard/doctor/UpcomingVisitCard.svelte";
     import ProceduresHistory from "$lib/components/dashboard/utils/ProceduresHistory.svelte";
+    import type {SubmitFunction} from "@sveltejs/kit";
 
     let {data, form} = $props();
     const visits = $derived(data.data.visits);
@@ -133,6 +134,9 @@
             await update();
         };
     };
+
+    let selectedDate: Date | null = $state(null);
+
 </script>
 
 <div class="flex flex-col gap-5 mt-3 h-full">
@@ -345,6 +349,7 @@
                             error={bookingStatus?.message}
                             success={bookingStatus?.success}
                             submitHandler={handleBookingSubmit}
+                            selectedDate={selectedDate}
                     />
                 </div>
 
@@ -352,6 +357,8 @@
                     <Calendar
                             visits={patientVisits}
                             fullSlots={data.data.visits}
+                            selectedDate={selectedDate}
+                            onSelect={(date: Date) => selectedDate = date}
                     />
                 </div>
             </div>

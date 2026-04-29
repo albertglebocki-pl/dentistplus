@@ -1,7 +1,10 @@
 <script lang="ts">
     let {
         visits = [],
-        fullSlots = []
+        fullSlots = [],
+        selectedDate = null as Date | null,
+        onSelect = (date: Date | null) => {
+        }
     } = $props();
 
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -43,8 +46,6 @@
     const weekDays = $derived(getWeekDays(currentWeekStart));
     const currentMonthLabel = $derived(months[weekDays[0].getMonth()]);
 
-    let selectedDate: Date | null = $state(null);
-
     const calendarData = $derived.by(() => {
         const grid = Array.from({length: 5}, () => ({
             taken: [] as number[],
@@ -83,15 +84,19 @@
         nextDate.setDate(nextDate.getDate() + offset);
         currentDate = nextDate;
 
-        selectedDate = null;
+        onSelect(null);
     }
 
     const handleSelect = (datetime: Date) => {
-        if (selectedDate === datetime) {
-            selectedDate = null;
+        if (
+            selectedDate &&
+            selectedDate.getTime() === datetime.getTime()
+        ) {
+            onSelect(null);
             return;
         }
-        selectedDate = datetime
+
+        onSelect(datetime);
     }
 </script>
 
@@ -147,7 +152,9 @@
                             : isTaken
                                 ? 'bg-red-50 border-red-200 opacity-80'
                                 : 'bg-white border-gray-300'}
-                        {selectedDate === slot.dateTime ? 'border-primary border-2' : ''}"
+                        {selectedDate?.getTime() === slot.dateTime.getTime()
+                            ? 'border-primary border-2'
+                            : ''}"
                     onclick={() => handleSelect(slot.dateTime)}
                 >
                     <div

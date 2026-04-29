@@ -9,19 +9,19 @@
     import DentalChart from "../utils/DentalChart.svelte";
     import ProceduresHistory from "$lib/components/dashboard/utils/ProceduresHistory.svelte";
 
-    let { data, form } = $props();
+    let {
+        data,
+        form
+    } = $props();
 
     const currentView = $derived(page.url.searchParams.get("view") || "main");
     const procedures = $derived(data.data.procedures);
 
+    let selectedDate: Date | null = $state(null);
+
     const onBooking = (e: any) => {
         e.preventDefault();
         goto("?view=booking", { noScroll: true });
-    };
-
-    const goBack = (e: any) => {
-        e.preventDefault();
-        goto("?view=main", { noScroll: true });
     };
 
     function handleDoctorChange(id: string) {
@@ -82,6 +82,7 @@
                         error={form?.message}
                         success={form?.success}
                         onDoctorChange={handleDoctorChange}
+                        selectedDate={selectedDate}
                     />
                 </div>
 
@@ -89,6 +90,8 @@
                     <Calendar
                         visits={data.data.visits}
                         fullSlots={data.doctorAvailability}
+                        selectedDate={selectedDate}
+                        onSelect={(date: Date) => selectedDate = date}
                     />
                 </div>
             </div>
