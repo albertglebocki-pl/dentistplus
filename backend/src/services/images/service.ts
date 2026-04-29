@@ -1,62 +1,74 @@
 import {
-    S3Client,
-    PutObjectCommand,
-    DeleteObjectCommand,
-    GetObjectCommand,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+  S3Client,
 } from "@aws-sdk/client-s3";
-import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const STORAGE_URL = process.env.STORAGE_URL!;
-const STORAGE_BUCKET = process.env.STORAGE_BUCKET!;
-const ACCESS_KEY = process.env.STORAGE_ACCESS_KEY!;
-const SECRET_KEY = process.env.STORAGE_SECRET_KEY!;
+let s3: S3Client | null = null;
+let bucket: string | null = null;
 
-// if (!STORAGE_URL || !STORAGE_BUCKET || !ACCESS_KEY || !SECRET_KEY) {
-//   throw new Error("Could not establish connection to storage");
-// }
+export const initS3Service = (client: S3Client, storageBucket: string) => {
+  s3 = client;
+  bucket = storageBucket;
+};
 
-export const isStorageConfigured =
-    !!(STORAGE_URL && STORAGE_BUCKET && ACCESS_KEY && SECRET_KEY);
-
-export const s3 = isStorageConfigured
-    ? new S3Client({
-        endpoint: STORAGE_URL,
-        region: "garage",
-        credentials: {
-            accessKeyId: ACCESS_KEY,
-            secretAccessKey: SECRET_KEY,
-        },
-        forcePathStyle: true,
-    }) : null;
+const requireS3 = () => {
+  if (!s3 || !bucket) {
+    throw new Error("S3 not initialized. Call initS3Service() first.");
+  }
+  return { s3, bucket };
+};
 
 export const uploadToS3 = async (
-    key: string,
-    body: Buffer,
-    mimeType: string,
+  key: string,
+  body: Buffer,
+  mimeType: string,
 ) => {
-    await s3.send(
-        new PutObjectCommand({
-            Bucket: STORAGE_BUCKET,
-            Key: key,
-            Body: body,
-            ContentType: mimeType,
-        }),
-    );
+  const { s3, bucket } = requireS3();
+
+  return s3.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: body,
+      ContentType: mimeType,
+    }),
+  );
 };
 
 export const deleteFromS3 = async (key: string) => {
-    await s3.send(
-        new DeleteObjectCommand({
-            Bucket: STORAGE_BUCKET,
-            Key: key,
-        }),
-    );
+  const { s3, bucket } = requireS3();
+
+  return s3.send(
+    new DeleteObjectCommand({
+      Bucket: bucket,
+      Key: key,
+    }),
+  );
 };
 
 export const getPresignedUrl = async (key: string): Promise<string> => {
-    return getSignedUrl(
-        s3,
-        new GetObjectCommand({Bucket: STORAGE_BUCKET, Key: key}),
-        {expiresIn: 3600},
-    );
+  const { s3, bucket } = requireS3();
+
+  return getSignedUrl(
+    s3,
+    new GetObjectCommand({
+      Bucket: bucket,
+      Key: key,
+    }),
+    { expiresIn: 3600 },
+  );
+};
+
+export const getObjectFromS3 = async (key: string) => {
+  const { s3, bucket } = requireS3();
+
+  return s3.send(
+    new GetObjectCommand({
+      Bucket: bucket,
+      Key: key,
+    }),
+  );
 };

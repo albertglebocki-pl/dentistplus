@@ -12,3 +12,5 @@ package-lock.json
 .idea/
 
 log.txt
+
+garage.toml

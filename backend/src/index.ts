@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import connectMongo from "./mongo/connection.js";
+import { initS3 } from "./storage/init.js";
 import ping from "./services/ping.js";
 
 import postgresSeed from "./postgres/dev_seed.js";
@@ -47,14 +48,20 @@ import teethStatus from "./services/teeth/routes/status.js";
 import teethUpdate from "./services/teeth/routes/update.js";
 import teethProcedures from "./services/teeth/routes/procedures.js";
 
+import { initS3Service } from "./services/images/service.js";
 import imageUpload from "./services/images/routes/upload.js";
 import imageList from "./services/images/routes/list.js";
 import imageDetails from "./services/images/routes/details.js";
 import imageDelete from "./services/images/routes/delete.js";
+import imageDownload from "./services/images/routes/download.js";
 
 const app = new Hono();
 
 await connectMongo();
+
+const clientS3 = await initS3();
+
+initS3Service(clientS3, process.env.STORAGE_BUCKET!);
 
 if (process.env.MODE == "DEV") {
   await postgresSeed();
@@ -106,6 +113,7 @@ app.route("/patients", imageUpload);
 app.route("/patients", imageList);
 app.route("/patients", imageDetails);
 app.route("/patients", imageDelete);
+app.route("/patients", imageDownload);
 
 app.route("/doctors", doctorList);
 

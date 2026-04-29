@@ -12,46 +12,51 @@ const service = new Hono();
 service.use(authMiddleware);
 
 service.post("/:patientId/images", requireRole(["DOCTOR"]), async (c) => {
-  const user = c.get("user");
-  const patientId = Number(c.req.param("patientId"));
+  try {
+    const user = c.get("user");
+    const patientId = Number(c.req.param("patientId"));
 
-  const body = await c.req.parseBody();
-  const file = body["file"];
+    const form = await c.req.formData();
+    const file = form.get("file");
 
-  if (!file || typeof file === "string") {
-    return c.json({ error: "No file attached" }, 400);
+    if (!file || !(file instanceof File)) {
+      return c.json({ error: "No file attached" }, 400);
+    }
+
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return c.json(
+        { error: "Unsupported format (Must be: .jpg, .png, .webp)" },
+        415,
+      );
+    }
+
+    const bytes = await file.arrayBuffer();
+
+    if (bytes.byteLength > MAX_SIZE_MB * 1024 * 1024) {
+      return c.json(
+        { error: `Maximum upload size exceeded: ${MAX_SIZE_MB}MB` },
+        413,
+      );
+    }
+
+    const ext = file.name.split(".").pop() ?? "jpg";
+    const s3Key = `patients/${patientId}/${randomUUID()}.${ext}`;
+
+    await uploadToS3(s3Key, Buffer.from(bytes), file.type);
+
+    const image = await PatientImage.create({
+      patientId,
+      s3Key,
+      filename: file.name,
+      mimeType: file.type,
+      uploadedBy: user.userId,
+    });
+
+    return c.json(image, 201);
+  } catch (err) {
+    console.error("UPLOAD ERROR FULL:", JSON.stringify(err, null, 2));
+    return c.json({ error: "Internal server error during upload" }, 500);
   }
-
-  if (!ALLOWED_TYPES.includes(file.type)) {
-    return c.json(
-      { error: "Unsupported format (Must be: .jpg, .png, .webp)" },
-      415,
-    );
-  }
-
-  const bytes = await file.arrayBuffer();
-
-  if (bytes.byteLength > MAX_SIZE_MB * 1024 * 1024) {
-    return c.json(
-      { error: `Maximum upload size exceeded: ${MAX_SIZE_MB}MB` },
-      413,
-    );
-  }
-
-  const ext = file.name.split(".").pop() ?? "jpg";
-  const s3Key = `patients/${patientId}/${randomUUID()}.${ext}`;
-
-  await uploadToS3(s3Key, Buffer.from(bytes), file.type);
-
-  const image = await PatientImage.create({
-    patientId,
-    s3Key,
-    filename: file.name,
-    mimeType: file.type,
-    uploadedBy: user.userId,
-  });
-
-  return c.json(image, 201);
 });
 
 export default service;

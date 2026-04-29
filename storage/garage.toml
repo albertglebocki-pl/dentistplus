@@ -2,7 +2,6 @@ metadata_dir = "/var/lib/garage/meta"
 data_dir = "/var/lib/garage/data"
 db_engine = "lmdb"
 replication_factor = 1
-
 rpc_bind_addr = "[::]:3901"
 rpc_public_addr = "storage:3901"
 
@@ -12,3 +11,4 @@ api_bind_addr = "[::]:3902"
 
 [admin]
 api_bind_addr = "[::]:3903"
+admin_token = "f8448eb57cefa5b7f2852f7ea538dbfc597ce85004ffd87eafa330870a55d5e5"
