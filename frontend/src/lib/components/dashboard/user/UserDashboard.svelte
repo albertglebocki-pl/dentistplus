@@ -42,18 +42,16 @@
         <div class="flex gap-5">
             <Card style={"w-2/3"}>
                 <div class="flex justify-between items-start pb-5">
-                    <CardTitle text="Calendar"/>
+                    <CardTitle text="Calendar" />
                     <button
-                            on:click={onBooking}
-                            class="bg-primary text-white text-sm rounded-lg hover:bg-primary/90 transition-colors px-2 py-2">
+                        onclick={onBooking}
+                        class="bg-primary text-white text-sm rounded-lg hover:bg-primary/90 transition-colors px-2 py-2"
+                    >
                         Book appointment
                     </button>
                 </div>
 
-                <Calendar
-                    visits={data.data.visits}
-                    fullSlots={[]}
-                />
+                <Calendar visits={data.data.visits} fullSlots={[]} />
             </Card>
 
             <Card style={"w-1/3"}>

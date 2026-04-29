@@ -8,7 +8,6 @@
     import {goto} from "$app/navigation";
     import UpcomingVisitCard from "$lib/components/dashboard/doctor/UpcomingVisitCard.svelte";
     import ProceduresHistory from "$lib/components/dashboard/utils/ProceduresHistory.svelte";
-    import type {SubmitFunction} from "@sveltejs/kit";
 
     let {data, form} = $props();
     const visits = $derived(data.data.visits);
