@@ -18,7 +18,13 @@ export async function onLoad(token: string) {
     });
     const fullSlots = await fullSlotsRes.json();
 
-    return { doctors, visits, fullSlots };
+    const proceduresRaw = await fetch(api("/procedures"), {
+        method: "GET",
+        headers: {Authorization: `Bearer ${token}`},
+    })
+    const procedures = await proceduresRaw.json();
+
+    return { doctors, visits, fullSlots, procedures };
 }
 
 export async function bookAppointment(token: string, formData: FormData) {

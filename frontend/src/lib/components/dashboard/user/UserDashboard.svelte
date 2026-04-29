@@ -7,10 +7,12 @@
     import CardTitle from "$lib/components/utils/CardTitle.svelte";
     import Card from "$lib/components/utils/Card.svelte";
     import DentalChart from "../utils/DentalChart.svelte";
+    import ProceduresHistory from "$lib/components/dashboard/utils/ProceduresHistory.svelte";
 
     let { data, form } = $props();
 
     const currentView = $derived(page.url.searchParams.get("view") || "main");
+    const procedures = $derived(data.data.procedures);
 
     const onBooking = (e: any) => {
         e.preventDefault();
@@ -56,6 +58,9 @@
 
             <Card style={"w-1/3"}>
                 <CardTitle text="Payments" />
+                <div class="max-h-[310px] overflow-y-auto min-h-0">
+                    <ProceduresHistory procedures={procedures} folded/>
+                </div>
             </Card>
         </div>
 

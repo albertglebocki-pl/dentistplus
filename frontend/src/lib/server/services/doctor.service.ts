@@ -62,7 +62,7 @@ export async function bookAppointment(token: string, formData: FormData) {
             Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
-            patientId: patientId,
+            patientId: Number(patientId),
             dateTime: datetime,
             description: description,
             durationMinutes: 60
