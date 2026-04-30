@@ -58,8 +58,8 @@
 
             <Card style={"w-1/3"}>
                 <CardTitle text="Payments" />
-                <div class="max-h-[310px] overflow-y-auto min-h-0">
-                    <ProceduresHistory procedures={procedures} folded/>
+                <div class="max-h-77.5 overflow-y-auto min-h-0">
+                    <ProceduresHistory {procedures} folded />
                 </div>
             </Card>
         </div>

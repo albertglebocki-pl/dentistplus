@@ -3,8 +3,8 @@
 
     let expandedTreatmentId = $state<string | null>(null);
 
-    const calculateTotalCost = (treatments) => {
-        return treatments.reduce((sum, treatment) => {
+    const calculateTotalCost = (treatments: any) => {
+        return treatments.reduce((sum: any, treatment: any) => {
             return sum + (treatment.cost || 0);
         }, 0);
     };
@@ -26,7 +26,6 @@
     <div class="flex flex-col gap-3">
         {#each procedures as treatment}
             <div class="bg-secondary border border-primary rounded-lg p-2">
-
                 {#if folded}
                     <div class="flex items-center justify-between">
                         <p class="text-sm">
@@ -46,9 +45,9 @@
 
                         <div class="flex justify-end">
                             <button
-                                    type="button"
-                                    class="bg-primary text-white font-semibold text-sm py-1 px-2 rounded-lg hover:bg-primary/90 transition-colors"
-                                    onclick={() => toggleDetails(treatment._id)}
+                                type="button"
+                                class="bg-primary text-white font-semibold text-sm py-1 px-2 rounded-lg hover:bg-primary/90 transition-colors"
+                                onclick={() => toggleDetails(treatment._id)}
                             >
                                 {expandedTreatmentId === treatment._id
                                     ? "Hide"
@@ -56,7 +55,6 @@
                             </button>
                         </div>
                     </div>
-
                 {:else}
                     <div class="flex items-center justify-between">
                         <p class="w-1/10 text-sm">
@@ -74,9 +72,9 @@
 
                         <div class="w-1/10 flex justify-end">
                             <button
-                                    type="button"
-                                    class="bg-primary text-white font-semibold text-sm py-1 px-2 rounded-lg hover:bg-primary/90 transition-colors"
-                                    onclick={() => toggleDetails(treatment._id)}
+                                type="button"
+                                class="bg-primary text-white font-semibold text-sm py-1 px-2 rounded-lg hover:bg-primary/90 transition-colors"
+                                onclick={() => toggleDetails(treatment._id)}
                             >
                                 {expandedTreatmentId === treatment._id
                                     ? "Hide"

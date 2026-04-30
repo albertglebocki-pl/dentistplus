@@ -1,9 +1,7 @@
 <script lang="ts">
     import "../layout.css";
 
-    import type { PageData } from "./$types";
-
-    const { data, children }: { data: PageData; children: any } = $props();
+    const { children }: { children: any } = $props();
 </script>
 
 <nav class="w-full px-4 py-2">

@@ -89,7 +89,9 @@
         <form method="POST" class="px-6 pb-6 space-y-4">
             <!-- Card number -->
             <div>
-                <label class="text-xs text-gray-500">Card number</label>
+                <label class="text-xs text-gray-500" for="cardNumber"
+                    >Card number</label
+                >
 
                 <div class="relative mt-1">
                     <input
@@ -159,7 +161,9 @@
             <!-- Expiry + CVC -->
             <div class="flex gap-3">
                 <div class="flex-1">
-                    <label class="text-xs text-gray-500">Expiry</label>
+                    <label class="text-xs text-gray-500" for="expiry"
+                        >Expiry</label
+                    >
                     <input
                         name="expiry"
                         placeholder="MM/YY"
@@ -169,7 +173,7 @@
                 </div>
 
                 <div class="flex-1">
-                    <label class="text-xs text-gray-500">CVC</label>
+                    <label class="text-xs text-gray-500" for="cvc">CVC</label>
                     <input
                         name="cvc"
                         placeholder="123"

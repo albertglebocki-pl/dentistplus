@@ -5,11 +5,10 @@
     import CardTitle from "$lib/components/utils/CardTitle.svelte";
     import Card from "$lib/components/utils/Card.svelte";
     import { page } from "$app/state";
-    import { goto } from "$app/navigation";
     import UpcomingVisitCard from "$lib/components/dashboard/doctor/UpcomingVisitCard.svelte";
     import ProceduresHistory from "$lib/components/dashboard/utils/ProceduresHistory.svelte";
 
-    let { data, form } = $props();
+    let { data } = $props();
     const visits = $derived(data.data.visits);
     const treatments = $derived(data.treatments);
     const patientVisits = $derived(data.patientVisits);
@@ -26,12 +25,12 @@
     };
 
     const todayVisits = $derived(
-        visits.filter((visit) => isSameDay(visit.dateTime)),
+        visits.filter((visit: any) => isSameDay(visit.dateTime)),
     );
 
     const selectedVisitId = $derived(page.url.searchParams.get("id"));
     const selectedVisit = $derived.by(() => {
-        return visits.find((v) => v._id === selectedVisitId);
+        return visits.find((v: any) => v._id === selectedVisitId);
     });
     const patient = $derived.by(() => selectedVisit?.patient);
 
@@ -88,7 +87,7 @@
     let selectedTooth = $state("");
     let selectedProcedureId = $state<string | null>(null);
     const selectedProcedure = $derived.by(() =>
-        procedureCatalog.find((p) => p._id === selectedProcedureId),
+        procedureCatalog.find((p: any) => p._id === selectedProcedureId),
     );
 
     let editingIndex = $state<number | null>(null);
@@ -152,9 +151,10 @@
         editingIndex = index;
     };
 
-    const getProcedureName = (procedure) => {
-        return procedureCatalog.find((p) => p._id === procedure.catalogItemId)
-            ?.name;
+    const getProcedureName = (procedure: any) => {
+        return procedureCatalog.find(
+            (p: any) => p._id === procedure.catalogItemId,
+        )?.name;
     };
 
     let updateVisitStatus = $state<{
@@ -165,10 +165,10 @@
         null,
     );
 
-    const handleBookingSubmit: SubmitFunction = () => {
+    const handleBookingSubmit = () => {
         bookingStatus = null;
 
-        return async ({ result, update }) => {
+        return async ({ result, update }: { result: any; update: any }) => {
             if (result.type === "success" || result.type === "failure") {
                 bookingStatus = result.data as {
                     message?: string;
@@ -228,7 +228,7 @@
 
             <Card style={"w-2/3 min-h-0"}>
                 <CardTitle text="Treatment history" />
-                <div class="max-h-[250px] overflow-y-auto min-h-0">
+                <div class="max-h-62.5 overflow-y-auto min-h-0">
                     <ProceduresHistory procedures={treatments} />
                 </div>
             </Card>
@@ -316,7 +316,11 @@
                                     result.type === "success" ||
                                     result.type === "failure"
                                 ) {
-                                    updateVisitStatus = result.data;
+                                    updateVisitStatus = (result.data ??
+                                        null) as {
+                                        message?: string;
+                                        success?: boolean;
+                                    } | null;
                                 }
 
                                 update({ reset: false });
@@ -422,7 +426,7 @@
                         doctorChoose={false}
                         patientId={patient.id}
                         error={bookingStatus?.message}
-                        success={bookingStatus?.success}
+                        success={String(bookingStatus?.success)}
                         submitHandler={handleBookingSubmit}
                     />
                 </div>
