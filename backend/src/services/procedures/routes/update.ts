@@ -30,7 +30,6 @@ service.patch("/:id", requireRole(["DOCTOR"]), async (c) => {
 
   if (Array.isArray(treatments)) {
     procedure.treatments = treatments as any;
-    procedure.cost = sumCost(treatments);
   }
 
   await procedure.save();

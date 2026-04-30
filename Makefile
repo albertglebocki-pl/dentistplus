@@ -1,4 +1,7 @@
-setup:
+setup_dev_env:
+	sh environment-setup.sh DEV
+
+setup_prod_env:
 	sh environment-setup.sh
 
 generate:
@@ -14,10 +17,10 @@ install_deps:
 sync:
 	cd frontend && npx svelte-kit sync
 
-start: setup install_deps generate sync
-	docker compose up -d --build --remove-orphans --no-cache
+start: setup_prod_env install_deps generate sync
+	docker compose up -d --build --remove-orphans
 
-dev: setup install_deps generate sync
+dev: setup_dev_env install_deps generate sync
 	docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build --remove-orphans
 
 stop:

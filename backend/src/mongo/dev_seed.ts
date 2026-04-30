@@ -25,7 +25,7 @@ const mongoSeed = async () => {
     ],
   });
 
-  const catalog = await ProcedureCatalog.insertMany([
+  const catalog = (await ProcedureCatalog.insertMany([
     {
       name: "Composite Filling",
       description: "Standard composite restoration",
@@ -44,7 +44,7 @@ const mongoSeed = async () => {
       defaultCost: 200,
       active: true,
     },
-  ]);
+  ])) as any[];
 
   const doctorId = 2;
 
@@ -76,7 +76,6 @@ const mongoSeed = async () => {
         cost: 250,
       },
     ],
-    cost: 500,
   });
 
   visit1.medicalProcedureId = procedure1._id;
@@ -119,7 +118,6 @@ const mongoSeed = async () => {
         cost: 200,
       },
     ],
-    cost: 1100,
   });
 
   visit2.medicalProcedureId = procedure2._id;
