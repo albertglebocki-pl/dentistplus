@@ -7,6 +7,7 @@
     import { page } from "$app/state";
     import UpcomingVisitCard from "$lib/components/dashboard/doctor/UpcomingVisitCard.svelte";
     import ProceduresHistory from "$lib/components/dashboard/utils/ProceduresHistory.svelte";
+    import type {SubmitFunction} from "@sveltejs/kit";
 
     let { data } = $props();
     const visits = $derived(data.data.visits);
@@ -187,6 +188,8 @@
             await update();
         };
     };
+
+    let selectedDate: Date | null = $state(null);
 </script>
 
 <div class="flex flex-col gap-5 mt-3 h-full">
@@ -432,18 +435,21 @@
             <div class="flex justify-between">
                 <div class="w-1/3">
                     <AppointmentBooking
-                        doctorChoose={false}
-                        patientId={patient.id}
-                        error={bookingStatus?.message}
-                        success={String(bookingStatus?.success)}
-                        submitHandler={handleBookingSubmit}
+                            doctorChoose={false}
+                            patientId={patient.id}
+                            error={bookingStatus?.message}
+                            success={bookingStatus?.success}
+                            submitHandler={handleBookingSubmit}
+                            selectedDate={selectedDate}
                     />
                 </div>
 
                 <div class="w-2/3">
                     <Calendar
-                        visits={patientVisits}
-                        fullSlots={data.data.visits}
+                            visits={patientVisits}
+                            fullSlots={data.data.visits}
+                            selectedDate={selectedDate}
+                            onSelect={(date: Date) => selectedDate = date}
                     />
                 </div>
             </div>

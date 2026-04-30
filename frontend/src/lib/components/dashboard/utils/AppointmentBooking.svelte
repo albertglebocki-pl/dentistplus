@@ -7,9 +7,22 @@
         error = "",
         success = "",
         patientId = "",
-        onDoctorChange = (id: string) => {},
-        submitHandler = undefined
+        onDoctorChange = (id: string) => {
+        },
+        submitHandler = undefined,
+        selectedDate = null as Date | null,
     } = $props();
+
+    const formattedDate = $derived(
+        selectedDate
+            ? new Date(
+                selectedDate.getTime()
+                - selectedDate.getTimezoneOffset() * 60000
+            )
+                .toISOString()
+                .slice(0, 16)
+            : ""
+    );
 
     const inputClass = "bg-secondary border border-transparent rounded-lg px-3 py-2.5 text-sm text-primary outline-none focus:border-primary/40 transition-colors";
     const labelClass = "flex flex-col gap-1.5";
@@ -18,18 +31,18 @@
 
 <div class="bg-white p-5">
     <form
-            method="POST"
-            action={doctorChoose ? "?/book" : "?/bookDoctor"}
-            use:enhance={submitHandler}
-            class="flex flex-col gap-4">
+        method="POST"
+        action={doctorChoose ? "?/book" : "?/bookDoctor"}
+        use:enhance={submitHandler}
+        class="flex flex-col gap-4">
         {#if doctorChoose}
             <label class="flex flex-col gap-1.5">
                 <span class="text-primary/60 text-sm">Choose doctor</span>
                 <select
-                        name="doctorId"
-                        class={inputClass}
-                        onchange={(e) => onDoctorChange(e.currentTarget.value)}
-                        required
+                    name="doctorId"
+                    class={inputClass}
+                    onchange={(e) => onDoctorChange(e.currentTarget.value)}
+                    required
                 >
                     <option value="">Select a doctor</option>
                     {#each doctorList as doctor}
@@ -39,13 +52,20 @@
             </label>
         {:else}
             <label class="hidden" for="patientId">
-                <input type="number" name="patientId" id="patientId" value={patientId} />
+                <input type="number" name="patientId" id="patientId" value={patientId}/>
             </label>
         {/if}
 
         <label class={labelClass}>
             <span class={labelTextClass}>Date and hour</span>
-            <input name="datetime" type="datetime-local" required class={inputClass} step="3600"/>
+            <input
+                name="datetime"
+                type="datetime-local"
+                required
+                class={inputClass}
+                step="3600"
+                value={formattedDate}
+            />
         </label>
 
         <label class={labelClass}>

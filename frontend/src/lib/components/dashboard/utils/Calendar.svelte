@@ -1,5 +1,11 @@
 <script lang="ts">
-    let { visits = [], fullSlots = [] } = $props();
+    let {
+        visits = [],
+        fullSlots = [],
+        selectedDate = null as Date | null,
+        onSelect = (date: Date | null) => {
+        }
+    } = $props();
 
     type CalendarCell = {
         taken: number[];
@@ -22,7 +28,7 @@
         "December",
     ];
 
-    function getMonday(date: Date) {
+    const getMonday = (date: Date) => {
         const d = new Date(date);
         const day = (d.getDay() + 6) % 7; // Mon = 0
         d.setDate(d.getDate() - day);
@@ -30,8 +36,8 @@
         return d;
     }
 
-    function getWeekDays(start: Date) {
-        return Array.from({ length: 5 }, (_, i) => {
+    const getWeekDays = (start: Date) => {
+        return Array.from({length: 5}, (_, i) => {
             const d = new Date(start);
             d.setDate(start.getDate() + i);
             return d;
@@ -56,6 +62,7 @@
         const start = new Date(currentWeekStart);
         const end = new Date(start);
         end.setDate(start.getDate() + 5);
+
         fullSlots.forEach((slot: any) => {
             const d = new Date(slot.dateTime);
             if (d >= start && d < end) {
@@ -79,10 +86,24 @@
         return grid;
     });
 
-    function changeWeek(offset: number) {
+    const changeWeek = (offset: number) => {
         const nextDate = new Date(currentDate);
         nextDate.setDate(nextDate.getDate() + offset);
         currentDate = nextDate;
+
+        onSelect(null);
+    }
+
+    const handleSelect = (datetime: Date) => {
+        if (
+            selectedDate &&
+            selectedDate.getTime() === datetime.getTime()
+        ) {
+            onSelect(null);
+            return;
+        }
+
+        onSelect(datetime);
     }
 </script>
 
@@ -116,21 +137,32 @@
 
     <div class="calendar flex-1 grid grid-cols-11 grid-rows-5 gap-2">
         {#each weekDays as dayDate, dayIndex}
-            {#each Array.from({ length: 11 }, (_, h) => 8 + h) as hour}
-                {@const isMine = (calendarData[dayIndex]?.mine ?? []).includes(
-                    hour,
-                )}
-                {@const isTaken = (
-                    calendarData[dayIndex]?.taken ?? []
-                ).includes(hour)}
+            {#each Array.from({length: 11}, (_, h) => {
+                const hour = 8 + h;
 
-                <div
-                    class="rounded text-center flex flex-col justify-between border p-0.5
-                    {isMine
-                        ? 'bg-yellow-100 border-yellow-400'
-                        : isTaken
-                          ? 'bg-red-50 border-red-200 opacity-80'
-                          : 'bg-white border-gray-300'}"
+                const dateTime = new Date(dayDate);
+                dateTime.setHours(hour, 0, 0, 0);
+
+                return {
+                    hour,
+                    dateTime
+                };
+            }) as slot}
+                {@const isMine = (calendarData[dayIndex]?.mine ?? []).includes(slot.hour)}
+                {@const isTaken = (calendarData[dayIndex]?.taken ?? []).includes(slot.hour)}
+
+                <button
+                    type="button"
+                    class="rounded text-center flex flex-col justify-between border p-0.5 hover:bg-gray-200
+                        {isMine
+                            ? 'bg-yellow-100 border-yellow-400'
+                            : isTaken
+                                ? 'bg-red-50 border-red-200 opacity-80'
+                                : 'bg-white border-gray-300'}
+                        {selectedDate?.getTime() === slot.dateTime.getTime()
+                            ? 'border-primary border-2'
+                            : ''}"
+                    onclick={() => handleSelect(slot.dateTime)}
                 >
                     <div
                         class="h-1.5 w-full rounded-full
@@ -141,9 +173,9 @@
                               : 'bg-green-400'}"
                     ></div>
 
-                    <p>{hour}</p>
+                    <p>{slot.hour}</p>
                     <div class="h-2 w-full"></div>
-                </div>
+                </button>
             {/each}
         {/each}
     </div>
