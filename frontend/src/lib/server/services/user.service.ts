@@ -24,7 +24,42 @@ export async function onLoad(token: string) {
   });
   const procedures = await proceduresRaw.json();
 
-  return { doctors, visits, fullSlots, procedures };
+  const meRaw = await fetch(api("/auth/me"), {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const me = await meRaw.json();
+
+  const imagesRaw = await fetch(api(`/patients/${me.id}/images`), {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const images = await imagesRaw.json();
+
+  const imagesWithPreviews = await Promise.all(
+    images.map(async (img: any) => {
+      try {
+        const res = await fetch(
+          api(`/patients/${me.id}/images/${img.id}/download`),
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+
+        if (!res.ok) return img;
+
+        const arrayBuffer = await res.arrayBuffer();
+        const base64 = Buffer.from(arrayBuffer).toString("base64");
+
+        const previewUrl = `data:${img.mimeType};base64,${base64}`;
+
+        return { ...img, previewUrl };
+      } catch {
+        return img;
+      }
+    }),
+  );
+
+  return { doctors, visits, fullSlots, procedures, images: imagesWithPreviews };
 }
 
 export async function bookAppointment(token: string, formData: FormData) {

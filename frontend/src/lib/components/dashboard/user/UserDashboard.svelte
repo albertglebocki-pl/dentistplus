@@ -9,15 +9,14 @@
     import DentalChart from "../utils/DentalChart.svelte";
     import ProceduresHistory from "$lib/components/dashboard/utils/ProceduresHistory.svelte";
 
-    let {
-        data,
-        form
-    } = $props();
+    let { data, form } = $props();
 
     const currentView = $derived(page.url.searchParams.get("view") || "main");
     const procedures = $derived(data.data.procedures);
 
     let selectedDate: Date | null = $state(null);
+
+    const images = $derived(data.data.images ?? []);
 
     const onBooking = (e: any) => {
         e.preventDefault();
@@ -69,6 +68,47 @@
 
             <DentalChart />
         </Card>
+
+        <Card style={"full"}>
+            <CardTitle text="My images" />
+
+            {#if images.length === 0}
+                <p class="text-sm opacity-60">Nothing to see.</p>
+            {:else}
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {#each images as img}
+                        <div
+                            class="bg-secondary border rounded-lg p-2 flex flex-col gap-2"
+                        >
+                            {#if img.previewUrl}
+                                <img
+                                    src={img.previewUrl}
+                                    alt={img.filename}
+                                    class="w-full h-32 object-cover rounded"
+                                    draggable="false"
+                                />
+                            {:else}
+                                <div
+                                    class="w-full h-32 flex items-center justify-center text-xs opacity-50"
+                                >
+                                    No preview
+                                </div>
+                            {/if}
+
+                            <p class="text-xs truncate">{img.filename}</p>
+
+                            <a
+                                href={img.previewUrl}
+                                download={img.filename}
+                                class="text-xs text-center bg-primary text-white rounded py-1 hover:bg-primary/90 transition-colors"
+                            >
+                                Download
+                            </a>
+                        </div>
+                    {/each}
+                </div>
+            {/if}
+        </Card>
     {/if}
 
     {#if currentView === "booking"}
@@ -82,7 +122,7 @@
                         error={form?.message}
                         success={form?.success}
                         onDoctorChange={handleDoctorChange}
-                        selectedDate={selectedDate}
+                        {selectedDate}
                     />
                 </div>
 
@@ -90,8 +130,8 @@
                     <Calendar
                         visits={data.data.visits}
                         fullSlots={data.doctorAvailability}
-                        selectedDate={selectedDate}
-                        onSelect={(date: Date) => selectedDate = date}
+                        {selectedDate}
+                        onSelect={(date: Date) => (selectedDate = date)}
                     />
                 </div>
             </div>

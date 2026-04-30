@@ -14,7 +14,7 @@ function isValidISODateTime(value: any) {
 
 function isWithinWorkingHours(date: Date) {
   const hours = date.getUTCHours();
-  return hours >= 8 && hours < 18;
+  return hours >= 8 && hours <= 18;
 }
 
 service.post("/", async (c) => {
