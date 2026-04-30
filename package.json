@@ -1,0 +1,17 @@
+{
+  "name": "dentistplus-workflow",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "setup:dev": "node scripts/workflow.js setup dev",
+    "setup:prod": "node scripts/workflow.js setup prod",
+    "install": "node scripts/workflow.js install",
+    "generate": "node scripts/workflow.js generate",
+    "sync": "node scripts/workflow.js sync",
+    "prod": "node scripts/workflow.js start",
+    "dev": "node scripts/workflow.js dev",
+    "stop": "node scripts/workflow.js stop",
+    "clean": "node scripts/workflow.js clean",
+    "restart": "node scripts/workflow.js restart"
+  }
+}
