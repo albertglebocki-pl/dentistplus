@@ -7,12 +7,22 @@ const service = new Hono();
 
 service.use(authMiddleware);
 
+function isValidISODateTime(value: any) {
+  const d = new Date(value);
+  return !isNaN(d.getTime());
+}
+
+function isWithinWorkingHours(date: Date) {
+  const hours = date.getUTCHours();
+  return hours >= 8 && hours < 18;
+}
+
 service.post("/", async (c) => {
   const user = c.get("user");
   const body = await c.req.json();
 
-  let doctorId: number;
-  let patientId: number;
+  let doctorId;
+  let patientId;
 
   if (user.role === "USER") {
     doctorId = Number(body.doctorId);
@@ -25,11 +35,28 @@ service.post("/", async (c) => {
   }
 
   const dateTime = new Date(body.dateTime);
-  const durationMinutes: number = body.durationMinutes ?? 60;
+  const durationMinutes = body.durationMinutes ?? 60;
+  const now = new Date();
 
-  if (!doctorId || !patientId || isNaN(dateTime.getTime())) {
+  if (
+    !doctorId ||
+    !patientId ||
+    !isValidISODateTime(body.dateTime) ||
+    isNaN(dateTime.getTime())
+  ) {
     return c.json(
       { error: "`doctorId`, `patientId` and valid `dateTime` are required" },
+      400,
+    );
+  }
+
+  if (dateTime < now) {
+    return c.json({ error: "Cannot book in the past" }, 400);
+  }
+
+  if (!isWithinWorkingHours(dateTime)) {
+    return c.json(
+      { error: "Appointments allowed only between 08:00 and 18:00" },
       400,
     );
   }
