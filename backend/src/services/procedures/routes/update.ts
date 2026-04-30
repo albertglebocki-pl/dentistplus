@@ -1,7 +1,6 @@
 import { Hono } from "hono";
 import { authMiddleware, requireRole } from "../../auth/middleware.js";
 import { MedicalProcedure } from "../../../mongo/schema.js";
-import { sumCost } from "../service.js";
 
 const service = new Hono();
 service.use(authMiddleware);
@@ -30,7 +29,6 @@ service.patch("/:id", requireRole(["DOCTOR"]), async (c) => {
 
   if (Array.isArray(treatments)) {
     procedure.treatments = treatments as any;
-    procedure.cost = sumCost(treatments);
   }
 
   await procedure.save();

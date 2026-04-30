@@ -1,9 +1,9 @@
 <script lang="ts">
     import "../layout.css";
 
-    import type { PageData } from "./$types";
+    import type { LayoutData } from "./$types";
 
-    const { data, children }: { data: PageData; children: any } = $props();
+    const { data, children }: { data: LayoutData; children: any } = $props();
 </script>
 
 <nav class="w-full px-4 py-2">
@@ -13,6 +13,12 @@
         <a href="/dashboard" class="text-xl font-medium"> Dentist+ </a>
 
         <div class="flex flex-row items-center gap-2">
+            <span class="mr-2 cursor-default">
+                {data.user.firstName}
+                {data.user.lastName}
+                ({String(data.user.role).toUpperCase()})
+            </span>
+
             <a
                 class="w-7 h-7 p-1 rounded-md fill-primary bg-secondary"
                 href="/dashboard/account"

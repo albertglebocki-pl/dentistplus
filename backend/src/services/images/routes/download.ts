@@ -34,7 +34,7 @@ service.get("/:patientId/images/:imageId/download", async (c) => {
   }
 
   const body = result.Body as Readable;
-  const stream = Readable.toWeb(body);
+  const stream = Readable.toWeb(body) as unknown as ReadableStream;
 
   return new Response(stream, {
     headers: {

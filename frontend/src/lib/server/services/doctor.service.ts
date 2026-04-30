@@ -1,132 +1,134 @@
-import api from "$lib/server/utils/api.ts";
+import api from "$lib/server/utils/api";
 
 export async function onLoad(token: string) {
-    const visitsRaw = await fetch(api("/visits"), {
-        method: "GET",
-        headers: {Authorization: `Bearer ${token}`},
-    });
-    const visits = await visitsRaw.json();
+  const visitsRaw = await fetch(api("/visits"), {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const visits = await visitsRaw.json();
 
-    const catalogRaw = await fetch(api("/catalog"), {
-        method: "GET",
-        headers: {Authorization: `Bearer ${token}`},
-    })
-    const catalog = await catalogRaw.json();
+  const catalogRaw = await fetch(api("/catalog"), {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const catalog = await catalogRaw.json();
 
-    return {visits: visits, catalog: catalog};
+  return { visits: visits, catalog: catalog };
 }
 
 export async function getPatientTreatments(token: string, patientId: string) {
-    const treatmentsRaw = await fetch(api(`/procedures?patientId=${patientId}`), {
-        method: "GET",
-        headers: {Authorization: `Bearer ${token}`},
-    })
+  const treatmentsRaw = await fetch(api(`/procedures?patientId=${patientId}`), {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
-    return await treatmentsRaw.json();
+  return await treatmentsRaw.json();
 }
 
 export async function getPatientVisits(token: string, patientId: string) {
-    const visitsRaw = await fetch(api(`/visits/patient/${patientId}/all-booked`), {
-        method: "GET",
-        headers: {Authorization: `Bearer ${token}`},
-    })
+  const visitsRaw = await fetch(
+    api(`/visits/patient/${patientId}/all-booked`),
+    {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  );
 
-    return await visitsRaw.json();
+  return await visitsRaw.json();
 }
 
 export async function bookAppointment(token: string, formData: FormData) {
-    const datetime = formData.get('datetime');
-    const description = formData.get('description');
-    const patientId = formData.get('patientId');
+  const description = formData.get("description");
+  const patientId = formData.get("patientId");
 
-    const date = new Date(datetime);
+  const datetimeRaw = formData.get("datetime");
 
-    if(date < new Date()) {
-        return {success: false, error: "Cannot book appointment in the past"};
-    }
+  if (typeof datetimeRaw !== "string") {
+    return { success: false, error: "Invalid datetime" };
+  }
 
-    const day = date.getDay();
-    if(day == 0 || day == 6) {
-        return {success: false, error: "Cannot book appointment in the weekend"};
-    }
+  const date = new Date(datetimeRaw);
 
-    const hour = date.getHours();
-    if(hour < 8 || hour > 18) {
-        return {success: false, error: "Hour have to be in range 8-18"};
-    }
+  if (date < new Date()) {
+    return { success: false, error: "Cannot book appointment in the past" };
+  }
 
-    const res = await fetch(api("/visits"), {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-            patientId: Number(patientId),
-            dateTime: datetime,
-            description: description,
-            durationMinutes: 60
-        }),
-    })
+  const day = date.getDay();
+  if (day == 0 || day == 6) {
+    return { success: false, error: "Cannot book appointment in the weekend" };
+  }
 
-    const result = await res.json();
-    if(!res.ok) {
-        return {success: false, error: result.error || "Internal Server Error"};
-    }
+  const hour = date.getHours();
+  if (hour < 8 || hour > 18) {
+    return { success: false, error: "Hour have to be in range 8-18" };
+  }
 
-    return {success: true, data: result};
+  const res = await fetch(api("/visits"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      patientId: Number(patientId),
+      dateTime: datetimeRaw,
+      description: description,
+      durationMinutes: 60,
+    }),
+  });
+
+  const result = await res.json();
+  if (!res.ok) {
+    return { success: false, error: result.error || "Internal Server Error" };
+  }
+
+  return { success: true, data: result };
 }
 
 export async function updateVisit(token: any, formData: FormData) {
-    const payloadRaw = formData.get('payload');
+  const payloadRaw = formData.get("payload");
 
-    if (!payloadRaw || typeof payloadRaw !== 'string') {
-        return { success: false, error: "Missing payload" };
-    }
+  if (!payloadRaw || typeof payloadRaw !== "string") {
+    return { success: false, error: "Missing payload" };
+  }
 
-    const payload = JSON.parse(payloadRaw);
+  const payload = JSON.parse(payloadRaw);
 
-    const {
-        patientId,
-        visitId,
-        date,
-        description,
-        treatments
-    } = payload;
+  const { patientId, visitId, date, description, treatments } = payload;
 
-    if (
-        !patientId ||
-        !visitId ||
-        !date ||
-        !description ||
-        !Array.isArray(treatments)
-    ) {
-        return { success: false, error: "Fill all fields!" };
-    }
+  if (
+    !patientId ||
+    !visitId ||
+    !date ||
+    !description ||
+    !Array.isArray(treatments)
+  ) {
+    return { success: false, error: "Fill all fields!" };
+  }
 
-    if(treatments.length === 0) {
-        return {success: false, error: "No patient treatments found."};
-    }
+  if (treatments.length === 0) {
+    return { success: false, error: "No patient treatments found." };
+  }
 
-    const res = await fetch(api("/procedures"), {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-            patientId: patientId,
-            visitId: visitId,
-            data: date,
-            description: description,
-            treatments: treatments,
-        })
-    })
+  const res = await fetch(api("/procedures"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      patientId: patientId,
+      visitId: visitId,
+      data: date,
+      description: description,
+      treatments: treatments,
+    }),
+  });
 
-    const result = await res.json();
-    if(!res.ok) {
-        return {success: false, error: result.error || "Internal Server Error"};
-    }
+  const result = await res.json();
+  if (!res.ok) {
+    return { success: false, error: result.error || "Internal Server Error" };
+  }
 
-    return {success: true, data: result};
+  return { success: true, data: result };
 }

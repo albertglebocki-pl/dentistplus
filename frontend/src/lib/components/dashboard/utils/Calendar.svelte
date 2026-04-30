@@ -7,6 +7,11 @@
         }
     } = $props();
 
+    type CalendarCell = {
+        taken: number[];
+        mine: number[];
+    };
+
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
     const months = [
         "January",
@@ -22,7 +27,6 @@
         "November",
         "December",
     ];
-
 
     const getMonday = (date: Date) => {
         const d = new Date(date);
@@ -47,10 +51,13 @@
     const currentMonthLabel = $derived(months[weekDays[0].getMonth()]);
 
     const calendarData = $derived.by(() => {
-        const grid = Array.from({length: 5}, () => ({
-            taken: [] as number[],
-            mine: [] as number [],
-        }));
+        const grid: CalendarCell[] = Array.from(
+            { length: 5 },
+            (): CalendarCell => ({
+                taken: [],
+                mine: [],
+            }),
+        );
 
         const start = new Date(currentWeekStart);
         const end = new Date(start);

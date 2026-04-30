@@ -19,32 +19,62 @@ const mongoSeed = async () => {
   const patient = await Patient.create({
     patientId: 1001,
     toothStatusList: [
-      { tooth: "11", status: "OK" },
-      { tooth: "12", status: "CARIES" },
-      { tooth: "36", status: "FILLED" },
+      { tooth: "11", status: "healthy" },
+      { tooth: "12", status: "healthy" },
+      { tooth: "36", status: "healthy" },
     ],
   });
 
-  const catalog = await ProcedureCatalog.insertMany([
+  const catalog = (await ProcedureCatalog.insertMany([
     {
       name: "Composite Filling",
       description: "Standard composite restoration",
       defaultCost: 250,
       active: true,
+      setsToothStatus: "filled",
+      blockedByStatuses: ["extracted"],
     },
     {
       name: "Root Canal Treatment",
       description: "Endodontic treatment",
       defaultCost: 900,
       active: true,
+      setsToothStatus: "root_canal",
+      blockedByStatuses: ["extracted", "implant"],
     },
     {
       name: "Scaling",
       description: "Professional teeth cleaning",
       defaultCost: 200,
       active: true,
+      setsToothStatus: null,
+      blockedByStatuses: ["extracted"],
     },
-  ]);
+    {
+      name: "Extraction",
+      description: "Tooth extraction",
+      defaultCost: 350,
+      active: true,
+      setsToothStatus: "extracted",
+      blockedByStatuses: ["extracted", "implant"],
+    },
+    {
+      name: "Implant",
+      description: "Dental implant placement",
+      defaultCost: 3000,
+      active: true,
+      setsToothStatus: "implant",
+      blockedByStatuses: ["implant"],
+    },
+    {
+      name: "Crown",
+      description: "Dental crown placement",
+      defaultCost: 1500,
+      active: true,
+      setsToothStatus: "crown",
+      blockedByStatuses: ["extracted"],
+    },
+  ])) as any[];
 
   const doctorId = 2;
 
@@ -76,7 +106,6 @@ const mongoSeed = async () => {
         cost: 250,
       },
     ],
-    cost: 500,
   });
 
   visit1.medicalProcedureId = procedure1._id;
@@ -119,7 +148,6 @@ const mongoSeed = async () => {
         cost: 200,
       },
     ],
-    cost: 1100,
   });
 
   visit2.medicalProcedureId = procedure2._id;
