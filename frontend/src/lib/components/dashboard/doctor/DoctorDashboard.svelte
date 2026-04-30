@@ -120,6 +120,15 @@
     const handleToothAdd = () => {
         if (!selectedTooth || !selectedProcedure) return;
 
+        const exists = procedures.some(
+            (p, i) =>
+                p.tooth === selectedTooth &&
+                p.catalogItemId === selectedProcedure._id &&
+                i !== editingIndex,
+        );
+
+        if (exists) return;
+
         const item: TreatmentDraft = {
             tooth: selectedTooth,
             catalogItemId: selectedProcedure._id,

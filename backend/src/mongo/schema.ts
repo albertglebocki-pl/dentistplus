@@ -58,6 +58,8 @@ const procedureCatalogSchema = new Schema(
     description: String,
     defaultCost: { type: Number, min: 0 },
     active: { type: Boolean, default: true },
+    setsToothStatus: { type: String, default: null },
+    blockedByStatuses: { type: [String], default: [] },
   },
   { timestamps: true },
 );

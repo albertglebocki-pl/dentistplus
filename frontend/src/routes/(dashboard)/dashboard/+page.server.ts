@@ -1,8 +1,8 @@
-import {fail, redirect} from '@sveltejs/kit';
+import { fail, redirect } from "@sveltejs/kit";
 
-import * as UserService from '$lib/server/services/user.service';
-import * as AdminService from '$lib/server/services/admin.service';
-import * as DoctorService from '$lib/server/services/doctor.service';
+import * as UserService from "$lib/server/services/user.service";
+import * as AdminService from "$lib/server/services/admin.service";
+import * as DoctorService from "$lib/server/services/doctor.service";
 
 export const actions = {
   book: async ({ request, cookies }) => {
@@ -64,10 +64,19 @@ export const actions = {
 
     const formData = await request.formData();
 
+    const blockedByStatusesRaw = formData.get("blockedByStatuses") as string;
+
     const result = await AdminService.createProcedure(token, {
       name: formData.get("name") as string,
       description: formData.get("description") as string,
       defaultCost: Number(formData.get("defaultCost")),
+      setsToothStatus: (formData.get("setsToothStatus") as string) || null,
+      blockedByStatuses: blockedByStatusesRaw
+        ? blockedByStatusesRaw
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : [],
     });
 
     if (!result.success) {
@@ -113,29 +122,29 @@ export const actions = {
       return fail(400, { message: result.error });
     }
 
-        return {success: true};
-    },
+    return { success: true };
+  },
 
-    bookDoctor: async ({request, cookies, url}) => {
-        const token = cookies.get('token');
-        if (!token) {
-            redirect(302, '/auth/login');
-        }
-
-        const formData = await request.formData();
-        const result = await DoctorService.bookAppointment(token, formData);
-
-        if (!result.success) {
-            return fail(400, {message: result.error});
-        }
-
-        return {success: true};
-    },
-
-  doctorUpdateVisit: async({request, cookies, url}) => {
-    const token = cookies.get('token');
+  bookDoctor: async ({ request, cookies, url }) => {
+    const token = cookies.get("token");
     if (!token) {
-      redirect(302, '/auth/login');
+      redirect(302, "/auth/login");
+    }
+
+    const formData = await request.formData();
+    const result = await DoctorService.bookAppointment(token, formData);
+
+    if (!result.success) {
+      return fail(400, { message: result.error });
+    }
+
+    return { success: true };
+  },
+
+  doctorUpdateVisit: async ({ request, cookies, url }) => {
+    const token = cookies.get("token");
+    if (!token) {
+      redirect(302, "/auth/login");
     }
 
     const formData = await request.formData();
@@ -144,9 +153,9 @@ export const actions = {
     console.log("result", result);
 
     if (!result.success) {
-      return fail(400, {message: result.error});
+      return fail(400, { message: result.error });
     }
 
-    return {success: true};
-  }
-}
+    return { success: true };
+  },
+};

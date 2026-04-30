@@ -7,7 +7,8 @@ const service = new Hono();
 service.use(authMiddleware);
 
 service.post("/", requireRole(["ADMIN"]), async (c) => {
-  const { name, description, defaultCost } = await c.req.json();
+  const { name, description, defaultCost, setsToothStatus, blockedByStatuses } =
+    await c.req.json();
 
   if (!name) {
     return c.json({ error: "Name is required" }, 400);
@@ -15,9 +16,11 @@ service.post("/", requireRole(["ADMIN"]), async (c) => {
 
   const item = await ProcedureCatalog.create({
     name,
-    description: description,
+    description,
     defaultCost,
     active: true,
+    setsToothStatus: setsToothStatus ?? null,
+    blockedByStatuses: blockedByStatuses ?? [],
   });
 
   return c.json(item, 201);
