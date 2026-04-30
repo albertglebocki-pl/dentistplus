@@ -11,7 +11,7 @@ MONGO_USER=admin
 MONGO_PASSWORD=$(openssl rand -hex 32)
 MONGO_DB=dentistplus
 JWT_SECRET=$(openssl rand -hex 32)
-MODE=DEV
+MODE="${1:-${MODE:-PROD}}"
 EOF
 fi
 
