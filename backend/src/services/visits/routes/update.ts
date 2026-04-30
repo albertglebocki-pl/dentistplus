@@ -7,6 +7,16 @@ const service = new Hono();
 
 service.use(authMiddleware);
 
+function isValidISODateTime(value: any) {
+  const d = new Date(value);
+  return !isNaN(d.getTime());
+}
+
+function isWithinWorkingHours(date: Date) {
+  const hours = date.getUTCHours();
+  return hours >= 8 && hours < 18;
+}
+
 service.patch("/:id", async (c) => {
   const user = c.get("user");
   const visit = await Visit.findById(c.req.param("id"));
@@ -33,9 +43,29 @@ service.patch("/:id", async (c) => {
 
   const { dateTime, durationMinutes, description } = await c.req.json();
 
-  if (dateTime) {
+  if (dateTime !== undefined) {
+    if (!isValidISODateTime(dateTime)) {
+      return c.json({ error: "Invalid dateTime" }, 400);
+    }
+
     const newDate = new Date(dateTime);
-    const duration: number = durationMinutes ?? visit.durationMinutes;
+    const now = new Date();
+
+    if (newDate < now) {
+      return c.json({ error: "Cannot book in the past" }, 400);
+    }
+
+    if (!isWithinWorkingHours(newDate)) {
+      return c.json(
+        {
+          error: "Appointments allowed only between 08:00 and 18:00",
+        },
+        400,
+      );
+    }
+
+    const duration = durationMinutes ?? visit.durationMinutes;
+
     const conflict = await checkConflict(
       visit.doctorId,
       newDate,
@@ -49,7 +79,7 @@ service.patch("/:id", async (c) => {
 
     visit.dateTime = newDate;
 
-    if (durationMinutes) {
+    if (durationMinutes !== undefined) {
       visit.durationMinutes = durationMinutes;
     }
   }

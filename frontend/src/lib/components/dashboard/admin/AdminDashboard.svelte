@@ -393,6 +393,18 @@
                     placeholder="Description"
                 ></textarea>
 
+                <input
+                    name="setsToothStatus"
+                    class="border p-2 col-span-2 rounded-md"
+                    placeholder="Sets tooth status (e.g. extracted)"
+                />
+
+                <input
+                    name="blockedByStatuses"
+                    class="border p-2 col-span-2 rounded-md"
+                    placeholder="Blocked by statuses (comma-separated, e.g. extracted,implant)"
+                />
+
                 <div class="col-span-2 flex justify-end gap-6">
                     <button
                         type="button"
