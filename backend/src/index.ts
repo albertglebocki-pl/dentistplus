@@ -27,7 +27,6 @@ import procedureCreate from "./services/procedures/routes/create.js";
 import procedureUpdate from "./services/procedures/routes/update.js";
 
 import paymentPay from "./services/payments/routes/pay.js";
-import paymentFail from "./services/payments/routes/fail.js";
 import paymentList from "./services/payments/routes/list.js";
 import paymentDetails from "./services/payments/routes/details.js";
 import paymentCreate from "./services/payments/routes/create.js";
@@ -90,7 +89,6 @@ app.route("/procedures", procedureCreate);
 app.route("/procedures", procedureUpdate);
 
 app.route("/payments", paymentPay);
-app.route("/payments", paymentFail);
 app.route("/payments", paymentList);
 app.route("/payments", paymentDetails);
 app.route("/payments", paymentCreate);

@@ -57,14 +57,14 @@
             {/if}
 
             <p class="text-sm text-gray-500 pt-2">
-                You will receive a confirmation email shortly.
+                You will receive a confirmation from your bank shortly.
             </p>
         </div>
 
         <!-- Footer -->
         <div class="px-6 pb-6">
             <a
-                href="/"
+                href="/dashboard"
                 class="block text-center w-full py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition"
             >
                 Back to dashboard
