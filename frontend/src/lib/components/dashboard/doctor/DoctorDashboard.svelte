@@ -170,8 +170,8 @@
         message?: string;
         success?: boolean;
     } | null>(null);
-    let bookingStatus = $state<{ message?: string; success?: boolean } | null>(
-        null,
+    let bookingStatus = $state<{ message?: string; success?: string } | null>(
+        {message: "", success: ""}
     );
 
     const handleBookingSubmit = () => {
@@ -181,7 +181,7 @@
             if (result.type === "success" || result.type === "failure") {
                 bookingStatus = result.data as {
                     message?: string;
-                    success?: boolean;
+                    success?: string;
                 };
             }
             await update();
@@ -495,7 +495,7 @@
                                     updateVisitStatus = (result.data ??
                                         null) as {
                                         message?: string;
-                                        success?: boolean;
+                                        success?: string;
                                     } | null;
                                 }
 
