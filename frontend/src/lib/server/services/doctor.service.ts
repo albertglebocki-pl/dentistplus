@@ -13,7 +13,7 @@ export async function onLoad(token: string) {
   });
   const catalog = await catalogRaw.json();
 
-  return { visits: visits, catalog: catalog };
+  return { visits: visits, catalog: catalog, token: token };
 }
 
 export async function getPatientTreatments(token: string, patientId: string) {
