@@ -24,6 +24,17 @@
         toothType: ToothType;
     };
 
+    type Procedure = {
+        tooth: ToothId;
+        description: string;
+        cost: number;
+        _id: string;
+    };
+
+    type DentalProcedureEntry = {
+        treatments: Procedure[];
+    };
+
     const TOOTH_META: Record<
         ToothId,
         { name: string; toothType: ToothType }
@@ -89,8 +100,13 @@
 
     let selectedTooth = $state<Tooth | null>(null);
 
-    const {onSelect} =
-        $props<{ onSelect?: (tooth: Tooth) => void }>();
+    const {
+        onSelect,
+        procedures = []
+    } = $props<{
+        onSelect?: (tooth: Tooth) => void;
+        procedures?: DentalProcedureEntry[];
+    }>();
 
     function selectTooth(tooth: Tooth) {
         if (selectedTooth?.id === tooth.id) {
@@ -106,6 +122,17 @@
     const UL = $derived(teeth.filter((t) => t.quadrant === 2));
     const LR = $derived(teeth.filter((t) => t.quadrant === 4));
     const LL = $derived(teeth.filter((t) => t.quadrant === 3));
+
+    const selectedToothProcedures = $derived.by(() => {
+        if (!selectedTooth) return [];
+
+        return procedures
+            .flatMap((entry) => entry.treatments)
+            .filter(
+                (procedure) =>
+                    procedure.tooth === selectedTooth.label
+            );
+    });
 
     function archScale(i: number, total: number) {
         const center = (total - 1) / 2;
@@ -235,6 +262,37 @@
                     <span class="text-xs text-gray-500">
                         {selectedTooth.description}
                     </span>
+
+                    <div class="border-t border-primary/10 pt-2 mt-2">
+                        <span class="text-xs font-semibold text-gray-700">
+                            Treatment history
+                        </span>
+
+                        {#if selectedToothProcedures.length > 0}
+                            <div
+                                class="flex flex-col gap-2 mt-2 max-h-44 overflow-y-auto pr-1"
+                            >
+                                {#each selectedToothProcedures as procedure}
+                                    <div
+                                        class="rounded-md bg-white/60 px-2 py-1"
+                                    >
+                                        <div class="text-xs font-medium">
+                                            {procedure.description}
+                                        </div>
+
+                                        <div class="text-[11px] text-gray-500">
+                                            {procedure.cost} zł
+                                        </div>
+                                    </div>
+                                {/each}
+                            </div>
+                        {:else}
+                            <div class="text-xs text-gray-400 mt-1">
+                                No procedures found
+                            </div>
+                        {/if}
+                    </div>
+
                 {:else}
                     <span class="font-medium text-gray-700">
                         Nothing to see
