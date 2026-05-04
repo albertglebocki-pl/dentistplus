@@ -52,7 +52,7 @@
 
     const calendarData = $derived.by(() => {
         const grid: CalendarCell[] = Array.from(
-            { length: 5 },
+            {length: 5},
             (): CalendarCell => ({
                 taken: [],
                 mine: [],
@@ -107,9 +107,9 @@
     }
 </script>
 
-<div class="flex gap-2">
+<div class="flex gap-1 md:gap-1.5 lg:gap-2">
     <div
-        class="week-switch flex flex-col items-center justify-between p-2 font-bold"
+        class="week-switch flex flex-col items-center justify-between font-bold text-sm lg:text-base"
     >
         <button onclick={() => changeWeek(-7)}>↑</button>
 
@@ -122,7 +122,7 @@
     </div>
 
     <div
-        class="current-week grid grid-rows-5 gap-2 w-18 shrink-0 bg-primary text-secondary rounded p-2"
+        class="current-week grid grid-rows-5 gap-2 w-10 text-xs shrink-0 bg-primary text-secondary rounded p-0.5 lg:w-14 lg:text-sm lg:p-1.5"
     >
         {#each weekDays as dayDate, i}
             <div class="flex flex-col justify-center items-center">
@@ -135,7 +135,7 @@
         {/each}
     </div>
 
-    <div class="calendar flex-1 grid grid-cols-11 grid-rows-5 gap-2">
+    <div class="calendar flex-1 grid grid-cols-11 grid-rows-5 gap-0.5 text-xs md:gap-1 md:text-base">
         {#each weekDays as dayDate, dayIndex}
             {#each Array.from({length: 11}, (_, h) => {
                 const hour = 8 + h;

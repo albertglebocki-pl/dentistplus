@@ -170,8 +170,8 @@
         message?: string;
         success?: boolean;
     } | null>(null);
-    let bookingStatus = $state<{ message?: string; success?: boolean } | null>(
-        null,
+    let bookingStatus = $state<{ message?: string; success?: string } | null>(
+        {message: "", success: ""}
     );
 
     const handleBookingSubmit = () => {
@@ -181,7 +181,7 @@
             if (result.type === "success" || result.type === "failure") {
                 bookingStatus = result.data as {
                     message?: string;
-                    success?: boolean;
+                    success?: string;
                 };
             }
             await update();
@@ -358,13 +358,13 @@
 
 <div class="flex flex-col gap-5 mt-3 h-full">
     {#if currentView === "main"}
-        <div class="flex gap-5 items-stretch h-91">
-            <Card style={"w-2/3 h-full"}>
+        <div class="flex flex-col gap-5 items-stretch h-91 sm:flex-row">
+            <Card style={"sm:w-2/3 h-full"}>
                 <CardTitle text="Calendar" />
                 <Calendar {visits} fullSlots={[]} />
             </Card>
 
-            <Card style={"w-1/3 flex flex-col h-full"}>
+            <Card style={"sm:w-1/3 flex flex-col h-full"}>
                 <CardTitle text="Today appointments" />
 
                 <div
@@ -381,8 +381,8 @@
             </Card>
         </div>
     {:else if currentView === "visit"}
-        <div class="flex gap-5">
-            <Card style={"w-1/3"}>
+        <div class="flex flex-col gap-5 sm:flex-row">
+            <Card style={"sm:w-1/3"}>
                 <CardTitle text="Patient information" />
                 <p class="text-xl pb-2">
                     {patient.firstName}
@@ -402,7 +402,7 @@
                 </p>
             </Card>
 
-            <Card style={"w-2/3 min-h-0"}>
+            <Card style={"sm:w-2/3 min-h-0"}>
                 <CardTitle text="Treatment history" />
                 <div class="max-h-62.5 overflow-y-auto min-h-0">
                     <ProceduresHistory procedures={treatments} />
@@ -417,8 +417,8 @@
         <Card style={"w-full"}>
             <CardTitle text="Current Visit" />
 
-            <div class="flex gap-5">
-                <div class="w-1/3 flex flex-col gap-4">
+            <div class="flex flex-col gap-5 sm:flex-row">
+                <div class="sm:w-1/3 flex flex-col gap-4">
                     <label class={labelClass}>
                         <span class={labelTextClass}>Visit description</span>
                         <input
@@ -495,7 +495,7 @@
                                     updateVisitStatus = (result.data ??
                                         null) as {
                                         message?: string;
-                                        success?: boolean;
+                                        success?: string;
                                     } | null;
                                 }
 
@@ -533,7 +533,7 @@
                     </form>
                 </div>
 
-                <div class="w-2/3">
+                <div class="sm:w-2/3">
                     <h2 class="pb-3 text-primary/60">Summary</h2>
 
                     <div
@@ -596,8 +596,8 @@
         <Card style={"w-full"}>
             <CardTitle text="Book next appointment" />
 
-            <div class="flex justify-between">
-                <div class="w-1/3">
+            <div class="flex flex-col justify-between sm:flex-row">
+                <div class="sm:w-1/3">
                     <AppointmentBooking
                         doctorChoose={false}
                         patientId={patient.id}
@@ -608,7 +608,7 @@
                     />
                 </div>
 
-                <div class="w-2/3">
+                <div class="sm:w-2/3">
                     <Calendar
                         visits={patientVisits}
                         fullSlots={data.data.visits}
@@ -622,8 +622,8 @@
         <Card style={"w-full mb-5"}>
             <CardTitle text="Patient images" />
 
-            <div class="flex gap-5">
-                <div class="w-1/3 flex flex-col gap-4">
+            <div class="flex flex-col gap-5 sm:flex-row">
+                <div class="sm:w-1/3 flex flex-col gap-4">
                     <div
                         class="border border-primary/20 rounded-xl p-4 bg-secondary flex flex-col gap-4"
                     >
@@ -651,7 +651,7 @@
                     </div>
                 </div>
 
-                <div class="w-2/3">
+                <div class="sm:w-2/3">
                     <div
                         class="border border-primary/20 rounded-xl p-4 bg-secondary h-80 overflow-y-auto"
                     >

@@ -41,8 +41,8 @@
 
 <div class="flex flex-col gap-5 mt-3">
     {#if currentView === "main"}
-        <div class="flex gap-5">
-            <Card style={"w-2/3"}>
+        <div class="flex flex-col gap-5 sm:flex-row">
+            <Card style={"sm:w-2/3"}>
                 <div class="flex justify-between items-start pb-5">
                     <CardTitle text="Calendar" />
                     <button
@@ -56,7 +56,7 @@
                 <Calendar visits={data.data.visits} fullSlots={[]} />
             </Card>
 
-            <Card style={"w-1/3"}>
+            <Card style={"sm:w-1/3"}>
                 <CardTitle text="Payments" />
                 <div class="max-h-77.5 overflow-y-auto min-h-0">
                     <ProceduresHistory {procedures} {payments} folded />
@@ -115,8 +115,8 @@
     {#if currentView === "booking"}
         <Card style={"full"}>
             <CardTitle text="Book appointment" />
-            <div class="flex justify-between">
-                <div class="w-1/3">
+            <div class="flex flex-col justify-between sm:flex-row">
+                <div class="sm:w-1/3">
                     <AppointmentBooking
                         doctorChoose
                         doctorList={data.data.doctors}
@@ -127,7 +127,7 @@
                     />
                 </div>
 
-                <div class="w-2/3">
+                <div class="sm:w-2/3">
                     <Calendar
                         visits={data.data.visits}
                         fullSlots={data.doctorAvailability}

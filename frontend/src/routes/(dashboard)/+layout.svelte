@@ -74,6 +74,8 @@
     </div>
 </nav>
 
-<div class="max-w-5xl mx-auto">
-    {@render children()}
+<div class="w-full px-4">
+    <div class="max-w-5xl mx-auto">
+        {@render children()}
+    </div>
 </div>
