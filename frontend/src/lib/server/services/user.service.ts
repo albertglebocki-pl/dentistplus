@@ -59,7 +59,19 @@ export async function onLoad(token: string) {
     }),
   );
 
-  return { doctors, visits, fullSlots, procedures, images: imagesWithPreviews };
+  const paymentsRaw = await fetch(api("/payments"), {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const payments = await paymentsRaw.json();
+
+  return {
+    doctors,
+    visits,
+    fullSlots,
+    procedures,
+    images: imagesWithPreviews,
+    payments,
+  };
 }
 
 export async function bookAppointment(token: string, formData: FormData) {

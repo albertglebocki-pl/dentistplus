@@ -13,6 +13,7 @@
 
     const currentView = $derived(page.url.searchParams.get("view") || "main");
     const procedures = $derived(data.data.procedures);
+    const payments = $derived(data.data.payments);
 
     let selectedDate: Date | null = $state(null);
 
@@ -58,7 +59,7 @@
             <Card style={"w-1/3"}>
                 <CardTitle text="Payments" />
                 <div class="max-h-77.5 overflow-y-auto min-h-0">
-                    <ProceduresHistory {procedures} folded />
+                    <ProceduresHistory {procedures} {payments} folded />
                 </div>
             </Card>
         </div>
