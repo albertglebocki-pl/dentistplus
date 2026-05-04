@@ -74,8 +74,8 @@
     {#if currentView === "booking"}
         <Card style={"full"}>
             <CardTitle text="Book appointment" />
-            <div class="flex justify-between">
-                <div class="w-1/3">
+            <div class="flex flex-col justify-between sm:flex-row">
+                <div class="sm:w-1/3">
                     <AppointmentBooking
                         doctorChoose
                         doctorList={data.data.doctors}
@@ -86,7 +86,7 @@
                     />
                 </div>
 
-                <div class="w-2/3">
+                <div class="sm:w-2/3">
                     <Calendar
                         visits={data.data.visits}
                         fullSlots={data.doctorAvailability}
