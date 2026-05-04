@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { procedures, folded = false } = $props();
+    let { procedures, payments = [], folded = false } = $props();
 
     let expandedTreatmentId = $state<string | null>(null);
 
@@ -20,11 +20,19 @@
     const toggleDetails = (id: string) => {
         expandedTreatmentId = expandedTreatmentId === id ? null : id;
     };
+
+    const getPayment = (procedureId: string) => {
+        return payments.find(
+            (p: any) => p.medicalProcedureId?._id === procedureId,
+        );
+    };
 </script>
 
 {#if procedures.length > 0}
     <div class="flex flex-col gap-3">
         {#each procedures as treatment}
+            {@const payment = getPayment(treatment._id)}
+
             <div class="bg-secondary border border-primary rounded-lg p-2">
                 {#if folded}
                     <div class="flex items-center justify-between">
@@ -43,7 +51,24 @@
                             {calculateTotalCost(treatment.treatments)} zł
                         </p>
 
-                        <div class="flex justify-end">
+                        <div class="flex items-center gap-2">
+                            {#if payment}
+                                {#if payment.status === "COMPLETED"}
+                                    <span
+                                        class="bg-gray-300 text-gray-700 text-xs px-2 py-1 rounded font-semibold"
+                                    >
+                                        PAID
+                                    </span>
+                                {:else}
+                                    <a
+                                        href={`/payment/${payment._id}`}
+                                        class="bg-green-600 text-white text-xs px-2 py-1 rounded hover:bg-green-700"
+                                    >
+                                        Pay {payment.amount} zł
+                                    </a>
+                                {/if}
+                            {/if}
+
                             <button
                                 type="button"
                                 class="bg-primary text-white font-semibold text-sm py-1 px-2 rounded-lg hover:bg-primary/90 transition-colors"
@@ -70,7 +95,24 @@
                             {calculateTotalCost(treatment.treatments)} zł
                         </p>
 
-                        <div class="w-1/10 flex justify-end">
+                        <div class="w-1/4 flex justify-end items-center gap-2">
+                            {#if payment}
+                                {#if payment.status === "COMPLETED"}
+                                    <span
+                                        class="bg-gray-300 text-gray-700 text-xs px-2 py-1 rounded font-semibold"
+                                    >
+                                        PAID
+                                    </span>
+                                {:else}
+                                    <a
+                                        href={`/payment/${payment._id}`}
+                                        class="bg-green-600 text-white text-xs px-2 py-1 rounded hover:bg-green-700"
+                                    >
+                                        Pay {payment.amount} zł
+                                    </a>
+                                {/if}
+                            {/if}
+
                             <button
                                 type="button"
                                 class="bg-primary text-white font-semibold text-sm py-1 px-2 rounded-lg hover:bg-primary/90 transition-colors"

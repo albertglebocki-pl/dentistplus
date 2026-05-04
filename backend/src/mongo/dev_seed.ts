@@ -163,6 +163,7 @@ const mongoSeed = async () => {
   });
 
   console.log("Mongo seed completed");
+  console.log({ visit1: visit1.id, visit2: visit2.id });
   console.log({ payment1: payment1.token, payment2: payment2.token });
 };
 

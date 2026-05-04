@@ -39,18 +39,17 @@ export const actions = {
     const valid = isTestCard(cardNumber);
 
     if (!valid) {
-      await failPayment(params.id);
-      throw redirect(303, "/payment/failure");
+      throw redirect(303, `/payment/${params.id}/failure`);
     }
 
     const result = await payPayment(params.id);
 
     if (!result.ok) {
-      await failPayment(params.id);
-      throw redirect(303, "/payment/failure");
+      throw redirect(303, `/payment/${params.id}/failure`);
     }
 
-    const redirectUrl = result.data.redirectUrl || "/payment/success";
+    const redirectUrl =
+      result.data.redirectUrl || `/payment/${params.id}/success`;
 
     throw redirect(303, redirectUrl);
   },

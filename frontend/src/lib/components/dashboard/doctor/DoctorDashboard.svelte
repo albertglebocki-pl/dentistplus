@@ -7,7 +7,6 @@
     import { page } from "$app/state";
     import UpcomingVisitCard from "$lib/components/dashboard/doctor/UpcomingVisitCard.svelte";
     import ProceduresHistory from "$lib/components/dashboard/utils/ProceduresHistory.svelte";
-    import type {SubmitFunction} from "@sveltejs/kit";
 
     let { data } = $props();
     const visits = $derived(data.data.visits);
@@ -190,6 +189,171 @@
     };
 
     let selectedDate: Date | null = $state(null);
+
+    let files: FileList | null = $state(null);
+    const file = $derived<File | null>(files?.[0] ?? null);
+    let status = $state("");
+    let images: any[] = $state([]);
+    let loading = $state(false);
+
+    const currentPatientId = $derived(
+        patient?.id ?? patient?.patientId ?? selectedVisit?.patientId ?? null,
+    );
+
+    async function upload() {
+        const currentFile = file;
+        if (!currentFile || !currentPatientId) return;
+
+        loading = true;
+        status = "Uploading...";
+
+        try {
+            const form = new FormData();
+
+            const timestamp = Date.now();
+
+            const extension = currentFile.name.split(".").pop();
+            const filename = `patient${currentPatientId}-${timestamp}.${extension}`;
+
+            form.append("file", currentFile, filename);
+
+            const res = await fetch(
+                `/api/patients/${currentPatientId}/images`,
+                {
+                    method: "POST",
+                    headers: { Authorization: `Bearer ${data.data.token}` },
+                    body: form,
+                },
+            );
+
+            const data2 = await res.json();
+            if (!res.ok) throw new Error(data2.error ?? "Upload failed");
+
+            status = `✅ Uploaded: ${data2.filename}`;
+            await loadImages();
+            await loadPreviews();
+        } catch (e: any) {
+            status = `❌ Error: ${e.message}`;
+        } finally {
+            loading = false;
+        }
+    }
+
+    async function loadImages() {
+        if (!currentPatientId) return;
+
+        loading = true;
+
+        try {
+            const res = await fetch(
+                `/api/patients/${currentPatientId}/images`,
+                {
+                    headers: { Authorization: `Bearer ${data.data.token}` },
+                },
+            );
+
+            const result = await res.json();
+            if (!res.ok) throw new Error(result.error ?? "Failed to load");
+
+            images = result;
+        } catch (e: any) {
+            status = `❌ Error loading images: ${e.message}`;
+        } finally {
+            loading = false;
+        }
+    }
+
+    async function loadPreviews() {
+        if (!currentPatientId) return;
+
+        const updatedImages = await Promise.all(
+            images.map(async (img) => {
+                try {
+                    const res = await fetch(
+                        `/api/patients/${currentPatientId}/images/${img.id}/download`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${data.data.token}`,
+                            },
+                        },
+                    );
+
+                    if (!res.ok) return img;
+
+                    const blob = await res.blob();
+                    const previewUrl = URL.createObjectURL(blob);
+
+                    return { ...img, previewUrl };
+                } catch {
+                    return img;
+                }
+            }),
+        );
+
+        images = updatedImages;
+    }
+
+    async function downloadImage(img: any) {
+        if (!currentPatientId) return;
+
+        try {
+            const res = await fetch(
+                `/api/patients/${currentPatientId}/images/${img.id}/download`,
+                {
+                    headers: { Authorization: `Bearer ${data.data.token}` },
+                },
+            );
+
+            if (!res.ok) throw new Error(await res.text());
+
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = img.filename || "image";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            URL.revokeObjectURL(url);
+        } catch (e: any) {
+            status = `❌ Download error: ${e.message}`;
+        }
+    }
+
+    async function deleteImage(img: any) {
+        if (!currentPatientId) return;
+
+        try {
+            const res = await fetch(
+                `/api/patients/${currentPatientId}/images/${img.id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${data.data.token}`,
+                    },
+                },
+            );
+
+            const result = await res.json();
+            if (!res.ok) throw new Error(result.error ?? "Delete failed");
+
+            status = `🗑️ Deleted: ${img.filename}`;
+            await loadImages();
+            await loadPreviews();
+        } catch (e: any) {
+            status = `❌ Delete error: ${e.message}`;
+        }
+    }
+
+    $effect(() => {
+        if (currentPatientId) {
+            loadImages().then(() => {
+                loadPreviews();
+            });
+        }
+    });
 </script>
 
 <div class="flex flex-col gap-5 mt-3 h-full">
@@ -429,28 +593,114 @@
             </div>
         </Card>
 
-        <Card style={"w-full mb-5"}>
+        <Card style={"w-full"}>
             <CardTitle text="Book next appointment" />
 
             <div class="flex flex-col justify-between sm:flex-row">
                 <div class="sm:w-1/3">
                     <AppointmentBooking
-                            doctorChoose={false}
-                            patientId={patient.id}
-                            error={bookingStatus?.message}
-                            success={bookingStatus?.success}
-                            submitHandler={handleBookingSubmit}
-                            selectedDate={selectedDate}
+                        doctorChoose={false}
+                        patientId={patient.id}
+                        error={bookingStatus?.message}
+                        success={String(bookingStatus?.success)}
+                        submitHandler={handleBookingSubmit}
+                        {selectedDate}
                     />
                 </div>
 
                 <div class="sm:w-2/3">
                     <Calendar
-                            visits={patientVisits}
-                            fullSlots={data.data.visits}
-                            selectedDate={selectedDate}
-                            onSelect={(date: Date) => selectedDate = date}
+                        visits={patientVisits}
+                        fullSlots={data.data.visits}
+                        {selectedDate}
+                        onSelect={(date: Date) => (selectedDate = date)}
                     />
+                </div>
+            </div>
+        </Card>
+
+        <Card style={"w-full mb-5"}>
+            <CardTitle text="Patient images" />
+
+            <div class="flex gap-5">
+                <div class="w-1/3 flex flex-col gap-4">
+                    <div
+                        class="border border-primary/20 rounded-xl p-4 bg-secondary flex flex-col gap-4"
+                    >
+                        <div>
+                            <h3 class="font-semibold">Upload image</h3>
+                            <p class="text-xs opacity-60">
+                                Add new patient photo or scan
+                            </p>
+                        </div>
+
+                        <input type="file" class={inputClass} bind:files />
+
+                        <button
+                            type="button"
+                            class="bg-primary text-white font-semibold text-sm py-3 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+                            onclick={upload}
+                            disabled={loading || !file}
+                        >
+                            {loading ? "Uploading..." : "Upload image"}
+                        </button>
+
+                        {#if status}
+                            <p class="text-sm opacity-70">{status}</p>
+                        {/if}
+                    </div>
+                </div>
+
+                <div class="w-2/3">
+                    <div
+                        class="border border-primary/20 rounded-xl p-4 bg-secondary h-80 overflow-y-auto"
+                    >
+                        {#if images.length === 0}
+                            <p class="text-sm opacity-50 text-center mt-10">
+                                Nothing to see.
+                            </p>
+                        {:else}
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {#each images as img}
+                                    <div
+                                        class="border rounded-lg p-2 flex flex-col gap-2 bg-white"
+                                    >
+                                        {#if img.previewUrl}
+                                            <img
+                                                src={img.previewUrl}
+                                                alt={img.filename}
+                                                class="w-full h-32 object-cover rounded"
+                                                draggable="false"
+                                            />
+                                        {/if}
+
+                                        <p class="text-xs truncate">
+                                            {img.filename}
+                                        </p>
+
+                                        <div class="flex gap-2">
+                                            <button
+                                                type="button"
+                                                class="text-xs px-2 py-1 rounded bg-primary text-white"
+                                                onclick={() =>
+                                                    downloadImage(img)}
+                                            >
+                                                Download
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                class="text-xs px-2 py-1 rounded bg-red-500 text-white"
+                                                onclick={() => deleteImage(img)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                {/each}
+                            </div>
+                        {/if}
+                    </div>
                 </div>
             </div>
         </Card>

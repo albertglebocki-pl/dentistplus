@@ -13,7 +13,7 @@ export async function onLoad(token: string) {
   });
   const catalog = await catalogRaw.json();
 
-  return { visits: visits, catalog: catalog };
+  return { visits: visits, catalog: catalog, token: token };
 }
 
 export async function getPatientTreatments(token: string, patientId: string) {
@@ -117,17 +117,42 @@ export async function updateVisit(token: any, formData: FormData) {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      patientId: patientId,
-      visitId: visitId,
+      patientId,
+      visitId,
       data: date,
-      description: description,
-      treatments: treatments,
+      description,
+      treatments,
     }),
   });
 
   const result = await res.json();
   if (!res.ok) {
     return { success: false, error: result.error || "Internal Server Error" };
+  }
+
+  const procedure = result;
+
+  const totalAmount = treatments.reduce(
+    (sum: number, t: any) => sum + (t.cost || 0),
+    0,
+  );
+
+  const paymentRes = await fetch(api("/payments"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      medicalProcedureId: procedure._id,
+      amount: totalAmount,
+    }),
+  });
+
+  const paymentResult = await paymentRes.json();
+
+  if (!paymentRes.ok) {
+    console.error("Payment creation failed:", paymentResult);
   }
 
   return { success: true, data: result };

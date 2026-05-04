@@ -429,14 +429,6 @@ Ustawia `status: "COMPLETED"` i `paidAt: now()`.
 
 ---
 
-#### `POST /payments/fail/:token` 🔓
-
-**Mock nieudanej płatności** — tylko do testów. Ustawia `status: "FAILED"`.
-
-**Błędy:** `400` płatność nie jest w statusie `PENDING`
-
----
-
 ### Catalog
 
 #### `GET /catalog` 🔑
