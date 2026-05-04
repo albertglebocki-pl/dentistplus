@@ -57,6 +57,7 @@ const mongoSeed = async () => {
       active: true,
       setsToothStatus: "extracted",
       blockedByStatuses: ["extracted", "implant"],
+      infoColor: "#b10707",
     },
     {
       name: "Implant",
@@ -65,6 +66,7 @@ const mongoSeed = async () => {
       active: true,
       setsToothStatus: "implant",
       blockedByStatuses: ["implant"],
+      infoColor: "#4880e6"
     },
     {
       name: "Crown",
@@ -73,6 +75,7 @@ const mongoSeed = async () => {
       active: true,
       setsToothStatus: "crown",
       blockedByStatuses: ["extracted"],
+      infoColor: "#d6d11e",
     },
   ])) as any[];
 

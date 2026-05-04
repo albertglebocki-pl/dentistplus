@@ -60,6 +60,7 @@ const procedureCatalogSchema = new Schema(
     active: { type: Boolean, default: true },
     setsToothStatus: { type: String, default: null },
     blockedByStatuses: { type: [String], default: [] },
+    infoColor: { type: String, default: ""},
   },
   { timestamps: true },
 );

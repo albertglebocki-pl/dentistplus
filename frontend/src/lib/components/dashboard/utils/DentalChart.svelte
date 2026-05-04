@@ -149,6 +149,17 @@
 {#snippet toothShape(tooth: Tooth, lower: boolean)}
     {@const sel = selectedTooth?.id === tooth.id}
 
+    {@const color = procedures
+        .flatMap((entry) => entry.treatments)
+        .filter((p) => p.tooth === tooth.label)
+        .sort(
+            (a, b) =>
+                new Date(b.catalogItemId?.updatedAt ?? 0).getTime() -
+                new Date(a.catalogItemId?.updatedAt ?? 0).getTime()
+        )
+        .find((p) => p.catalogItemId?.infoColor)
+        ?.catalogItemId?.infoColor}
+
     <svg
         viewBox="0 0 40 90"
         class="shrink-0"
@@ -157,10 +168,9 @@
         <g transform={lower ? "scale(1,-1) translate(0,-90)" : ""}>
             <path
                 d="M20 6 C10 6, 6 18, 8 30 C10 44, 8 58, 12 72 C14 82, 26 82, 28 72 C32 58, 30 44, 32 30 C34 18, 30 6, 20 6 Z"
-                class={sel
-                    ? "fill-primary/30 stroke-primary"
-                    : "fill-stone-100 stroke-stone-300"}
-                stroke-width="1.2"
+                fill={sel ? "rgba(59,130,246,0.3)" : "#f5f5f4"}
+                stroke={color ? color : sel ? "#3b82f6" : "#cbd5e1"}
+                stroke-width="1.5"
             />
 
             <path
@@ -171,7 +181,6 @@
         </g>
     </svg>
 {/snippet}
-
 
 {#snippet toothButton(tooth: Tooth, lower: boolean, i: number, total: number)}
     {@const scale = archScale(i, total)}
