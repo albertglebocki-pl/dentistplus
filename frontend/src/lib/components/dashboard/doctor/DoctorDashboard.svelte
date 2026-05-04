@@ -622,8 +622,8 @@
         <Card style={"w-full mb-5"}>
             <CardTitle text="Patient images" />
 
-            <div class="flex gap-5">
-                <div class="w-1/3 flex flex-col gap-4">
+            <div class="flex flex-col gap-5 sm:flex-row">
+                <div class="sm:w-1/3 flex flex-col gap-4">
                     <div
                         class="border border-primary/20 rounded-xl p-4 bg-secondary flex flex-col gap-4"
                     >
@@ -651,7 +651,7 @@
                     </div>
                 </div>
 
-                <div class="w-2/3">
+                <div class="sm:w-2/3">
                     <div
                         class="border border-primary/20 rounded-xl p-4 bg-secondary h-80 overflow-y-auto"
                     >

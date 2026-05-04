@@ -82,20 +82,20 @@
                     </div>
                 {:else}
                     <div class="flex items-center justify-between">
-                        <p class="w-1/10 text-sm">
+                        <p class="text-sm">
                             {formatDate(new Date(treatment.date))}
                         </p>
 
-                        <p class="w-1/3 font-semibold">
+                        <p class="font-semibold">
                             {treatment.description}
                         </p>
 
-                        <p class="w-1/4 text-right">
+                        <p class="text-right">
                             Total cost:
                             {calculateTotalCost(treatment.treatments)} zł
                         </p>
 
-                        <div class="w-1/4 flex justify-end items-center gap-2">
+                        <div class="flex justify-end items-center gap-2">
                             {#if payment}
                                 {#if payment.status === "COMPLETED"}
                                     <span
