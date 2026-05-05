@@ -143,6 +143,29 @@
 
         return 1.25 + dist * 0.25;
     }
+
+    const legendItems = $derived.by(() => {
+        const seen = new Set<string>();
+        const items: { color: string; name: string }[] = [];
+
+        procedures.forEach(entry => {
+            entry.treatments.forEach(t => {
+                const color = t.catalogItemId?.infoColor;
+                const name = t.catalogItemId?.name;
+
+                if (color && name && !seen.has(color)) {
+                    seen.add(color);
+                    items.push({ color, name });
+                }
+            });
+        });
+
+        if (items.length === 0) {
+            return [{ color: "#e5e7eb", name: "No data / default" }];
+        }
+
+        return items;
+    });
 </script>
 
 
@@ -214,103 +237,119 @@
 {/snippet}
 
 
-<div class="flex flex-col w-full items-center py-5 gap-6 sm:flex-row">
-    <div class="sm:w-2/3">
-        <div
-            class="flex flex-col items-center gap-2 origin-center
+<div class="flex flex-col items-center">
+    <div class="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 mb-6">
+        {#each legendItems as item}
+            <div class="flex items-center gap-2.5">
+                <div
+                    class="w-3.5 h-3.5 rounded-sm shrink-0 border border-black/10 shadow-sm"
+                    style:background-color={item.color}
+                ></div>
+                <span>
+                    {item.name}
+                </span>
+            </div>
+        {/each}
+    </div>
+
+    <div class="flex flex-col w-full items-center py-5 gap-6 sm:flex-row">
+        <div class="sm:w-2/3">
+            <div
+                class="flex flex-col items-center gap-2 origin-center
            scale-[0.8]
            xs:scale-[0.9]
            sm:scale-100"
-        >
-            <div class="flex items-end min-h-32">
-                <div class="flex items-end">
-                    {#each UR as tooth, i}
-                        {@render toothButton(tooth, false, i, UR.length)}
-                    {/each}
+            >
+                <div class="flex items-end min-h-32">
+                    <div class="flex items-end">
+                        {#each UR as tooth, i}
+                            {@render toothButton(tooth, false, i, UR.length)}
+                        {/each}
+                    </div>
+
+                    <div class="flex items-end">
+                        {#each UL as tooth, i}
+                            {@render toothButton(tooth, false, i, UL.length)}
+                        {/each}
+                    </div>
                 </div>
 
-                <div class="flex items-end">
-                    {#each UL as tooth, i}
-                        {@render toothButton(tooth, false, i, UL.length)}
-                    {/each}
-                </div>
-            </div>
+                <div class="h-6"></div>
 
-            <div class="h-6"></div>
+                <div class="flex items-start min-h-32">
+                    <div class="flex items-end">
+                        {#each LR as tooth, i}
+                            {@render toothButton(tooth, true, i, LR.length)}
+                        {/each}
+                    </div>
 
-            <div class="flex items-start min-h-32">
-                <div class="flex items-end">
-                    {#each LR as tooth, i}
-                        {@render toothButton(tooth, true, i, LR.length)}
-                    {/each}
-                </div>
-
-                <div class="flex items-end">
-                    {#each LL as tooth, i}
-                        {@render toothButton(tooth, true, i, LL.length)}
-                    {/each}
+                    <div class="flex items-end">
+                        {#each LL as tooth, i}
+                            {@render toothButton(tooth, true, i, LL.length)}
+                        {/each}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="sm:w-1/3 flex justify-center">
-        <div class="w-full max-w-sm">
-            <div
-                class="px-4 py-3 rounded-lg border border-primary/20 bg-primary/10 flex flex-col gap-2 min-h-22"
-            >
-                {#if selectedTooth}
+        <div class="sm:w-1/3 flex justify-center">
+            <div class="w-full max-w-sm">
+                <div
+                    class="px-4 py-3 rounded-lg border border-primary/20 bg-primary/10 flex flex-col gap-2 min-h-22"
+                >
+                    {#if selectedTooth}
                     <span class="font-bold text-primary">
                         {selectedTooth.label}
                     </span>
 
-                    <span class="text-sm font-medium text-gray-700">
+                        <span class="text-sm font-medium text-gray-700">
                         {TOOTH_META[selectedTooth.label].name}
                     </span>
 
-                    <span class="text-xs text-gray-500">
+                        <span class="text-xs text-gray-500">
                         {selectedTooth.description}
                     </span>
 
-                    <div class="border-t border-primary/10 pt-2 mt-2">
+                        <div class="border-t border-primary/10 pt-2 mt-2">
                         <span class="text-xs font-semibold text-gray-700">
                             Treatment history
                         </span>
 
-                        {#if selectedToothProcedures.length > 0}
-                            <div
-                                class="flex flex-col gap-2 mt-2 max-h-44 overflow-y-auto pr-1"
-                            >
-                                {#each selectedToothProcedures as procedure}
-                                    <div
-                                        class="rounded-md bg-white/60 px-2 py-1"
-                                    >
-                                        <div class="text-xs font-medium">
-                                            {procedure.description}
-                                        </div>
+                            {#if selectedToothProcedures.length > 0}
+                                <div
+                                    class="flex flex-col gap-2 mt-2 max-h-44 overflow-y-auto pr-1"
+                                >
+                                    {#each selectedToothProcedures as procedure}
+                                        <div
+                                            class="rounded-md bg-white/60 px-2 py-1"
+                                        >
+                                            <div class="text-xs font-medium">
+                                                {procedure.description}
+                                            </div>
 
-                                        <div class="text-[11px] text-gray-500">
-                                            {procedure.cost} zł
+                                            <div class="text-[11px] text-gray-500">
+                                                {procedure.cost} zł
+                                            </div>
                                         </div>
-                                    </div>
-                                {/each}
-                            </div>
-                        {:else}
-                            <div class="text-xs text-gray-400 mt-1">
-                                No procedures found
-                            </div>
-                        {/if}
-                    </div>
+                                    {/each}
+                                </div>
+                            {:else}
+                                <div class="text-xs text-gray-400 mt-1">
+                                    No procedures found
+                                </div>
+                            {/if}
+                        </div>
 
-                {:else}
+                    {:else}
                     <span class="font-medium text-gray-700">
                         Nothing to see
                     </span>
 
-                    <span class="text-xs text-gray-500">
+                        <span class="text-xs text-gray-500">
                         Select a tooth
                     </span>
-                {/if}
+                    {/if}
+                </div>
             </div>
         </div>
     </div>
