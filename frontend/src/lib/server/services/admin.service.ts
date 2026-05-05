@@ -76,6 +76,7 @@ export async function createProcedure(
     defaultCost?: number;
     setsToothStatus?: string | null;
     blockedByStatuses?: string[];
+    infoColor?: string;
   },
 ) {
   const res = await fetch(api("/catalog"), {

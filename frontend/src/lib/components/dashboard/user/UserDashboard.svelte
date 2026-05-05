@@ -67,7 +67,7 @@
         <Card style={"full"}>
             <CardTitle text="Tooth" />
 
-            <DentalChart />
+            <DentalChart procedures={procedures}/>
         </Card>
 
         <Card style={"full"}>
