@@ -75,7 +75,7 @@ const mongoSeed = async () => {
       active: true,
       setsToothStatus: "crown",
       blockedByStatuses: ["extracted"],
-      infoColor: "#d6d11e",
+      infoColor: "#ffa605",
     },
   ])) as any[];
 

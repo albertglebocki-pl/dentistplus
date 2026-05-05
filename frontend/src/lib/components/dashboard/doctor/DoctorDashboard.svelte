@@ -7,6 +7,7 @@
     import { page } from "$app/state";
     import UpcomingVisitCard from "$lib/components/dashboard/doctor/UpcomingVisitCard.svelte";
     import ProceduresHistory from "$lib/components/dashboard/utils/ProceduresHistory.svelte";
+    import DentalChart from "$lib/components/dashboard/utils/DentalChart.svelte";
 
     let { data } = $props();
     const visits = $derived(data.data.visits);
@@ -411,7 +412,9 @@
         </div>
 
         <Card style={"w-full"}>
-            <CardTitle text="Teeth status TODO" />
+            <CardTitle text="Teeth status" />
+
+            <DentalChart procedures={treatments} />
         </Card>
 
         <Card style={"w-full"}>
