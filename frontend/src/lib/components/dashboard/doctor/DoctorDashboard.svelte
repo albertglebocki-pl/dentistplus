@@ -1,15 +1,15 @@
 <script lang="ts">
-    import {enhance} from "$app/forms";
+    import { enhance } from "$app/forms";
     import Calendar from "$lib/components/dashboard/utils/Calendar.svelte";
     import AppointmentBooking from "$lib/components/dashboard/utils/AppointmentBooking.svelte";
     import CardTitle from "$lib/components/utils/CardTitle.svelte";
     import Card from "$lib/components/utils/Card.svelte";
-    import {page} from "$app/state";
+    import { page } from "$app/state";
     import UpcomingVisitCard from "$lib/components/dashboard/doctor/UpcomingVisitCard.svelte";
     import ProceduresHistory from "$lib/components/dashboard/utils/ProceduresHistory.svelte";
     import DentalChart from "$lib/components/dashboard/utils/DentalChart.svelte";
 
-    let {data} = $props();
+    let { data } = $props();
     const visits = $derived(data.data.visits);
     const treatments = $derived(data.treatments);
     const patientVisits = $derived(data.patientVisits);
@@ -171,14 +171,15 @@
         message?: string;
         success?: boolean;
     } | null>(null);
-    let bookingStatus = $state<{ message?: string; success?: string } | null>(
-        {message: "", success: ""}
-    );
+    let bookingStatus = $state<{ message?: string; success?: string } | null>({
+        message: "",
+        success: "",
+    });
 
     const handleBookingSubmit = () => {
         bookingStatus = null;
 
-        return async ({result, update}: { result: any; update: any }) => {
+        return async ({ result, update }: { result: any; update: any }) => {
             if (result.type === "success" || result.type === "failure") {
                 bookingStatus = result.data as {
                     message?: string;
@@ -222,7 +223,7 @@
                 `/api/patients/${currentPatientId}/images`,
                 {
                     method: "POST",
-                    headers: {Authorization: `Bearer ${data.data.token}`},
+                    headers: { Authorization: `Bearer ${data.data.token}` },
                     body: form,
                 },
             );
@@ -249,7 +250,7 @@
             const res = await fetch(
                 `/api/patients/${currentPatientId}/images`,
                 {
-                    headers: {Authorization: `Bearer ${data.data.token}`},
+                    headers: { Authorization: `Bearer ${data.data.token}` },
                 },
             );
 
@@ -284,7 +285,7 @@
                     const blob = await res.blob();
                     const previewUrl = URL.createObjectURL(blob);
 
-                    return {...img, previewUrl};
+                    return { ...img, previewUrl };
                 } catch {
                     return img;
                 }
@@ -301,7 +302,7 @@
             const res = await fetch(
                 `/api/patients/${currentPatientId}/images/${img.id}/download`,
                 {
-                    headers: {Authorization: `Bearer ${data.data.token}`},
+                    headers: { Authorization: `Bearer ${data.data.token}` },
                 },
             );
 
@@ -361,18 +362,18 @@
     {#if currentView === "main"}
         <div class="flex flex-col gap-5 items-stretch h-91 sm:flex-row">
             <Card style={"sm:w-2/3 h-full"}>
-                <CardTitle text="Calendar"/>
-                <Calendar {visits} fullSlots={[]}/>
+                <CardTitle text="Calendar" />
+                <Calendar {visits} fullSlots={[]} />
             </Card>
 
             <Card style={"sm:w-1/3 flex flex-col h-full"}>
-                <CardTitle text="Today appointments"/>
+                <CardTitle text="Today appointments" />
 
                 <div
                     class="flex-1 h-0 overflow-y-auto flex flex-col gap-3 pr-2"
                 >
                     {#each todayVisits.toReversed() as visit}
-                        <UpcomingVisitCard {visit}/>
+                        <UpcomingVisitCard {visit} />
                     {:else}
                         <p class="text-sm opacity-50">
                             No appointments for today.
@@ -384,7 +385,7 @@
     {:else if currentView === "visit"}
         <div class="flex flex-col gap-5 sm:flex-row">
             <Card style={"sm:w-1/3"}>
-                <CardTitle text="Patient information"/>
+                <CardTitle text="Patient information" />
                 <p class="text-xl pb-2">
                     {patient.firstName}
                     {patient.lastName}
@@ -404,25 +405,26 @@
             </Card>
 
             <Card style={"sm:w-2/3 min-h-0"}>
-                <CardTitle text="Treatment history"/>
+                <CardTitle text="Treatment history" />
                 <div class="max-h-62.5 overflow-y-auto min-h-0">
-                    <ProceduresHistory procedures={treatments}/>
+                    <ProceduresHistory procedures={treatments} />
                 </div>
             </Card>
         </div>
 
         <Card style={"w-full"}>
-            <CardTitle text="Teeth status"/>
+            <CardTitle text="Teeth status" />
 
             <DentalChart
                 procedures={treatments}
                 onSelect={(tooth) => {
-                selectedTooth = tooth.label;
-            }}/>
+                    selectedTooth = tooth.label;
+                }}
+            />
         </Card>
 
         <Card style={"w-full"}>
-            <CardTitle text="Current Visit"/>
+            <CardTitle text="Current Visit" />
 
             <div class="flex flex-col gap-5 sm:flex-row">
                 <div class="sm:w-1/3 flex flex-col gap-4">
@@ -502,7 +504,7 @@
                                     updateVisitStatus = (result.data ??
                                         null) as {
                                         message?: string;
-                                        success?: string;
+                                        success?: boolean;
                                     } | null;
                                 }
 
@@ -550,7 +552,7 @@
                             <p class="w-1/4">{formatDate(new Date())}</p>
                             <p class="font-semibold text-xl">
                                 {visitDescription ||
-                                "Enter visit description..."}
+                                    "Enter visit description..."}
                             </p>
                             <p class="w-1/4 flex justify-end">
                                 {totalCost} zł
@@ -601,7 +603,7 @@
         </Card>
 
         <Card style={"w-full"}>
-            <CardTitle text="Book next appointment"/>
+            <CardTitle text="Book next appointment" />
 
             <div class="flex flex-col justify-between sm:flex-row">
                 <div class="sm:w-1/3">
@@ -627,7 +629,7 @@
         </Card>
 
         <Card style={"w-full mb-5"}>
-            <CardTitle text="Patient images"/>
+            <CardTitle text="Patient images" />
 
             <div class="flex flex-col gap-5 sm:flex-row">
                 <div class="sm:w-1/3 flex flex-col gap-4">
@@ -641,7 +643,7 @@
                             </p>
                         </div>
 
-                        <input type="file" class={inputClass} bind:files/>
+                        <input type="file" class={inputClass} bind:files />
 
                         <button
                             type="button"
