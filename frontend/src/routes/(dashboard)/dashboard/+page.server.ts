@@ -77,6 +77,7 @@ export const actions = {
             .map((s) => s.trim())
             .filter(Boolean)
         : [],
+      infoColor: String(formData.get("infoColor") as string),
     });
 
     if (!result.success) {

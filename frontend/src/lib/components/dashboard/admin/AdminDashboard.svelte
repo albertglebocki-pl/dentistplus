@@ -2,7 +2,7 @@
     import Card from "$lib/components/utils/Card.svelte";
     import CardTitle from "$lib/components/utils/CardTitle.svelte";
 
-    let {data} = $props();
+    let { data } = $props();
 
     let openUserId: number | null = $state(null);
     let showDoctorModal = $state(false);
@@ -25,7 +25,7 @@
 <div class="flex flex-col gap-2">
     <Card style={"full"}>
         <div class="flex justify-between items-center">
-            <CardTitle text="Users"/>
+            <CardTitle text="Users" />
 
             <button
                 type="button"
@@ -39,30 +39,30 @@
         <div class="overflow-x-auto mt-4">
             <table class="w-full text-sm text-left border-collapse">
                 <thead>
-                <tr class="border-b">
-                    <th class="py-2 px-3">ID</th>
-                    <th class="py-2 px-3">Email</th>
-                    <th class="py-2 px-3">Role</th>
-                    <th class="py-2 px-3">Status</th>
-                    <th class="py-2 px-3">Action</th>
-                </tr>
+                    <tr class="border-b">
+                        <th class="py-2 px-3">ID</th>
+                        <th class="py-2 px-3">Email</th>
+                        <th class="py-2 px-3">Role</th>
+                        <th class="py-2 px-3">Status</th>
+                        <th class="py-2 px-3">Action</th>
+                    </tr>
                 </thead>
 
                 <tbody>
-                {#each data.data.users.users.filter((u: any) => u.role !== "ADMIN") as user}
-                    <tr class="border-b hover:bg-secondary">
-                        <td class="py-2 px-3">{user.id}</td>
-                        <td class="py-2 px-3">{user.email}</td>
+                    {#each data.data.users.users.filter((u: any) => u.role !== "ADMIN") as user}
+                        <tr class="border-b hover:bg-secondary">
+                            <td class="py-2 px-3">{user.id}</td>
+                            <td class="py-2 px-3">{user.email}</td>
 
-                        <td class="py-2 px-3">
+                            <td class="py-2 px-3">
                                 <span
                                     class="px-2 py-1 rounded text-xs bg-secondary text-primary"
                                 >
                                     {user.role}
                                 </span>
-                        </td>
+                            </td>
 
-                        <td class="py-2 px-3">
+                            <td class="py-2 px-3">
                                 <span
                                     class={`px-2 py-1 rounded text-xs ${
                                         user.active
@@ -72,71 +72,71 @@
                                 >
                                     {user.active ? "Active" : "Blocked"}
                                 </span>
-                        </td>
+                            </td>
 
-                        <td class="py-2 px-3 flex gap-2">
-                            <button
-                                type="button"
-                                onclick={() => toggleDetails(user.id)}
-                                class="text-xs px-2 py-1 rounded bg-secondary text-primary"
-                            >
-                                {openUserId === user.id
-                                    ? "Hide"
-                                    : "Details"}
-                            </button>
-
-                            <form method="POST">
-                                <input
-                                    type="hidden"
-                                    name="userId"
-                                    value={user.id}
-                                />
-                                <input
-                                    type="hidden"
-                                    name="active"
-                                    value={user.active}
-                                />
-
+                            <td class="py-2 px-3 flex gap-2">
                                 <button
-                                    type="submit"
-                                    formaction="?/toggleUser"
-                                    class={`px-3 py-1 text-xs rounded ${
+                                    type="button"
+                                    onclick={() => toggleDetails(user.id)}
+                                    class="text-xs px-2 py-1 rounded bg-secondary text-primary"
+                                >
+                                    {openUserId === user.id
+                                        ? "Hide"
+                                        : "Details"}
+                                </button>
+
+                                <form method="POST">
+                                    <input
+                                        type="hidden"
+                                        name="userId"
+                                        value={user.id}
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name="active"
+                                        value={user.active}
+                                    />
+
+                                    <button
+                                        type="submit"
+                                        formaction="?/toggleUser"
+                                        class={`px-3 py-1 text-xs rounded ${
                                             user.active
                                                 ? "bg-secondary text-primary"
                                                 : "bg-primary text-white"
                                         }`}
-                                >
-                                    {user.active ? "Block" : "Unblock"}
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-
-                    {#if openUserId === user.id}
-                        <tr class="bg-secondary border-b">
-                            <td
-                                colspan="5"
-                                class="p-4 text-sm text-primary"
-                            >
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div>
-                                        <strong>Name:</strong>
-                                        {user.firstName}
-                                        {user.lastName}
-                                    </div>
-                                    <div>
-                                        <strong>Phone:</strong>
-                                        {user.phoneNumber || "—"}
-                                    </div>
-                                    <div class="col-span-2">
-                                        <strong>Address:</strong>
-                                        {user.address || "—"}
-                                    </div>
-                                </div>
+                                    >
+                                        {user.active ? "Block" : "Unblock"}
+                                    </button>
+                                </form>
                             </td>
                         </tr>
-                    {/if}
-                {/each}
+
+                        {#if openUserId === user.id}
+                            <tr class="bg-secondary border-b">
+                                <td
+                                    colspan="5"
+                                    class="p-4 text-sm text-primary"
+                                >
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <strong>Name:</strong>
+                                            {user.firstName}
+                                            {user.lastName}
+                                        </div>
+                                        <div>
+                                            <strong>Phone:</strong>
+                                            {user.phoneNumber || "—"}
+                                        </div>
+                                        <div class="col-span-2">
+                                            <strong>Address:</strong>
+                                            {user.address || "—"}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {/if}
+                    {/each}
                 </tbody>
             </table>
         </div>
@@ -144,7 +144,7 @@
 
     <Card style={"full"}>
         <div class="flex justify-between items-center">
-            <CardTitle text="Medical Procedures"/>
+            <CardTitle text="Medical Procedures" />
 
             <button
                 type="button"
@@ -165,40 +165,40 @@
             {:else}
                 <table class="w-full text-sm text-left border-collapse">
                     <thead>
-                    <tr class="border-b">
-                        <th class="py-2 px-3">Name</th>
-                        <th class="py-2 px-3">Description</th>
-                        <th class="py-2 px-3">Cost</th>
-                        <th class="py-2 px-3">Action</th>
-                    </tr>
+                        <tr class="border-b">
+                            <th class="py-2 px-3">Name</th>
+                            <th class="py-2 px-3">Description</th>
+                            <th class="py-2 px-3">Cost</th>
+                            <th class="py-2 px-3">Action</th>
+                        </tr>
                     </thead>
 
                     <tbody>
-                    {#each activeProcedures as p}
-                        <tr class="border-b hover:bg-secondary">
-                            <td class="py-2 px-3 font-medium">{p.name}</td>
-                            <td class="py-2 px-3">{p.description || "—"}</td
-                            >
-                            <td class="py-2 px-3">{p.defaultCost} zł</td>
+                        {#each activeProcedures as p}
+                            <tr class="border-b hover:bg-secondary">
+                                <td class="py-2 px-3 font-medium">{p.name}</td>
+                                <td class="py-2 px-3">{p.description || "—"}</td
+                                >
+                                <td class="py-2 px-3">{p.defaultCost} zł</td>
 
-                            <td class="py-2 px-3">
-                                <form method="POST">
-                                    <input
-                                        type="hidden"
-                                        name="id"
-                                        value={p._id}
-                                    />
+                                <td class="py-2 px-3">
+                                    <form method="POST">
+                                        <input
+                                            type="hidden"
+                                            name="id"
+                                            value={p._id}
+                                        />
 
-                                    <button
-                                        formaction="?/deactivateProcedure"
-                                        class="text-xs px-2 py-1 rounded bg-primary text-white"
-                                    >
-                                        Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    {/each}
+                                        <button
+                                            formaction="?/deactivateProcedure"
+                                            class="text-xs px-2 py-1 rounded bg-primary text-white"
+                                        >
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {/each}
                     </tbody>
                 </table>
             {/if}
@@ -224,14 +224,14 @@
 
                 <table class="w-full text-sm text-left border-collapse">
                     <tbody>
-                    {#each inactiveProcedures as p}
-                        <tr class="border-b bg-secondary">
-                            <td class="py-2 px-3">{p.name}</td>
-                            <td class="py-2 px-3">{p.description || "—"}</td
-                            >
-                            <td class="py-2 px-3">{p.defaultCost} zł</td>
-                        </tr>
-                    {/each}
+                        {#each inactiveProcedures as p}
+                            <tr class="border-b bg-secondary">
+                                <td class="py-2 px-3">{p.name}</td>
+                                <td class="py-2 px-3">{p.description || "—"}</td
+                                >
+                                <td class="py-2 px-3">{p.defaultCost} zł</td>
+                            </tr>
+                        {/each}
                     </tbody>
                 </table>
             {/if}
@@ -239,7 +239,7 @@
     </Card>
 
     <Card style={"full"}>
-        <CardTitle text="Payments"/>
+        <CardTitle text="Payments" />
 
         <div class="overflow-x-auto mt-4">
             {#if data.data.payments.length === 0}
@@ -251,21 +251,21 @@
             {:else}
                 <table class="w-full text-sm text-left border-collapse">
                     <thead>
-                    <tr class="border-b">
-                        <th class="py-2 px-3">ID</th>
-                        <th class="py-2 px-3">Amount</th>
-                        <th class="py-2 px-3">Status</th>
-                        <th class="py-2 px-3">Date</th>
-                    </tr>
+                        <tr class="border-b">
+                            <th class="py-2 px-3">ID</th>
+                            <th class="py-2 px-3">Amount</th>
+                            <th class="py-2 px-3">Status</th>
+                            <th class="py-2 px-3">Date</th>
+                        </tr>
                     </thead>
 
                     <tbody>
-                    {#each data.data.payments as payment}
-                        <tr class="border-b hover:bg-secondary">
-                            <td class="py-2 px-3">{payment._id}</td>
-                            <td class="py-2 px-3">{payment.amount} zł</td>
+                        {#each data.data.payments as payment}
+                            <tr class="border-b hover:bg-secondary">
+                                <td class="py-2 px-3">{payment._id}</td>
+                                <td class="py-2 px-3">{payment.amount} zł</td>
 
-                            <td class="py-2 px-3">
+                                <td class="py-2 px-3">
                                     <span
                                         class={`px-2 py-1 rounded text-xs ${
                                             payment.status === "PAID"
@@ -275,15 +275,15 @@
                                     >
                                         {payment.status}
                                     </span>
-                            </td>
+                                </td>
 
-                            <td class="py-2 px-3">
-                                {new Date(
-                                    payment.createdAt,
-                                ).toLocaleDateString()}
-                            </td>
-                        </tr>
-                    {/each}
+                                <td class="py-2 px-3">
+                                    {new Date(
+                                        payment.createdAt,
+                                    ).toLocaleDateString()}
+                                </td>
+                            </tr>
+                        {/each}
                     </tbody>
                 </table>
             {/if}
@@ -361,7 +361,7 @@
     <div
         class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
     >
-        <div class="bg-white w-[500px] p-6 rounded-lg relative">
+        <div class="bg-white w-125 p-6 rounded-lg relative">
             <button
                 class="absolute top-6 right-6"
                 onclick={() => (showProcedureModal = false)}
@@ -405,16 +405,16 @@
                     placeholder="Blocked by statuses (comma-separated, e.g. extracted,implant)"
                 />
 
-                <div class="flex items-center gap-3 border p-2 rounded-md bg-white w-full">
+                <div
+                    class="flex items-center gap-3 border p-2 rounded-md bg-white w-full"
+                >
                     <input
                         name="infoColor"
                         type="color"
                         class="h-8 w-10 p-0 border-none bg-transparent cursor-pointer"
                     />
 
-                    <span class="text-gray-400">
-                        Choose procedure color
-                    </span>
+                    <span class="text-gray-400"> Choose procedure color </span>
                 </div>
 
                 <div class="flex justify-end gap-6">
