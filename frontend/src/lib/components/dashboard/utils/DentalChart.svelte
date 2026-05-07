@@ -1,0 +1,356 @@
+<script lang="ts">
+    type ToothId =
+        | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18"
+        | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28"
+        | "31" | "32" | "33" | "34" | "35" | "36" | "37" | "38"
+        | "41" | "42" | "43" | "44" | "45" | "46" | "47" | "48";
+
+    type ToothType =
+        | "central"
+        | "lateral"
+        | "canine"
+        | "premolar1"
+        | "premolar2"
+        | "molar1"
+        | "molar2"
+        | "molar3";
+
+    type Tooth = {
+        id: number;
+        label: ToothId;
+        quadrant: 1 | 2 | 3 | 4;
+        arch: "maxilla" | "mandible";
+        description: string;
+        toothType: ToothType;
+    };
+
+    type Procedure = {
+        tooth: ToothId;
+        description: string;
+        cost: number;
+        _id: string;
+    };
+
+    type DentalProcedureEntry = {
+        treatments: Procedure[];
+    };
+
+    const TOOTH_META: Record<
+        ToothId,
+        { name: string; toothType: ToothType }
+    > = {
+        "11": {name: "Central Incisor", toothType: "central"},
+        "12": {name: "Lateral Incisor", toothType: "lateral"},
+        "13": {name: "Canine", toothType: "canine"},
+        "14": {name: "First Premolar", toothType: "premolar1"},
+        "15": {name: "Second Premolar", toothType: "premolar2"},
+        "16": {name: "First Molar", toothType: "molar1"},
+        "17": {name: "Second Molar", toothType: "molar2"},
+        "18": {name: "Third Molar", toothType: "molar3"},
+
+        "21": {name: "Central Incisor", toothType: "central"},
+        "22": {name: "Lateral Incisor", toothType: "lateral"},
+        "23": {name: "Canine", toothType: "canine"},
+        "24": {name: "First Premolar", toothType: "premolar1"},
+        "25": {name: "Second Premolar", toothType: "premolar2"},
+        "26": {name: "First Molar", toothType: "molar1"},
+        "27": {name: "Second Molar", toothType: "molar2"},
+        "28": {name: "Third Molar", toothType: "molar3"},
+
+        "31": {name: "Central Incisor", toothType: "central"},
+        "32": {name: "Lateral Incisor", toothType: "lateral"},
+        "33": {name: "Canine", toothType: "canine"},
+        "34": {name: "First Premolar", toothType: "premolar1"},
+        "35": {name: "Second Premolar", toothType: "premolar2"},
+        "36": {name: "First Molar", toothType: "molar1"},
+        "37": {name: "Second Molar", toothType: "molar2"},
+        "38": {name: "Third Molar", toothType: "molar3"},
+
+        "41": {name: "Central Incisor", toothType: "central"},
+        "42": {name: "Lateral Incisor", toothType: "lateral"},
+        "43": {name: "Canine", toothType: "canine"},
+        "44": {name: "First Premolar", toothType: "premolar1"},
+        "45": {name: "Second Premolar", toothType: "premolar2"},
+        "46": {name: "First Molar", toothType: "molar1"},
+        "47": {name: "Second Molar", toothType: "molar2"},
+        "48": {name: "Third Molar", toothType: "molar3"}
+    };
+
+    const TOOTH_ENUM: ToothId[] = [
+        "18", "17", "16", "15", "14", "13", "12", "11",
+        "21", "22", "23", "24", "25", "26", "27", "28",
+
+        "48", "47", "46", "45", "44", "43", "42", "41",
+        "31", "32", "33", "34", "35", "36", "37", "38"
+    ];
+
+    const teeth: Tooth[] = TOOTH_ENUM.map((label, i) => {
+        const q = Number(label[0]) as 1 | 2 | 3 | 4;
+        const meta = TOOTH_META[label];
+
+        return {
+            id: i + 1,
+            label,
+            quadrant: q,
+            arch: q <= 2 ? "maxilla" : "mandible",
+            description: `${meta.name} — FDI ${label}, Quadrant ${q}`,
+            toothType: meta.toothType
+        };
+    });
+
+    let selectedTooth = $state<Tooth | null>(null);
+
+    const {
+        onSelect,
+        procedures = []
+    } = $props<{
+        onSelect?: (tooth: Tooth) => void;
+        procedures?: DentalProcedureEntry[];
+    }>();
+
+    function selectTooth(tooth: Tooth) {
+        if (selectedTooth?.id === tooth.id) {
+            selectedTooth = null;
+            return;
+        }
+
+        selectedTooth = tooth;
+        onSelect?.(tooth);
+    }
+
+    const UR = $derived(teeth.filter((t) => t.quadrant === 1));
+    const UL = $derived(teeth.filter((t) => t.quadrant === 2));
+    const LR = $derived(teeth.filter((t) => t.quadrant === 4));
+    const LL = $derived(teeth.filter((t) => t.quadrant === 3));
+
+    const selectedToothProcedures = $derived.by(() => {
+        if (!selectedTooth) return [];
+
+        return procedures
+            .flatMap((entry) => entry.treatments)
+            .filter(
+                (procedure) =>
+                    procedure.tooth === selectedTooth.label
+            );
+    });
+
+    function archScale(i: number, total: number) {
+        const center = (total - 1) / 2;
+
+        if (center === 0) return 1;
+
+        const dist = Math.abs(i - center) / center;
+
+        return 1.25 + dist * 0.25;
+    }
+
+    const legendItems = $derived.by(() => {
+        const seen = new Set<string>();
+        const items: { color: string; name: string }[] = [];
+
+        procedures.forEach(entry => {
+            entry.treatments.forEach(t => {
+                const color = t.catalogItemId?.infoColor;
+                const name = t.catalogItemId?.name;
+
+                if (color && name && !seen.has(color)) {
+                    seen.add(color);
+                    items.push({ color, name });
+                }
+            });
+        });
+
+        if (items.length === 0) {
+            return [{ color: "#e5e7eb", name: "No data / default" }];
+        }
+
+        return items;
+    });
+</script>
+
+
+{#snippet toothShape(tooth: Tooth, lower: boolean)}
+    {@const sel = selectedTooth?.id === tooth.id}
+
+    {@const color = procedures
+        .flatMap((entry) => entry.treatments)
+        .filter((p) => p.tooth === tooth.label)
+        .sort(
+            (a, b) =>
+                new Date(b.catalogItemId?.updatedAt ?? 0).getTime() -
+                new Date(a.catalogItemId?.updatedAt ?? 0).getTime()
+        )
+        .find((p) => p.catalogItemId?.infoColor)
+        ?.catalogItemId?.infoColor}
+
+    <svg
+        viewBox="0 0 40 90"
+        class="shrink-0"
+        style="width: clamp(22px, 2.4vw, 32px); height:auto;"
+    >
+        <g transform={lower ? "scale(1,-1) translate(0,-90)" : ""}>
+            <path
+                d="M20 6 C10 6, 6 18, 8 30 C10 44, 8 58, 12 72 C14 82, 26 82, 28 72 C32 58, 30 44, 32 30 C34 18, 30 6, 20 6 Z"
+                fill={sel ? "rgba(59,130,246,0.3)" : "#f5f5f4"}
+                stroke={color ? color : sel ? "#3b82f6" : "#cbd5e1"}
+                stroke-width="1.5"
+            />
+
+            <path
+                d="M20 14 L20 74"
+                class="stroke-stone-300/60"
+                stroke-width="1.2"
+            />
+        </g>
+    </svg>
+{/snippet}
+
+{#snippet toothButton(tooth: Tooth, lower: boolean, i: number, total: number)}
+    {@const scale = archScale(i, total)}
+
+    <button
+        type="button"
+        class="flex flex-col items-center shrink-0 focus:outline-none"
+        style={`transform: scale(${scale}); transform-origin:center;`}
+        onclick={() => selectTooth(tooth)}
+    >
+        {#if lower}
+            <span
+                class="text-gray-400"
+                style="font-size: clamp(6px, .55vw, 9px)"
+            >
+                {tooth.label}
+            </span>
+
+            {@render toothShape(tooth, true)}
+        {:else}
+            {@render toothShape(tooth, false)}
+
+            <span
+                class="text-gray-400"
+                style="font-size: clamp(6px, .55vw, 9px)"
+            >
+                {tooth.label}
+            </span>
+        {/if}
+    </button>
+{/snippet}
+
+
+<div class="flex flex-col items-center">
+    <div class="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 mb-6">
+        {#each legendItems as item}
+            <div class="flex items-center gap-2.5">
+                <div
+                    class="w-3.5 h-3.5 rounded-sm shrink-0 border border-black/10 shadow-sm"
+                    style:background-color={item.color}
+                ></div>
+                <span>
+                    {item.name}
+                </span>
+            </div>
+        {/each}
+    </div>
+
+    <div class="flex flex-col w-full items-center py-5 gap-6 sm:flex-row">
+        <div class="sm:w-2/3">
+            <div
+                class="flex flex-col items-center gap-2 origin-center
+           scale-[0.8]
+           xs:scale-[0.9]
+           sm:scale-100"
+            >
+                <div class="flex items-end min-h-32">
+                    <div class="flex items-end">
+                        {#each UR as tooth, i}
+                            {@render toothButton(tooth, false, i, UR.length)}
+                        {/each}
+                    </div>
+
+                    <div class="flex items-end">
+                        {#each UL as tooth, i}
+                            {@render toothButton(tooth, false, i, UL.length)}
+                        {/each}
+                    </div>
+                </div>
+
+                <div class="h-6"></div>
+
+                <div class="flex items-start min-h-32">
+                    <div class="flex items-end">
+                        {#each LR as tooth, i}
+                            {@render toothButton(tooth, true, i, LR.length)}
+                        {/each}
+                    </div>
+
+                    <div class="flex items-end">
+                        {#each LL as tooth, i}
+                            {@render toothButton(tooth, true, i, LL.length)}
+                        {/each}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sm:w-1/3 flex justify-center">
+            <div class="w-full max-w-sm">
+                <div
+                    class="px-4 py-3 rounded-lg border border-primary/20 bg-primary/10 flex flex-col gap-2 min-h-22"
+                >
+                    {#if selectedTooth}
+                    <span class="font-bold text-primary">
+                        {selectedTooth.label}
+                    </span>
+
+                        <span class="text-sm font-medium text-gray-700">
+                        {TOOTH_META[selectedTooth.label].name}
+                    </span>
+
+                        <span class="text-xs text-gray-500">
+                        {selectedTooth.description}
+                    </span>
+
+                        <div class="border-t border-primary/10 pt-2 mt-2">
+                        <span class="text-xs font-semibold text-gray-700">
+                            Treatment history
+                        </span>
+
+                            {#if selectedToothProcedures.length > 0}
+                                <div
+                                    class="flex flex-col gap-2 mt-2 max-h-44 overflow-y-auto pr-1"
+                                >
+                                    {#each selectedToothProcedures as procedure}
+                                        <div
+                                            class="rounded-md bg-white/60 px-2 py-1"
+                                        >
+                                            <div class="text-xs font-medium">
+                                                {procedure.description}
+                                            </div>
+
+                                            <div class="text-[11px] text-gray-500">
+                                                {procedure.cost} zł
+                                            </div>
+                                        </div>
+                                    {/each}
+                                </div>
+                            {:else}
+                                <div class="text-xs text-gray-400 mt-1">
+                                    No procedures found
+                                </div>
+                            {/if}
+                        </div>
+
+                    {:else}
+                    <span class="font-medium text-gray-700">
+                        Nothing to see
+                    </span>
+
+                        <span class="text-xs text-gray-500">
+                        Select a tooth
+                    </span>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

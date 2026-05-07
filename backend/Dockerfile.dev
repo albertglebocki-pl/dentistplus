@@ -6,4 +6,4 @@ COPY package.json ./
 
 RUN npm install
 
-ENTRYPOINT ["npx", "tsx", "watch", "--poll", "src/index.ts"]
+ENTRYPOINT ["npx", "tsx", "watch", "src/index.ts"]
