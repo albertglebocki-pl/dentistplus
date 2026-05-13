@@ -170,6 +170,64 @@
     </Card>
 
     <Card style={"full"}>
+        <CardTitle text="Change password" />
+
+        <form
+            method="POST"
+            action="?/changePassword"
+            class="flex flex-col gap-4 mt-4"
+        >
+            <label class={labelClass}>
+                <span class={labelTextClass}>Current password</span>
+                <input
+                    class={inputClass}
+                    name="oldPassword"
+                    type="password"
+                    autocomplete="current-password"
+                />
+            </label>
+
+            <label class={labelClass}>
+                <span class={labelTextClass}>New password</span>
+                <input
+                    class={inputClass}
+                    name="newPassword"
+                    type="password"
+                    autocomplete="new-password"
+                />
+            </label>
+
+            <label class={labelClass}>
+                <span class={labelTextClass}>Confirm new password</span>
+                <input
+                    class={inputClass}
+                    name="confirmPassword"
+                    type="password"
+                    autocomplete="new-password"
+                />
+            </label>
+
+            <div class="flex justify-end mt-2">
+                <button
+                    class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:opacity-90 transition"
+                >
+                    Change password
+                </button>
+            </div>
+        </form>
+
+        {#if form?.passwordError}
+            <p class="text-red-500 text-sm mt-3">{form.passwordError}</p>
+        {/if}
+
+        {#if form?.passwordSuccess}
+            <p class="text-green-600 text-sm mt-3">
+                Password changed successfully
+            </p>
+        {/if}
+    </Card>
+
+    <Card style={"full"}>
         <div class="grid grid-cols-2 gap-4 mt-4 text-sm">
             <div class="flex flex-col gap-1">
                 <span class="text-primary/60 text-xs">Role</span>
