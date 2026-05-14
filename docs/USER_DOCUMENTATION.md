@@ -135,12 +135,6 @@ Lekarz widzi wyłącznie wizyty przypisane do siebie.
 
 ---
 
-## Anulowanie wizyty
-
-Możliwe jest anulowanie wyłącznie wizyt posiadających status `BOOKED`.
-
----
-
 # Procedury medyczne
 
 ## Historia leczenia
