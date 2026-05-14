@@ -76,32 +76,11 @@ export async function onLoad(token: string) {
 
 export async function bookAppointment(token: string, formData: FormData) {
   const doctorIdRaw = formData.get("doctorId");
-  const datetimeRaw = formData.get("datetime");
+  const datetimeRaw = formData.get("datetime") as string;
   const description = formData.get("description");
 
-  if (typeof doctorIdRaw !== "string") {
-    return { success: false, error: "Invalid doctorId" };
-  }
-
-  if (typeof datetimeRaw !== "string") {
-    return { success: false, error: "Invalid datetime" };
-  }
-
-  const date = new Date(datetimeRaw);
-
-  if (date < new Date()) {
-    return { success: false, error: "Cannot book appointment in the past" };
-  }
-
-  const day = date.getDay();
-  if (day === 0 || day === 6) {
-    return { success: false, error: "Cannot book appointment in the weekend" };
-  }
-
-  const hour = date.getHours();
-  if (hour < 8 || hour > 18) {
-    return { success: false, error: "Hour have to be in range 8-18" };
-  }
+  if (!datetimeRaw) return { success: false, error: "Invalid datetime" };
+  const date = new Date(`${datetimeRaw}:00+02:00`);
 
   const res = await fetch(api("/visits"), {
     method: "POST",
@@ -118,14 +97,10 @@ export async function bookAppointment(token: string, formData: FormData) {
   });
 
   const result = await res.json();
-
-  if (!res.ok) {
-    return { success: false, error: result.error || "Internal Server Error" };
-  }
+  if (!res.ok) return { success: false, error: result.error || "Server Error" };
 
   return { success: true, data: result };
 }
-
 export async function getDoctorAvailability(token: string, doctorId: string) {
   const res = await fetch(api(`/visits/doctor/${doctorId}/all-booked`), {
     method: "GET",

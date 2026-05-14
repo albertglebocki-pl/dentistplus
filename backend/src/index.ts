@@ -99,6 +99,8 @@ app.route("/catalog", catalogCreate);
 app.route("/catalog", catalogUpdate);
 app.route("/catalog", catalogDeactivate);
 
+app.route("/doctors", doctorList);
+
 app.route("/patients", patientList);
 app.route("/patients", patientMe);
 app.route("/patients", patientDetails);
@@ -112,8 +114,6 @@ app.route("/patients", imageList);
 app.route("/patients", imageDetails);
 app.route("/patients", imageDelete);
 app.route("/patients", imageDownload);
-
-app.route("/doctors", doctorList);
 
 serve(
   {

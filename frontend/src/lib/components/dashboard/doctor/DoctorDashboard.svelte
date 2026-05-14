@@ -171,22 +171,25 @@
         message?: string;
         success?: boolean;
     } | null>(null);
-    let bookingStatus = $state<{ message?: string; success?: string } | null>({
-        message: "",
-        success: "",
-    });
+
+    let bookingStatus = $state<{ message?: string; success?: boolean } | null>(null);
 
     const handleBookingSubmit = () => {
         bookingStatus = null;
 
         return async ({ result, update }: { result: any; update: any }) => {
-            if (result.type === "success" || result.type === "failure") {
-                bookingStatus = result.data as {
-                    message?: string;
-                    success?: string;
+            await update();
+            if (result.type === "success") {
+                bookingStatus = {
+                    success: true,
+                    message: ""
+                };
+            } else if (result.type === "failure") {
+                bookingStatus = {
+                    success: false,
+                    message: result.data?.message || "Booking failed"
                 };
             }
-            await update();
         };
     };
 
@@ -610,8 +613,8 @@
                     <AppointmentBooking
                         doctorChoose={false}
                         patientId={patient.id}
-                        error={bookingStatus?.message}
-                        success={String(bookingStatus?.success)}
+                        error={bookingStatus?.success === false ? bookingStatus.message : ""}
+                        success={bookingStatus?.success === true ? "Success" : ""}
                         submitHandler={handleBookingSubmit}
                         {selectedDate}
                     />

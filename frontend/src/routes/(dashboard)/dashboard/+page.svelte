@@ -11,6 +11,10 @@
     const role = $derived(data.user.role);
 </script>
 
+<svelte:head>
+    <title>Dentist+ | Dashboard</title>
+</svelte:head>
+
 {#if role === "ADMIN"}
     <AdminDashboard {data} />
 {:else if role === "USER"}

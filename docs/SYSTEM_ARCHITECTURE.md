@@ -299,7 +299,7 @@ Płatności za zabiegi.
 #### Statusy płatności
 
 ```ts
-["PENDING", "COMPLETED", "FAILED"]
+["PENDING", "COMPLETED"]
 ```
 
 ### `PatientImage`

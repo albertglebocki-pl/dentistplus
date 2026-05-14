@@ -1,13 +1,15 @@
 <script lang="ts">
     import Card from "$lib/components/utils/Card.svelte";
     import CardTitle from "$lib/components/utils/CardTitle.svelte";
+    import { enhance } from "$app/forms";
 
     let { data } = $props();
-
     let openUserId: number | null = $state(null);
     let showDoctorModal = $state(false);
     let showProcedureModal = $state(false);
     let showInactiveProcedures = $state(false);
+
+    let doctorError: any = $state(undefined);
 
     function toggleDetails(id: number) {
         openUserId = openUserId === id ? null : id;
@@ -307,7 +309,30 @@
                 Create Doctor Account
             </h2>
 
-            <form method="POST" class="grid grid-cols-2 gap-3">
+            <form
+                class="grid grid-cols-2 gap-3"
+                method="POST"
+                action="?/createDoctor"
+                use:enhance={() => {
+                    doctorError = "";
+
+                    return async ({ result, update }) => {
+                        await update();
+
+                        if (!result) return;
+
+                        if (result.type === "failure") {
+                            doctorError =
+                                result.data?.message || "Something went wrong";
+                        }
+
+                        if (result.type === "success") {
+                            doctorError = "";
+                            showDoctorModal = false;
+                        }
+                    };
+                }}
+            >
                 <input
                     name="email"
                     class="border p-2 col-span-2 rounded-md"
@@ -352,6 +377,12 @@
                         Create
                     </button>
                 </div>
+
+                {#if doctorError}
+                    <p class="text-red-500 col-span-2 text-sm">
+                        {doctorError}
+                    </p>
+                {/if}
             </form>
         </div>
     </div>

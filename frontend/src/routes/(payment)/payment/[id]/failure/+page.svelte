@@ -2,11 +2,14 @@
     const { data } = $props();
 </script>
 
+<svelte:head>
+    <title>Dentist+ | Payment Failed</title>
+</svelte:head>
+
 <div class="min-h-screen flex items-center justify-center bg-secondary/10 px-4">
     <div
         class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-secondary/20 overflow-hidden"
     >
-        <!-- Header -->
         <div class="px-6 py-5 bg-red-50 border-b border-red-100">
             <h1 class="text-lg font-semibold text-red-700">Payment Failed</h1>
             <p class="text-sm text-red-600">
@@ -14,9 +17,7 @@
             </p>
         </div>
 
-        <!-- Content -->
         <div class="px-6 py-8 text-center space-y-4">
-            <!-- Icon -->
             <div
                 class="mx-auto w-16 h-16 rounded-full bg-red-100 flex items-center justify-center"
             >
@@ -55,7 +56,6 @@
             </p>
         </div>
 
-        <!-- Footer -->
         <div class="px-6 pb-6 space-y-3">
             <button
                 onclick={() => window.history.back()}

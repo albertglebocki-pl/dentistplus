@@ -15,12 +15,6 @@
 
     const brand = $derived(getCardBrand(cardNumber));
 
-    const procedureDescription = $derived(() => {
-        const p = data.payment.medicalProcedureId;
-        if (!p) return null;
-        return typeof p === "object" ? p.description : null;
-    });
-
     function formatCardNumber(value: string) {
         return value
             .replace(/\D/g, "")
@@ -55,17 +49,19 @@
     }
 </script>
 
+<svelte:head>
+    <title>Dentist+ | Payment</title>
+</svelte:head>
+
 <div class="min-h-screen flex items-center justify-center bg-secondary/10 px-4">
     <div
         class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-secondary/20 overflow-hidden"
     >
-        <!-- Header -->
         <div class="px-6 py-5 bg-secondary/20 border-b border-secondary/30">
             <h1 class="text-lg font-semibold text-primary">Secure Payment</h1>
             <p class="text-sm text-gray-600">Powered by internal gateway</p>
         </div>
 
-        <!-- Amount + procedure -->
         <div class="px-6 py-5 space-y-2">
             <div>
                 <p class="text-sm text-gray-500">Amount due</p>
@@ -85,9 +81,7 @@
             {/if}
         </div>
 
-        <!-- Form -->
         <form method="POST" class="px-6 pb-6 space-y-4">
-            <!-- Card number -->
             <div>
                 <label class="text-xs text-gray-500" for="cardNumber"
                     >Card number</label
@@ -158,7 +152,6 @@
                 </div>
             </div>
 
-            <!-- Expiry + CVC -->
             <div class="flex gap-3">
                 <div class="flex-1">
                     <label class="text-xs text-gray-500" for="expiry"
@@ -183,7 +176,6 @@
                 </div>
             </div>
 
-            <!-- Pay -->
             <button
                 formaction="?/pay"
                 class="w-full py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 active:scale-[0.99] transition"
