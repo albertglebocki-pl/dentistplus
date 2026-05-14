@@ -3,6 +3,7 @@ import { authMiddleware, requireRole } from "../../auth/middleware.js";
 import { MedicalProcedure } from "../../../mongo/schema.js";
 
 const service = new Hono();
+
 service.use(authMiddleware);
 
 service.patch("/:id", requireRole(["DOCTOR"]), async (c) => {

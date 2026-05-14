@@ -60,7 +60,7 @@ const procedureCatalogSchema = new Schema(
     active: { type: Boolean, default: true },
     setsToothStatus: { type: String, default: null },
     blockedByStatuses: { type: [String], default: [] },
-    infoColor: { type: String, default: ""},
+    infoColor: { type: String, default: "" },
   },
   { timestamps: true },
 );
@@ -114,7 +114,7 @@ const paymentSchema = new Schema(
     amount: Number,
     status: {
       type: String,
-      enum: ["PENDING", "COMPLETED", "FAILED"],
+      enum: ["PENDING", "COMPLETED"],
       default: "PENDING",
     },
     token: {

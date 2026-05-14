@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { profileFields, upsertPersonalData } from "../service.js";
 
 const service = new Hono();
+
 service.use(authMiddleware);
 
 service.get("/me", async (c) => {

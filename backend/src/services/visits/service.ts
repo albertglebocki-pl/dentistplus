@@ -13,12 +13,13 @@ export const validateDoctor = async (doctorId: number) => {
 };
 
 export const checkConflict = async (
-  doctorId: number,
-  dateTime: Date,
-  durationMinutes: number,
-  excludeId?: string,
+    doctorId: number,
+    dateTime: Date,
+    durationMinutes: number,
+    excludeId?: string,
 ) => {
-  const endTime = new Date(dateTime.getTime() + durationMinutes * 60_000);
+  const adjustedStart = new Date(dateTime.getTime() + (2 * 60 * 60 * 1000));
+  const adjustedEnd = new Date(adjustedStart.getTime() + durationMinutes * 60_000);
 
   return Visit.findOne({
     ...(excludeId ? { _id: { $ne: excludeId } } : {}),
@@ -26,13 +27,13 @@ export const checkConflict = async (
     status: "BOOKED",
     $expr: {
       $and: [
-        { $lt: ["$dateTime", endTime] },
+        { $lt: ["$dateTime", adjustedEnd] },
         {
           $gt: [
             {
               $add: ["$dateTime", { $multiply: ["$durationMinutes", 60_000] }],
             },
-            dateTime,
+            adjustedStart,
           ],
         },
       ],

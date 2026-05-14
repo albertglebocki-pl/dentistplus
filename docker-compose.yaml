@@ -1,11 +1,5 @@
 networks:
-  drizzle-postgres:
-    driver: bridge
-    internal: true
   backend-internal:
-    driver: bridge
-    internal: true
-  backend-postgres:
     driver: bridge
     internal: true
   frontend-backend:
@@ -22,8 +16,7 @@ services:
     image: postgres:17-alpine
     restart: unless-stopped
     networks:
-      - drizzle-postgres
-      - backend-postgres
+      - backend-internal
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -144,7 +137,7 @@ services:
       dockerfile: Dockerfile
     restart: "no"
     networks:
-      - drizzle-postgres
+      - backend-internal
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     depends_on:
@@ -158,7 +151,6 @@ services:
     restart: unless-stopped
     networks:
       - backend-internal
-      - backend-postgres
       - frontend-backend
     environment:
       - JWT_SECRET=${JWT_SECRET}
@@ -190,11 +182,8 @@ services:
       - frontend-caddy
     environment:
       - BACKEND_URL=http://backend:3000
+      - BODY_SIZE_LIMIT=10485760
     depends_on:
-      drizzle:
-        condition: service_completed_successfully
-      postgres:
-        condition: service_healthy
       backend:
         condition: service_started
 
@@ -204,7 +193,6 @@ services:
     networks:
       - frontend-caddy
       - public
-      - frontend-backend
     ports:
       - "80:80"
       - "443:443"

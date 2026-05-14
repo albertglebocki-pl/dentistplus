@@ -9,6 +9,8 @@ export const actions: Actions = {
     const password = data.get("password");
     const confirm = data.get("confirm");
     const fullName = data.get("fullName");
+    const address = data.get("address");
+    const phoneNumberRaw = data.get("phoneNumber");
 
     const nameParts = String(fullName)
       .trim()
@@ -25,6 +27,21 @@ export const actions: Actions = {
       return fail(400, { error: "First name and last name are required" });
     }
 
+    console.log(JSON.stringify(phoneNumberRaw));
+    console.log([...String(phoneNumberRaw ?? "")]);
+
+    const phoneNumber = String(phoneNumberRaw ?? "")
+        .trim()
+        .replace(/\s+/g, "");
+
+    const phoneRegex = /^\d{9}$/;
+
+    if (!phoneRegex.test(phoneNumber)) {
+      return fail(400, {
+        error: "Phone number must consist of exactly 9 digits",
+      });
+    }
+
     const res = await fetch(api("/auth/register"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -33,8 +50,8 @@ export const actions: Actions = {
         password,
         firstName,
         lastName,
-        address: data.get("address"),
-        phoneNumber: data.get("phoneNumber"),
+        address,
+        phoneNumber,
       }),
     });
 
