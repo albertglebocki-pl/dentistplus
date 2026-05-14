@@ -8,7 +8,6 @@ service.use(authMiddleware);
 
 service.get("/", async (c) => {
   const user = c.get("user");
-  console.log("DEBUG: Obiekt user z middleware:", user);
   const patientIdQuery = c.req.query("patientId");
   let filter: Record<string, unknown> = {};
 
