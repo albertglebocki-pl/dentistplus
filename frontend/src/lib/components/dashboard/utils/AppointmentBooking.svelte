@@ -15,10 +15,7 @@
 
     const formattedDate = $derived(
         selectedDate
-            ? new Date(
-                selectedDate.getTime()
-                - selectedDate.getTimezoneOffset() * 60000
-            )
+            ? new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000)
                 .toISOString()
                 .slice(0, 16)
             : ""
@@ -73,13 +70,13 @@
             <input name="description" type="text" class={inputClass}/>
         </label>
 
-        {#if error}
+        {#if error && error.length > 0}
             <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100">
                 {error}
             </div>
         {/if}
 
-        {#if success}
+        {#if success && success.length > 0}
             <div class="bg-green-50 text-green-600 p-3 rounded-lg text-sm font-medium border border-green-100">
                 Appointment booked successfully!
             </div>
