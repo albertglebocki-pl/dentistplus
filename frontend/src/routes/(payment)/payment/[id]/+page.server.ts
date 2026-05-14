@@ -1,9 +1,5 @@
 import { redirect, fail } from "@sveltejs/kit";
-import {
-  getPayment,
-  payPayment,
-  failPayment,
-} from "$lib/server/services/payment.service";
+import { getPayment, payPayment } from "$lib/server/services/payment.service";
 
 function isTestCard(number: string) {
   const normalized = number.replace(/\s/g, "");

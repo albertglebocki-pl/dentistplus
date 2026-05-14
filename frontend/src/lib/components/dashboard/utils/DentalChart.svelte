@@ -1,9 +1,37 @@
 <script lang="ts">
     type ToothId =
-        | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18"
-        | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28"
-        | "31" | "32" | "33" | "34" | "35" | "36" | "37" | "38"
-        | "41" | "42" | "43" | "44" | "45" | "46" | "47" | "48";
+        | "11"
+        | "12"
+        | "13"
+        | "14"
+        | "15"
+        | "16"
+        | "17"
+        | "18"
+        | "21"
+        | "22"
+        | "23"
+        | "24"
+        | "25"
+        | "26"
+        | "27"
+        | "28"
+        | "31"
+        | "32"
+        | "33"
+        | "34"
+        | "35"
+        | "36"
+        | "37"
+        | "38"
+        | "41"
+        | "42"
+        | "43"
+        | "44"
+        | "45"
+        | "46"
+        | "47"
+        | "48";
 
     type ToothType =
         | "central"
@@ -35,53 +63,79 @@
         treatments: Procedure[];
     };
 
-    const TOOTH_META: Record<
-        ToothId,
-        { name: string; toothType: ToothType }
-    > = {
-        "11": {name: "Central Incisor", toothType: "central"},
-        "12": {name: "Lateral Incisor", toothType: "lateral"},
-        "13": {name: "Canine", toothType: "canine"},
-        "14": {name: "First Premolar", toothType: "premolar1"},
-        "15": {name: "Second Premolar", toothType: "premolar2"},
-        "16": {name: "First Molar", toothType: "molar1"},
-        "17": {name: "Second Molar", toothType: "molar2"},
-        "18": {name: "Third Molar", toothType: "molar3"},
+    const TOOTH_META: Record<ToothId, { name: string; toothType: ToothType }> =
+        {
+            "11": { name: "Central Incisor", toothType: "central" },
+            "12": { name: "Lateral Incisor", toothType: "lateral" },
+            "13": { name: "Canine", toothType: "canine" },
+            "14": { name: "First Premolar", toothType: "premolar1" },
+            "15": { name: "Second Premolar", toothType: "premolar2" },
+            "16": { name: "First Molar", toothType: "molar1" },
+            "17": { name: "Second Molar", toothType: "molar2" },
+            "18": { name: "Third Molar", toothType: "molar3" },
 
-        "21": {name: "Central Incisor", toothType: "central"},
-        "22": {name: "Lateral Incisor", toothType: "lateral"},
-        "23": {name: "Canine", toothType: "canine"},
-        "24": {name: "First Premolar", toothType: "premolar1"},
-        "25": {name: "Second Premolar", toothType: "premolar2"},
-        "26": {name: "First Molar", toothType: "molar1"},
-        "27": {name: "Second Molar", toothType: "molar2"},
-        "28": {name: "Third Molar", toothType: "molar3"},
+            "21": { name: "Central Incisor", toothType: "central" },
+            "22": { name: "Lateral Incisor", toothType: "lateral" },
+            "23": { name: "Canine", toothType: "canine" },
+            "24": { name: "First Premolar", toothType: "premolar1" },
+            "25": { name: "Second Premolar", toothType: "premolar2" },
+            "26": { name: "First Molar", toothType: "molar1" },
+            "27": { name: "Second Molar", toothType: "molar2" },
+            "28": { name: "Third Molar", toothType: "molar3" },
 
-        "31": {name: "Central Incisor", toothType: "central"},
-        "32": {name: "Lateral Incisor", toothType: "lateral"},
-        "33": {name: "Canine", toothType: "canine"},
-        "34": {name: "First Premolar", toothType: "premolar1"},
-        "35": {name: "Second Premolar", toothType: "premolar2"},
-        "36": {name: "First Molar", toothType: "molar1"},
-        "37": {name: "Second Molar", toothType: "molar2"},
-        "38": {name: "Third Molar", toothType: "molar3"},
+            "31": { name: "Central Incisor", toothType: "central" },
+            "32": { name: "Lateral Incisor", toothType: "lateral" },
+            "33": { name: "Canine", toothType: "canine" },
+            "34": { name: "First Premolar", toothType: "premolar1" },
+            "35": { name: "Second Premolar", toothType: "premolar2" },
+            "36": { name: "First Molar", toothType: "molar1" },
+            "37": { name: "Second Molar", toothType: "molar2" },
+            "38": { name: "Third Molar", toothType: "molar3" },
 
-        "41": {name: "Central Incisor", toothType: "central"},
-        "42": {name: "Lateral Incisor", toothType: "lateral"},
-        "43": {name: "Canine", toothType: "canine"},
-        "44": {name: "First Premolar", toothType: "premolar1"},
-        "45": {name: "Second Premolar", toothType: "premolar2"},
-        "46": {name: "First Molar", toothType: "molar1"},
-        "47": {name: "Second Molar", toothType: "molar2"},
-        "48": {name: "Third Molar", toothType: "molar3"}
-    };
+            "41": { name: "Central Incisor", toothType: "central" },
+            "42": { name: "Lateral Incisor", toothType: "lateral" },
+            "43": { name: "Canine", toothType: "canine" },
+            "44": { name: "First Premolar", toothType: "premolar1" },
+            "45": { name: "Second Premolar", toothType: "premolar2" },
+            "46": { name: "First Molar", toothType: "molar1" },
+            "47": { name: "Second Molar", toothType: "molar2" },
+            "48": { name: "Third Molar", toothType: "molar3" },
+        };
 
     const TOOTH_ENUM: ToothId[] = [
-        "18", "17", "16", "15", "14", "13", "12", "11",
-        "21", "22", "23", "24", "25", "26", "27", "28",
+        "18",
+        "17",
+        "16",
+        "15",
+        "14",
+        "13",
+        "12",
+        "11",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
 
-        "48", "47", "46", "45", "44", "43", "42", "41",
-        "31", "32", "33", "34", "35", "36", "37", "38"
+        "48",
+        "47",
+        "46",
+        "45",
+        "44",
+        "43",
+        "42",
+        "41",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
     ];
 
     const teeth: Tooth[] = TOOTH_ENUM.map((label, i) => {
@@ -94,16 +148,13 @@
             quadrant: q,
             arch: q <= 2 ? "maxilla" : "mandible",
             description: `${meta.name} — FDI ${label}, Quadrant ${q}`,
-            toothType: meta.toothType
+            toothType: meta.toothType,
         };
     });
 
     let selectedTooth = $state<Tooth | null>(null);
 
-    const {
-        onSelect,
-        procedures = []
-    } = $props<{
+    const { onSelect, procedures = [] } = $props<{
         onSelect?: (tooth: Tooth) => void;
         procedures?: DentalProcedureEntry[];
     }>();
@@ -127,10 +178,9 @@
         if (!selectedTooth) return [];
 
         return procedures
-            .flatMap((entry) => entry.treatments)
+            .flatMap((entry: any) => entry.treatments)
             .filter(
-                (procedure) =>
-                    procedure.tooth === selectedTooth.label
+                (procedure: any) => procedure.tooth === selectedTooth?.label,
             );
     });
 
@@ -148,8 +198,8 @@
         const seen = new Set<string>();
         const items: { color: string; name: string }[] = [];
 
-        procedures.forEach(entry => {
-            entry.treatments.forEach(t => {
+        procedures.forEach((entry: any) => {
+            entry.treatments.forEach((t: any) => {
                 const color = t.catalogItemId?.infoColor;
                 const name = t.catalogItemId?.name;
 
@@ -168,20 +218,18 @@
     });
 </script>
 
-
 {#snippet toothShape(tooth: Tooth, lower: boolean)}
     {@const sel = selectedTooth?.id === tooth.id}
 
     {@const color = procedures
-        .flatMap((entry) => entry.treatments)
-        .filter((p) => p.tooth === tooth.label)
+        .flatMap((entry: any) => entry.treatments)
+        .filter((p: any) => p.tooth === tooth.label)
         .sort(
-            (a, b) =>
+            (a: any, b: any) =>
                 new Date(b.catalogItemId?.updatedAt ?? 0).getTime() -
-                new Date(a.catalogItemId?.updatedAt ?? 0).getTime()
+                new Date(a.catalogItemId?.updatedAt ?? 0).getTime(),
         )
-        .find((p) => p.catalogItemId?.infoColor)
-        ?.catalogItemId?.infoColor}
+        .find((p: any) => p.catalogItemId?.infoColor)?.catalogItemId?.infoColor}
 
     <svg
         viewBox="0 0 40 90"
@@ -236,9 +284,10 @@
     </button>
 {/snippet}
 
-
 <div class="flex flex-col items-center">
-    <div class="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 mb-6">
+    <div
+        class="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 mb-6"
+    >
         {#each legendItems as item}
             <div class="flex items-center gap-2.5">
                 <div
@@ -298,22 +347,22 @@
                     class="px-4 py-3 rounded-lg border border-primary/20 bg-primary/10 flex flex-col gap-2 min-h-22"
                 >
                     {#if selectedTooth}
-                    <span class="font-bold text-primary">
-                        {selectedTooth.label}
-                    </span>
+                        <span class="font-bold text-primary">
+                            {selectedTooth.label}
+                        </span>
 
                         <span class="text-sm font-medium text-gray-700">
-                        {TOOTH_META[selectedTooth.label].name}
-                    </span>
+                            {TOOTH_META[selectedTooth.label].name}
+                        </span>
 
                         <span class="text-xs text-gray-500">
-                        {selectedTooth.description}
-                    </span>
+                            {selectedTooth.description}
+                        </span>
 
                         <div class="border-t border-primary/10 pt-2 mt-2">
-                        <span class="text-xs font-semibold text-gray-700">
-                            Treatment history
-                        </span>
+                            <span class="text-xs font-semibold text-gray-700">
+                                Treatment history
+                            </span>
 
                             {#if selectedToothProcedures.length > 0}
                                 <div
@@ -327,7 +376,9 @@
                                                 {procedure.description}
                                             </div>
 
-                                            <div class="text-[11px] text-gray-500">
+                                            <div
+                                                class="text-[11px] text-gray-500"
+                                            >
                                                 {procedure.cost} zł
                                             </div>
                                         </div>
@@ -339,15 +390,14 @@
                                 </div>
                             {/if}
                         </div>
-
                     {:else}
-                    <span class="font-medium text-gray-700">
-                        Nothing to see
-                    </span>
+                        <span class="font-medium text-gray-700">
+                            Nothing to see
+                        </span>
 
                         <span class="text-xs text-gray-500">
-                        Select a tooth
-                    </span>
+                            Select a tooth
+                        </span>
                     {/if}
                 </div>
             </div>

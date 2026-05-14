@@ -53,6 +53,10 @@
     const canSave = $derived(editMode && isDirty);
 </script>
 
+<svelte:head>
+    <title>Dentist+ | Account Settings</title>
+</svelte:head>
+
 <div class="flex flex-col gap-5 mt-3">
     <Card style={"full"}>
         <div class="flex justify-between items-center">

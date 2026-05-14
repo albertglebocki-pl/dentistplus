@@ -1,9 +1,9 @@
-import { BACKEND_URL } from "$env/static/private";
+import api from "$lib/server/utils/api";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ params, request }) => {
   const res = await fetch(
-    `${BACKEND_URL}/patients/${params.patientId}/images/${params.imageId}/download`,
+    api(`/patients/${params.patientId}/images/${params.imageId}/download`),
     { headers: { Authorization: request.headers.get("Authorization") ?? "" } },
   );
   if (!res.ok) return new Response(await res.text(), { status: res.status });
