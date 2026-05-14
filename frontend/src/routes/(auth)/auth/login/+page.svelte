@@ -6,7 +6,7 @@
     const labelClass = "flex flex-col gap-1.5";
     const labelTextClass = "text-primary/60 text-sm";
 
-    let { form } = $props();
+    let { form, data } = $props();
 </script>
 
 <main class="min-h-screen bg-secondary flex items-center justify-center px-4">
@@ -20,6 +20,12 @@
 
         {#if form?.error}
             <p class="text-red-500 text-sm text-center mb-4">{form?.error}</p>
+        {/if}
+
+        {#if data.flash}
+            <p class="text-green-500 text-sm text-center mb-4">
+                {data.flash}
+            </p>
         {/if}
 
         <form method="POST" use:enhance class="flex flex-col gap-4">

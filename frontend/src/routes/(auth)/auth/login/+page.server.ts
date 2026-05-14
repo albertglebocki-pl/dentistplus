@@ -1,6 +1,18 @@
 import { fail, redirect } from "@sveltejs/kit";
-import type { Actions } from "./$types";
+import type { Actions, PageServerLoad } from "./$types";
 import api from "$lib/server/utils/api";
+
+export const load: PageServerLoad = async ({ cookies }) => {
+  const flash = cookies.get("flash");
+
+  if (flash) {
+    cookies.delete("flash", { path: "/" });
+  }
+
+  return {
+    flash,
+  };
+};
 
 export const actions: Actions = {
   default: async ({ request, cookies }) => {

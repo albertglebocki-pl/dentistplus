@@ -51,6 +51,11 @@ export const actions = {
     });
     if (!result.success) return fail(400, { passwordError: result.error });
 
-    return { passwordSuccess: true };
+    cookies.set("flash", "Password changed successfully", {
+      path: "/",
+      maxAge: 5,
+    });
+
+    throw redirect(303, "/auth/logout");
   },
 };

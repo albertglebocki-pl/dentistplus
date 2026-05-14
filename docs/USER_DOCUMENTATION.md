@@ -119,7 +119,6 @@ System automatycznie:
 |---|---|
 | BOOKED | Wizyta zaplanowana |
 | COMPLETED | Wizyta zakończona |
-| CANCELLED | Wizyta anulowana |
 
 ---
 
@@ -128,8 +127,7 @@ System automatycznie:
 Pacjent może przeglądać:
 
 - nadchodzące wizyty,
-- zakończone wizyty,
-- anulowane wizyty.
+- zakończone wizyty.
 
 Lekarz widzi wyłącznie wizyty przypisane do siebie.
 

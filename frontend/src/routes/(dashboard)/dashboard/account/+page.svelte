@@ -223,12 +223,6 @@
         {#if form?.passwordError}
             <p class="text-red-500 text-sm mt-3">{form.passwordError}</p>
         {/if}
-
-        {#if form?.passwordSuccess}
-            <p class="text-green-600 text-sm mt-3">
-                Password changed successfully
-            </p>
-        {/if}
     </Card>
 
     <Card style={"full"}>
